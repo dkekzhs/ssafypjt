@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.web.member.model.mapper.MemberMapper">
+
+
+
+	<select id="loginMember" parameterType="memberDto" resultType="memberDto">
+		select *
+		from members
+		where user_id = #{user_id} and user_password = #{user_password}
+	</select>
+	
+
+
+	
+</mapper>
