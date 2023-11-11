@@ -3,9 +3,7 @@
 </script>
 
 <template>
-
-<h1>홈 화면입니다.</h1>
-
+    <h1>board View </h1>
 </template>
 
 <style scoped>
