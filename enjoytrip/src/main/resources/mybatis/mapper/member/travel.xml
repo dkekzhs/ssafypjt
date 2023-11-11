@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.web.travel.model.mapper.TravelMapper">
+
+	<resultMap type="travelDto" id="site">
+		<result column="content_id" property="contentId" />
+		<result column="content_type_id" property="contentTypeId" />
+		<result column="title" property="title" />
+		<result column="addr1" property="addr1" />
+		<result column="addr2" property="addr2" />
+		<result column="zipcode" property="zipcode" />
+		<result column="tel" property="tel" />
+		<result column="first_image" property="firstImage" />
+		<result column="first_image2" property="firstImage2" />
+		<result column="readcount" property="readcount" />
+		<result column="sido_code" property="sidoCode" />
+		<result column="gugun_code" property="gugunCode" />
+		<result column="latitude" property="latitude" />
+		<result column="longitude" property="longitude" />
+		<result column="mlevel" property="mlevel" />
+	</resultMap>
+
+	<!-- 시도 코드에 따른 하위 주소인 구군 정보를 가져온다 -->
+	<select id="getGugunList" parameterType="int"
+		resultType="java.util.Map">
+		select distinct gugun_code, gugun_name
+		from sido A join gugun B
+		on A.sido_code = #{sidoCode} AND B.sido_code = #{sidoCode}
+	</select>
+
+	<!-- DB에 저장된 시도 정보를 가져온다 -->
+	<select id="getSidoList" resultType="java.util.Map">
+		SELECT DISTINCT sido_code,
+		sido_name
+		FROM sido
+	</select>
+
+	<!-- 여행지 타입 (관광지, 문화시설 등)을 가져온다 -->
+	<select id="getTypeList" resultType="java.util.Map">
+		SELECT DISTINCT category,
+		name
+		FROM map_category
+	</select>
+
+	<!-- 시도, 구군, 카테고리 정보에 따른 여행지 리스트를 가져온다 -->
+	<select id="searchByCode" parameterType="travelDto"
+		resultType="travelDto">
+		SELECT * FROM attraction_info
+		<where>
+			<if test="sidoCode != 0">
+				AND sido_code = #{sidoCode}
+			</if>
+			<if test="gugunCode != 0">
+				<if test="sidoCode != 0">
+					AND
+				</if>
+				gugun_code = #{travelDto.gugunCode}
+			</if>
+			<if test="categoryCode != 0">
+				<if test="sidoCode != 0 or gugunCode != 0">
+					AND
+				</if>
+				content_type_id = #{travelDto.categoryCode}
+			</if>
+		</where>
+	</select>
+
+	<!-- travelDto의 정보를 포함하는 여행지 리스트를 가져온다 -->
+	<select id="mapList" parameterType="java.util.Map"
+		resultType="com.ssafy.web.travel.model.TravelDto">
+		SELECT *
+		FROM attraction_info
+		<where>
+			<if test="sidoCode != 0">
+				sido_code = #{sidoCode}
+			</if>
+			<if test="gugunCode != 0">
+				<if test="sidoCode != 0">
+					AND
+				</if>
+				gugun_code = #{gugunCode}
+			</if>
+			<if test="contentTypeId != 0">
+				<if test="sidoCode != 0 or gugunCode != 0">
+					AND
+				</if>
+				content_type_id = #{contentTypeId}
+			</if>
+		</where>
+		ORDER BY content_id LIMIT 0, 20
+	</select>
+
+	<!-- 여행 검색어, 시도 코드, 구군 코드에 따른 여행지 리스트를 가져온다 -->
+	<select id="searchByTitle"
+		resultType="com.ssafy.web.travel.model.TravelDto"
+		parameterType="java.util.Map">
+		SELECT *
+		FROM attraction_info
+		<where>
+			<if test="title != null and title != ''">
+				AND title LIKE CONCAT('%', #{title}, '%')
+			</if>
+			<if test="sidoCode != 0">
+				AND sido_code = #{sidoCode}
+			</if>
+			<if test="gugunCode != 0">
+				AND gugun_code = #{gugunCode}
+			</if>
+		</where>
+		ORDER BY content_id LIMIT 0, 20
+	</select>
+
+</mapper>
