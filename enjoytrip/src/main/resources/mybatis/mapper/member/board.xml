@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.web.board.model.mapper.BoardMapper">
+
+	<resultMap type="boardDto" id="article">
+		 <result column="article_no" property="article_no"/>
+		<result column="user_id" property="user_id"/>
+		<result column="user_name" property="user_name"/>
+		<result column="subject" property="subject"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="register_time" property="register_time"/>
+	</resultMap>
+
+
+
+
+	<insert id="writeArticle" parameterType="boardDto">
+		insert into board (user_id, subject, content, hit, register_time)
+		values (#{user_id}, #{subject}, #{content}, 0, now())
+		<selectKey resultType="int" keyProperty="article_no" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+
+
+	<sql id="search">
+		<if test="word != null and word != ''">
+			<if test="key == 'subject'">
+				and subject like concat('%', #{word}, '%')
+			</if>
+			<if test="key != 'subject'">
+				and ${key} = #{word}
+			</if>
+		</if>
+	</sql>
+	
+	<sql id="order">
+		<if test="sort != null and sort != '' and sort != '정렬조건'">
+			order by
+			<if test="sort == 'article_no'">
+				b.article_no
+			</if>
+			<if test="sort == 'hit'">
+				b.hit desc
+			</if>
+		</if>
+	</sql>
+
+	<select id="listArticle" parameterType="map" resultMap="article">
+		select b.article_no, b.user_id, b.subject, b.content, b.hit, b.register_time, m.user_name
+		from board b, members m 
+		where b.user_id = m.user_id
+		<include refid="search"></include>
+		<include refid="order"></include>
+		limit #{start}, #{listsize}
+	</select>
+	
+	<select id="getTotalArticleCount" parameterType="map" resultType="int">
+		select count(article_no)
+		from board
+		<where>
+			<include refid="search"></include>
+		</where>
+	</select>
+	
+	<select id="getArticle" parameterType="int" resultType="boardDto" >
+		select b.article_no, b.user_id, b.subject, b.content, b.hit, b.register_time, m.user_name 
+		from board b, members m
+		where b.user_id = m.user_id
+		and b.article_no = #{article_no}
+	</select>
+
+	
+	<update id="updateHit" parameterType="int">
+		update board
+		set hit = hit + 1
+		where article_no = #{article_no}
+	</update>
+	
+	<update id="modifyArticle" parameterType="boardDto">
+		update board
+		set subject = #{subject}, content = #{content}
+		where article_no = #{article_no}
+	</update>
+
+	
+	<delete id="deleteArticle" parameterType="int">
+		delete from board
+		where article_no = #{article_no}
+	</delete>
+
+</mapper>
