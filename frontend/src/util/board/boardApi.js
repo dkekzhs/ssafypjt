@@ -2,16 +2,16 @@ import  apiClient  from "@/util/axiosConfig";
 
 
 function listArticle(param, success, fail) {
-    apiClient.get(`/board`, { params: param }).then(success).catch(fail);
+    apiClient.get(`/board/list`, { params: param }).then(success).catch(fail);
 }
 
 function detailArticle(articleno, success, fail) {
-    apiClient.get(`/board/${articleno}`).then(success).catch(fail);
+    apiClient.get(`/board/view${articleno}`).then(success).catch(fail);
 }
 
 function registArticle(article, success, fail) {
   console.log("boardjs article", article);
-  apiClient.post(`/board`, JSON.stringify(article)).then(success).catch(fail);
+  apiClient.post(`/board/write`, JSON.stringify(article)).then(success).catch(fail);
 }
 
 function getModifyArticle(articleno, success, fail) {
