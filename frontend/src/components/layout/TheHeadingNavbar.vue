@@ -4,9 +4,9 @@
 
 <template>
     <div>
-        헤더 div
+        <h1>헤더입니다.</h1>
         <nav>
-        nav 
+        <h1>nav 입니다.</h1>
         <router-link :to="{name : 'home'}">home</router-link>
         <router-link :to="{name : 'login'}">login</router-link>
         <router-link :to="{name : 'board'}">board</router-link>
