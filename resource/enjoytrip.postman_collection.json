@@ -1,0 +1,271 @@
+{
+	"info": {
+		"_postman_id": "86726692-3b9a-4756-a29d-8bf86baa7c88",
+		"name": "enjoytrip",
+		"description": "즐거운 여행 만들어가요 ^^",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20832420",
+		"_collection_link": "https://gold-sunset-551476.postman.co/workspace/NearChat~3e9f2ae5-b2f0-43ab-9ba9-59ca7755128e/collection/20832420-86726692-3b9a-4756-a29d-8bf86baa7c88?action=share&source=collection_link&creator=20832420"
+	},
+	"item": [
+		{
+			"name": "travel",
+			"item": [
+				{
+					"name": "getGugunList",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"sidoCode\" : 3}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/enjoytrip/travel/search/getGugunList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"enjoytrip",
+								"travel",
+								"search",
+								"getGugunList"
+							]
+						},
+						"description": "시도 코드 3 리스폰스"
+					},
+					"response": []
+				},
+				{
+					"name": "getSidoList",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:80/enjoytrip/travel/search/getSidoList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"enjoytrip",
+								"travel",
+								"search",
+								"getSidoList"
+							]
+						},
+						"description": "``` json\n{ \"status\": 200, \"data\": [ { \"sido_code\": 1, \"sido_name\": \"서울\" }, { \"sido_code\": 2, \"sido_name\": \"인천\" }, { \"sido_code\": 3, \"sido_name\": \"대전\" }, { \"sido_code\": 4, \"sido_name\": \"대구\" }, { \"sido_code\": 5, \"sido_name\": \"광주\" }, { \"sido_code\": 6, \"sido_name\": \"부산\" }, { \"sido_code\": 7, \"sido_name\": \"울산\" }, { \"sido_code\": 8, \"sido_name\": \"세종특별자치시\" }, { \"sido_code\": 31, \"sido_name\": \"경기도\" }, { \"sido_code\": 32, \"sido_name\": \"강원도\" }, { \"sido_code\": 33, \"sido_name\": \"충청북도\" }, { \"sido_code\": 34, \"sido_name\": \"충청남도\" }, { \"sido_code\": 35, \"sido_name\": \"경상북도\" }, { \"sido_code\": 36, \"sido_name\": \"경상남도\" }, { \"sido_code\": 37, \"sido_name\": \"전라북도\" }, { \"sido_code\": 38, \"sido_name\": \"전라남도\" }, { \"sido_code\": 39, \"sido_name\": \"제주도\" } ]}\n\n ```\n\n|  |  |\n| --- | --- |\n|  |  |"
+					},
+					"response": []
+				},
+				{
+					"name": "getTypeList",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:80/enjoytrip/travel/search/getTypeList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"enjoytrip",
+								"travel",
+								"search",
+								"getTypeList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "gugunCode",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"sidocode\" : 1 , \"categoryCode\" : 3}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/enjoytrip/travel/search/gugunCode",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"enjoytrip",
+								"travel",
+								"search",
+								"gugunCode"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "여행지 관련 api입니다."
+		},
+		{
+			"name": "board",
+			"item": [
+				{
+					"name": "view",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "write",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/enjoytrip/board/list?pgno=1&spp=10&key=article_no&word=&sort=article_no",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"enjoytrip",
+								"board",
+								"list"
+							],
+							"query": [
+								{
+									"key": "pgno",
+									"value": "1"
+								},
+								{
+									"key": "spp",
+									"value": "10"
+								},
+								{
+									"key": "key",
+									"value": "article_no"
+								},
+								{
+									"key": "word",
+									"value": ""
+								},
+								{
+									"key": "sort",
+									"value": "article_no"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "member",
+			"item": []
+		},
+		{
+			"name": "friend",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"from\" : \"ssafy\", \n\"to\" : \"admin\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/enjoytrip/friend/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"enjoytrip",
+								"friend",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accept",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"to\" : \"admin\" , \"from\" : \"ssafy\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/enjoytrip/friend/accept",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"enjoytrip",
+								"friend",
+								"accept"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
