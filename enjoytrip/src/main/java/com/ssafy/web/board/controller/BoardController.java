@@ -44,7 +44,8 @@ public class BoardController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<BoardListDto> list(@RequestBody PageDto page) throws Exception {
+	public ResponseEntity<BoardListDto> list(@ModelAttribute PageDto page) throws Exception {
+		System.out.println(page);
 		List<BoardDto> list = boardService.listArticle(page);
 		PageNavigation pageNavigation = boardService.makePageNavigation(page);
 
@@ -53,8 +54,8 @@ public class BoardController {
 				.page(pageNavigation).data(list).build());
 	}
 
-	@GetMapping("/view")
-	public ResponseEntity<ResponseDto> view(@RequestParam("article_no") int article_no)
+	@GetMapping("/view{article_no}")
+	public ResponseEntity<ResponseDto> view(@PathVariable("article_no") int article_no)
 			throws Exception {
 		BoardDto boardDto = boardService.getArticle(article_no);
 		boardService.updateHit(article_no);

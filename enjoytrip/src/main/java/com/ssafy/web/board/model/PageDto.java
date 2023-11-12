@@ -10,6 +10,17 @@ public class PageDto {
         return sort;
     }
 
+    @Override
+    public String toString() {
+        return "PageDto{" +
+                "pgno=" + pgno +
+                ", spp=" + spp +
+                ", key='" + key + '\'' +
+                ", word='" + word + '\'' +
+                ", sort='" + sort + '\'' +
+                '}';
+    }
+
     public void setSort(String sort) {
         this.sort = sort;
     }
