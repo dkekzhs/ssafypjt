@@ -2,8 +2,8 @@ import  apiClient  from "@/util/axiosConfig";
 
 
 
-function memberLogin(param, success, fail) {
-    apiClient.post("/user/login", { params: param }).then(success).catch(fail);
+function memberLogin(body, success, fail) {
+    apiClient.post("/user/login", body).then(success).catch(fail);
 
 }
 

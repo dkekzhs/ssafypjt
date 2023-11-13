@@ -19,7 +19,7 @@ function getList() {
     )
 }
 function get() {
-    detailArticle(board_id, res => {
+    detailArticle(board_id.value, res => {
         console.log(res);
     }, err => {
         console.log(err);
