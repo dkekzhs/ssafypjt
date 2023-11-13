@@ -1,9 +1,13 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { memberLogin, memberLogout } from "../util/member/memberApi";
+import { setCookie, getCookie, deleteCookie } from "../util/cookie/cookie";
+
+let isLoggedIn = getCookie("user_name") ? false : true;
 
 export const useUserStore = defineStore("userStore", () => {
   const user = ref({
-    name: "",
+    name: getCookie("user_name"),
   });
   return {
     user,
@@ -12,11 +16,15 @@ export const useUserStore = defineStore("userStore", () => {
 
 export const useMenuStore = defineStore("menuStore", () => {
   const menuList = ref([
-    { name: "회원가입", show: true, routeName: "home" },
-    { name: "로그인", show: true, routeName: "home" },
-    { name: "오늘할일", show: false, routeName: "home" },
-    { name: "내정보", show: false, routeName: "home" },
-    { name: "로그아웃", show: false, routeName: "home" },
+    { name: "회원가입", show: isLoggedIn, routeName: "home" },
+    { name: "로그인", show: isLoggedIn, routeName: "login" },
+    { name: "오늘할일", show: !isLoggedIn, routeName: "home" },
+    { name: "내정보", show: !isLoggedIn, routeName: "home" },
+    {
+      name: "로그아웃",
+      routeName: "logout",
+      show: !isLoggedIn,
+    },
   ]);
 
   const changeMenuState = () => {
@@ -28,3 +36,31 @@ export const useMenuStore = defineStore("menuStore", () => {
     changeMenuState,
   };
 });
+
+export function logout() {
+  if (useUserStore().user.name) {
+    memberLogout();
+    useMenuStore().changeMenuState();
+    useUserStore().user.name = "";
+    deleteCookie("user_name");
+  } else {
+    console.log("로그인 유저 없음");
+  }
+}
+
+export function login(id, pw) {
+  memberLogin(
+    { user_id: id, user_password: pw },
+    (res) => {
+      let user_name = res.data.user_name;
+      useUserStore().user.name = user_name;
+      useMenuStore().changeMenuState();
+      setCookie("user_name", user_name);
+    },
+    (err) => {
+      console.log("login 중 에러 발생 >> " + err);
+      useUserStore().user.name = null;
+      deleteCookie("user_name");
+    }
+  );
+}

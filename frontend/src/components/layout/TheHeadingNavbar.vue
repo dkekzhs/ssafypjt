@@ -1,8 +1,7 @@
 <script setup>
 import { useMenuStore, useUserStore } from "@/stores/menu";
 import { storeToRefs } from "pinia";
-import { memberLogout } from "@/util/member/memberApi";
-
+import { logout } from "@/stores/menu";
 const menuStore = useMenuStore();
 const userStore = useUserStore();
 
@@ -12,17 +11,6 @@ const { menuList } = storeToRefs(menuStore);
 const { user } = storeToRefs(userStore);
 const { changeMenuState } = menuStore;
 console.log(menuList);
-
-const logout = () => {
-  console.log(user.name);
-  if (user.name) {
-    console.log("로그아웃!!!!");
-    changeMenuState();
-    user.name = "";
-  } else {
-    console.log("로그인 유저 없음");
-  }
-};
 </script>
 
 <template>
@@ -89,9 +77,9 @@ const logout = () => {
         >
           <template v-for="menu in menuList" :key="menu.routeName">
             <template v-if="menu.show">
-              <template v-if="menu.routeName === 'user-logout'">
+              <template v-if="menu.routeName === 'logout'">
                 <li class="nav-item">
-                  <router-link to="/" @click.prevent="logout" class="nav-link">{{
+                  <router-link to="/" @click="logout()" class="nav-link">{{
                     menu.name
                   }}</router-link>
                 </li>
