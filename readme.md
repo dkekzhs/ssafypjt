@@ -24,39 +24,43 @@
 
 ### DB 스키마 구조
 
-  <img src="./img/db.png" width="1000">
+  <img src="./img/db01.png" width="1000">
 
 ### 카카오 맵
 
 - 여행지 지도를 카카오 맵으로 제공합니다.
 
-  <img src="./img/intro.png" width="500">
+  <img src="./img/intro.png" width="1000">
 
 - 여행지를 클러스터링으로 제공합니다.
 
-  <img src="./img/cluster.png" width="500">
+  <img src="./img/cluster.png" width="1000">
+
+- 클러스터 상세 Floating Div를 제공합니다.
+
+  <img src="./img/cluster_detail01.png" width="1000">
 
 ### 라우팅
 
 - 로그인, 게시판 라우팅을 제공합니다.
 
-  <img src="./img/routing.gif" width="800">
+  <img src="./img/routing.gif" width="1000">
 
 ### 로그인
 
 - 로그인 내부 기능 및 JSESSION ID 저장.
 
-  <img src="./img/login_cookie.png" width="500">
+  <img src="./img/login_cookie.png" width="1000">
 
 ### 게시글
 
 - 게시글 리스트 fetch.
 
-  <img src="./img/fetch_board.png" width="500">
+  <img src="./img/fetch_board.png" width="1000">
 
 - 상세보기 데이터 fetch.
 
-  <img src="./img/fetch_board_detail.png" width="500">
+  <img src="./img/fetch_board_detail.png" width="1000">
 
 ## 소감
 
