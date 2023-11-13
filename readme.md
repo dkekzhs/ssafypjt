@@ -25,26 +25,33 @@
 ### 카카오 맵
 
 - 여행지 지도를 카카오 맵으로 제공합니다.
+
   <img src="./img/cluster.png" width="1000">
+
 - 여행지를 클러스터링으로 제공합니다.
+
   <img src="./img/cluster.png" width="1000">
 
 ### 라우팅
 
 - 로그인, 게시판 라우팅을 제공합니다.
+
   <img src="./img/cluster_detail.png" width="1000">
 
 ### 로그인
 
-- 로그인 내부 기능 및 JSESSION ID 저장
+- 로그인 내부 기능 및 JSESSION ID 저장.
+
   <img src="./img/cluster_detail.png" width="1000">
 
 ### 게시글
 
-- 게시글 리스트 fetch
+- 게시글 리스트 fetch.
+
   <img src="./img/intro_page.png" width="500">
 
-- 상세보기 데이터 fetch
+- 상세보기 데이터 fetch.
+
   <img src="./img/intro_page.png" width="500">
 
 ## 소감
