@@ -24,7 +24,7 @@ public class MemberController {
 	private MemberService ms;
 	
 	@PostMapping("/user/login")
-	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto dto, HttpServletRequest httpRequest) {
+	public ResponseEntity<LoginResponseDto> login(@RequestBody MemberDto dto, HttpServletRequest httpRequest) {
 		System.out.println(dto);
 		HttpSession session = httpRequest.getSession(false);
 		if(session  == null){
@@ -32,11 +32,11 @@ public class MemberController {
 		}
 		MemberDto login = ms.loginMember(dto);
 		
-		return ResponseEntity.ok(ResponseDto.builder()
+		return ResponseEntity.ok(LoginResponseDto.builder()
 				.status(200)
-				.data(LoginResponseDto.builder().message("로그인 성공").user_name(login.getUser_name())
-						.build()
-						).build());
+				.message("로그인 성공")
+				.user_name(login.getUser_name())
+				.build());
 	}
 	
 	@PostMapping("/user/logout")
