@@ -1,7 +1,7 @@
 <script setup>
-import { useMenuStore, useUserStore } from "@/stores/menu";
+import { useMenuStore, userStore } from "@/stores/menu";
 import { storeToRefs } from "pinia";
-import { memberLogout } from "@/util/member/memberApi";
+import { memberLogout } from "@/api/member";
 
 const menuStore = useMenuStore();
 const userStore = useUserStore();
@@ -28,6 +28,9 @@ const logout = () => {
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
     <div class="container-fluid">
+      <router-link :to="{ name: 'main' }" class="navbar-brand">
+        <img src="@/assets/ssafy_logo.png" class="rounded mx-auto d-block" alt="..." />
+      </router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -72,6 +75,9 @@ const logout = () => {
           </li>
           <li class="nav-item">
             <router-link :to="{ name: 'board' }" class="nav-link">게시판</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link :to="{ name: 'estations' }" class="nav-link">전기차충전소</router-link>
           </li>
         </ul>
         <!-- <form class="d-flex" role="search">
