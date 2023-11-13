@@ -30,7 +30,7 @@
 
 - 여행지 지도를 카카오 맵으로 제공합니다.
 
-  <img src="./img/intro.png" width="1000">
+  <img src="./img/intro_page.png" width="1000">
 
 - 여행지를 클러스터링으로 제공합니다.
 
