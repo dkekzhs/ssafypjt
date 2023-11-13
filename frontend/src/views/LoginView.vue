@@ -7,7 +7,7 @@ const id = ref("");
 const pw = ref("");
 
 function login() {
-    memberLogin({ "user_id": id, "user_password": pw.value }
+    memberLogin({ "user_id": id.value, "user_password": pw.value }
         , res => {
             console.log(res)
         }
