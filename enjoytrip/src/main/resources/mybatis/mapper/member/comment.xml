@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.web.comment.model.mapper.CommentMapper">
+
+<insert id="add" parameterType="commentDto" useGeneratedKeys="true" keyProperty="comment_id">
+    INSERT INTO comments
+      (article_no, content, user_id, parent_comment_id, created_time, root_id)
+    VALUES
+      (#{article_no}, #{content}, #{user_id}, 
+      <if test="parent_comment_id != null">#{parent_comment_id},</if> 
+      <if test="parent_comment_id == null">#{comment_id},</if> 
+      NOW(),
+      <if test="root_id != null">#{root_id}</if> 
+      <if test="root_id == null">#{comment_id}</if> 
+      )
+</insert>
+
+</mapper>
