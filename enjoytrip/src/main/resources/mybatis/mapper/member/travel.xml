@@ -46,8 +46,8 @@
 	</select>
 
 	<!-- 시도, 구군, 카테고리 정보에 따른 여행지 리스트를 가져온다 -->
-	<select id="searchByCode" parameterType="travelDto"
-		resultType="travelDto">
+	<select id="searchByCode" parameterType="int"
+		resultType="com.ssafy.web.travel.model.TravelDto">
 		SELECT * FROM attraction_info
 		<where>
 			<if test="sidoCode != 0">
@@ -57,13 +57,13 @@
 				<if test="sidoCode != 0">
 					AND
 				</if>
-				gugun_code = #{travelDto.gugunCode}
+				gugun_code = #{gugunCode}
 			</if>
 			<if test="categoryCode != 0">
 				<if test="sidoCode != 0 or gugunCode != 0">
 					AND
 				</if>
-				content_type_id = #{travelDto.categoryCode}
+				content_type_id = #{categoryCode}
 			</if>
 		</where>
 	</select>

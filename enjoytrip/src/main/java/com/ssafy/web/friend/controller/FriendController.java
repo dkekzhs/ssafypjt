@@ -1,6 +1,7 @@
 package com.ssafy.web.friend.controller;
 
-import com.ssafy.web.common.dto.ResponseDto;
+import com.ssafy.web.common.dto.MessageResponseDto;
+import com.ssafy.web.common.dto.ResponseListDto;
 
 import com.ssafy.web.friend.model.FriendAddDto;
 import com.ssafy.web.friend.model.FriendRequestPendingDto;
@@ -24,7 +25,7 @@ public class FriendController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ResponseDto> add(@RequestBody FriendAddDto dto
+    public ResponseEntity<MessageResponseDto> add(@RequestBody FriendAddDto dto
     , HttpServletRequest request) throws Exception{
         int status = fs.add(dto);
         StringBuffer sb = new StringBuffer();
@@ -34,12 +35,12 @@ public class FriendController {
         else{
             sb.append("친구 등록 실패");
         }
-        return ResponseEntity.ok(ResponseDto.builder()
-                .status(200).data(sb.toString()).build());
+        return ResponseEntity.ok(MessageResponseDto.builder()
+                .status(200).message(sb.toString()).build());
     }
 
     @GetMapping("/friendRequestPending")
-    public ResponseEntity<ResponseDto> friendRequestPending(@RequestBody HashMap<String,String> id,
+    public ResponseEntity<ResponseListDto> friendRequestPending(@RequestBody HashMap<String,String> id,
             HttpServletRequest request) throws Exception{
         //        HttpSession session = request.getSession(false);
 //        if(session != null){
@@ -53,11 +54,11 @@ public class FriendController {
             System.out.println(id);
             List<FriendRequestPendingDto> data = fs.friendRequestPending(id.get("id"));
 
-            return ResponseEntity.ok(ResponseDto.builder().status(200).data(data).build());
+            return ResponseEntity.ok(ResponseListDto.builder().status(200).list(data).build());
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<ResponseDto>
+    public ResponseEntity<MessageResponseDto>
     friendAccept(@RequestBody FriendAddDto dto, HttpServletRequest request) throws Exception {
 //        HttpSession session = request.getSession(false);
 //        if(session != null){
@@ -75,8 +76,8 @@ public class FriendController {
         else{
             sb.append("친구 등록 실패");
         }
-        return ResponseEntity.ok(ResponseDto.builder()
-                .status(200).data(sb.toString()).build());
+        return ResponseEntity.ok(MessageResponseDto.builder()
+                .status(200).message(sb.toString()).build());
 
     }
 

@@ -60,12 +60,12 @@ public class TravelController {
 	}
 
 	@PostMapping("/search/gugunCode")
-	public ResponseEntity<TravelListResponseDto> searchByGugunCode(@RequestBody TravelDto requestBody)
+	public ResponseEntity<TravelListResponseDto> searchByGugunCode(@RequestBody TravelDto req)
 			throws NumberFormatException, Exception {
-
-		int gugunCode = requestBody.getGugunCode();
-		List<TravelDto> ret = travelService.searchByCode(0, gugunCode, 0);
-
+		System.out.println(req.getSidoCode());
+		System.out.println(req.getGugunCode());
+		System.out.println(req.getContentTypeId());
+		List<TravelDto> ret = travelService.searchByCode(req.getSidoCode(),req.getGugunCode(), req.getContentTypeId());
 		return ResponseEntity.ok(TravelListResponseDto.builder()
 				.status(200).data(ret).build());
 	}

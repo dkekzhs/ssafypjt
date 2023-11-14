@@ -5,7 +5,8 @@ import java.util.List;
 import com.ssafy.web.board.model.BoardDto;
 import com.ssafy.web.board.model.BoardListDto;
 import com.ssafy.web.board.model.PageDto;
-import com.ssafy.web.common.dto.ResponseDto;
+import com.ssafy.web.common.dto.MessageResponseDto;
+import com.ssafy.web.common.dto.ResponseListDto;
 import com.ssafy.web.member.model.MemberDto;
 
 import com.ssafy.web.util.PageNavigation;
@@ -34,13 +35,13 @@ public class BoardController {
 
 
 	@PostMapping("/write")
-	public ResponseEntity<ResponseDto> write(@RequestBody BoardDto boardDto, HttpSession session) throws Exception {
+	public ResponseEntity<MessageResponseDto> write(@RequestBody BoardDto boardDto, HttpSession session) throws Exception {
 		MemberDto memberDto = (MemberDto) session.getAttribute("userinfo");
 		boardDto.setUser_id(memberDto.getUser_id());
 
 		boardService.writeArticle(boardDto);
 
-		return ResponseEntity.ok(ResponseDto.builder().status(200).data("글작성성공").build());
+		return ResponseEntity.ok(MessageResponseDto.builder().status(200).message("글작성성공").build());
 	}
 
 	@GetMapping("/list")
@@ -55,32 +56,32 @@ public class BoardController {
 	}
 
 	@GetMapping("/view{article_no}")
-	public ResponseEntity<ResponseDto> view(@PathVariable("article_no") int article_no)
+	public ResponseEntity<ResponseListDto> view(@PathVariable("article_no") int article_no)
 			throws Exception {
 		BoardDto boardDto = boardService.getArticle(article_no);
 		boardService.updateHit(article_no);
 
-		return ResponseEntity.ok(ResponseDto.builder()
-						.status(200).data(boardDto)
+		return ResponseEntity.ok(ResponseListDto.builder()
+						.status(200).list(boardDto)
 				.build());
 	}
 
 
 	@PostMapping("/modify")
-	public ResponseEntity<ResponseDto> modify(BoardDto boardDto) throws Exception {
+	public ResponseEntity<MessageResponseDto> modify(BoardDto boardDto) throws Exception {
 		boardService.modifyArticle(boardDto);
 
-		return ResponseEntity.ok(ResponseDto.builder()
-				.status(200).data("수정성공").build());
+		return ResponseEntity.ok(MessageResponseDto.builder()
+				.status(200).message("수정성공").build());
 	}
 
 	@PostMapping("/delete")
-	public  ResponseEntity<ResponseDto> delete(@RequestBody BoardDto boardDto) throws Exception {
+	public  ResponseEntity<MessageResponseDto> delete(@RequestBody BoardDto boardDto) throws Exception {
 
 		boardService.deleteArticle(boardDto.getArticle_no());
 
-		return ResponseEntity.ok(ResponseDto.builder()
-				.status(200).data("삭제성공").build());
+		return ResponseEntity.ok(MessageResponseDto.builder()
+				.status(200).message("삭제성공").build());
 	}
 
 

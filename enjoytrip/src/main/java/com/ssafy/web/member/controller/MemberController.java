@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.web.common.dto.ResponseDto;
+import com.ssafy.web.common.dto.MessageResponseDto;
+import com.ssafy.web.common.dto.ResponseListDto;
 import com.ssafy.web.member.model.LoginResponseDto;
 import com.ssafy.web.member.model.MemberDto;
 import com.ssafy.web.member.service.MemberService;
@@ -40,16 +41,15 @@ public class MemberController {
 	}
 	
 	@PostMapping("/user/logout")
-	public ResponseEntity<ResponseDto> login(HttpServletRequest request){
+	public ResponseEntity<MessageResponseDto> login(HttpServletRequest request){
 		HttpSession session = request.getSession(false);
 		
 		if(session != null) {
 			session.invalidate();
-		}
-		Map<Object,Object> map = new HashMap<Object, Object>();
-		map.put("message" , "로그아웃 성공");
-		return ResponseEntity.ok(ResponseDto.builder().status(200).data(map).build());
+		}		
 		
+		return ResponseEntity.ok(
+				MessageResponseDto.builder().status(200).message("로그아웃 성공").build());
 		
 	}
 }

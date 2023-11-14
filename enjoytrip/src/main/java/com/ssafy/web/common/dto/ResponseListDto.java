@@ -2,9 +2,9 @@ package com.ssafy.web.common.dto;
 
 import lombok.Builder;
 
-public class ResponseDto <T>{
+public class ResponseListDto <T>{
     private int status;
-    private T data;
+    private T list;
 
     public int getStatus() {
         return status;
@@ -15,16 +15,16 @@ public class ResponseDto <T>{
     }
 
     @Builder
-    public ResponseDto(int status, T data) {
+    public ResponseListDto(int status, T list) {
         this.status = status;
-        this.data = data;
+        this.list = list;
     }
 
     public T getData() {
-        return data;
+        return list;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setData(T list) {
+        this.list = list;
     }
 }
