@@ -1,253 +1,129 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import serviceKey from "./key.js";
+import { ref, watch, onMounted } from "vue";
 
-const mapContainer = ref(null);
-let map, clusterer, positions = [], filters = [], markers = [];
+var map;
+const positions = ref([]);
+const markers = ref([]);
+const overlays = ref([]);
+
+const props = defineProps({ stations: Array, selectStation: Object });
 
 onMounted(() => {
-  let mapOption = {
-    center: new kakao.maps.LatLng(37.500613, 127.036431),
-    level: 13,
-  };
-  
-  map = new kakao.maps.Map(mapContainer.value, mapOption);
-  clusterer = new kakao.maps.MarkerClusterer({
-    map: map,
-    averageCenter: true,
-    minLevel: 10,
-  });
-
-  fetchInit();
+  if (window.kakao && window.kakao.maps) {
+    initMap();
+  } else {
+    const script = document.createElement("script");
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${
+      import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY
+    }&libraries=services,clusterer`;
+    /* global kakao */
+    script.onload = () => kakao.maps.load(() => initMap());
+    document.head.appendChild(script);
+  }
 });
 
-const fetchInit = () => {
-  // Your fetchInit function logic here
-  map.setLevel(13);
-  let baseUrl = `https://apis.data.go.kr/B551011/KorService1/`;
-  let queryString = `serviceKey=${serviceKey}&numOfRows=200&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&listYN=Y&arrange=A`;
-  let service =   `areaBasedList1`;
-  let searchUrl = baseUrl + service + "?" + queryString;
-  fetch(searchUrl)
-    .then((response) => response.json())
-    .then((data) => makeList(data));
-}
+watch(
+  () => props.selectStation.value,
+  () => {
+    // 이동할 위도 경도 위치를 생성합니다
+    var moveLatLon = new kakao.maps.LatLng(props.selectStation.lat, props.selectStation.lng);
 
-const fetchPlace = () => {
-  // Your fetchPlace function logic here
-  let baseUrl = `https://apis.data.go.kr/B551011/KorService1/`;
-  let queryString = `serviceKey=${serviceKey}&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&listYN=Y&arrange=A`;
-  let areaCode = document.getElementById("sido").value;
-  let sigunguCode = document.getElementById("gugun")?.value;
-  if(areaCode){
-    map.setLevel(11);
-  }
-  if (areaCode && parseInt(areaCode)) queryString += `&areaCode=${areaCode}`;
-  if (sigunguCode ){
-    queryString += `&sigunguCode=${sigunguCode}`;
-  }
-  let service = ``;
-  if (keyword) {
-    service = `searchKeyword1`;
-    queryString += `&keyword=${keyword}`;
-  } else {
-    service = `areaBasedList1`;
-  }
-  let searchUrl = baseUrl + service + "?" + queryString;
+    // 지도 중심을 부드럽게 이동시킵니다
+    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+    map.panTo(moveLatLon);
+  },
+  { deep: true }
+);
 
-  fetch(searchUrl)
-    .then((response) => response.json())
-    .then((data) => makeList(data));
-}
+watch(
+  () => props.stations.value,
+  () => {
+    positions.value = [];
+    overlays.value = [];
 
-const fetchPlaceByContentTypeId = () => {
-  // Your fetchPlaceByContentTypeId function logic here
-  if(filters.length==0){
-    if(!document.getElementById("sido").value){
-      fetchInit();
-    }else{
-      fetchPlace(sido);
-    }
-    return;
-  }
-  positions=[];
-  let processed=0;
-  if(filters.length==7){
-    fetchPlace();
-    return;
-  }
-  filters.forEach((filter,index)=>{
-    let baseUrl = `https://apis.data.go.kr/B551011/KorService1/`;
-    let queryString = `serviceKey=${serviceKey}&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&listYN=Y&arrange=A`;
-    let areaCode = document.getElementById("sido").value;
-    let sigunguCode = document.getElementById("gugun")?.value;
-    if(areaCode){
-      map.setLevel(10);
-    }
-    let keyword = '';
-    if (parseInt(areaCode)) queryString += `&areaCode=${areaCode}`;
-    
-    queryString += `&contentTypeId=${filter}`;
-    
-    let service = ``;
-    if (sigunguCode ){
-      queryString += `&sigunguCode=${sigunguCode}`;
-    }
-    if (keyword) {
-      service = `searchKeyword1`;
-      queryString += `&keyword=${keyword}`;
-    } else {
-      service = `areaBasedList1`;
-    }
-    let searchUrl = baseUrl + service + "?" + queryString;
-    fetch(searchUrl)
-    .then((response) => response.json())
-    .then((data) => {
-     
-      let trips = data.response.body.items.item;
-      trips?.forEach(({ title, firstimage, firstimage2, addr1, addr2, mapy, mapx, tel, zipcode }) => {
-        let markerInfo = {
-          title,
-          firstimage,
-          firstimage2,
-          latlng: new kakao.maps.LatLng(mapy, mapx),
-          addr1,
-          addr2,
-          tel,
-          zipcode
-        };
-        positions.push(markerInfo);
+    props.stations.forEach((station) => {
+      let obj = {};
+      let floatObj = {};
+
+      obj.latlng = new kakao.maps.LatLng(station.lat, station.lng);
+      obj.title = station.statNm;
+
+      floatObj = new kakao.maps.CustomOverlay({
+        content: "<div>임시 오버레이</div>",
+        map: map,
+        position: obj.latlng,
       });
-      processed++;
-      if(processed==(filters.length)){
-        displayMarker();
-      }
+      positions.value.push(obj);
+      overlays.value.push(floatObj);
     });
-  });
-  
-}
+    loadMarkers();
+  },
+  { deep: true }
+);
 
-const makeList = (data) => {
-  // Your makeList function logic here
-  let trips = data.response.body.items.item;
-  
-  positions = [];
-  trips?.forEach(({ title, firstimage, firstimage2, addr1, addr2, mapy, mapx, tel, zipcode }) => {
-    let markerInfo = {
-      title,
-      firstimage,
-      firstimage2,
-      latlng: new kakao.maps.LatLng(mapy, mapx),
-      addr1,
-      addr2,
-      tel,
-      zipcode
-    };
-    positions.push(markerInfo);
-  });
-  
-  //document.getElementById("trip-list").innerHTML = tripList;
-  displayMarker();
-}
+const initMap = () => {
+  window.kakao = kakao;
+  const container = document.getElementById("map");
+  const options = {
+    center: new kakao.maps.LatLng(33.450701, 126.570667),
+    level: 3,
+  };
+  map = new kakao.maps.Map(container, options);
 
-const displayMarker = () => {
-  // Your displayMarker function logic here
-  if(markers.length>0){
-    clusterer.removeMarkers(markers);
-    markers=[];
-  }
+  // loadMarkers();
+};
 
-  // 마커 이미지의 이미지 주소입니다
-  var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
-  for (var i = 0; i < positions.length; i++) {
-    // 마커 이미지의 이미지 크기 입니다
-    var imageSize = new kakao.maps.Size(24, 35);
+const loadMarkers = () => {
+  // 현재 표시되어있는 marker들이 있다면 map에 등록된 marker를 제거한다.
+  deleteMarkers();
 
-    // 마커 이미지를 생성합니다
-    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+  // 마커 이미지를 생성합니다
+  //   const imgSrc = require("@/assets/map/markerStar.png");
+  // 마커 이미지의 이미지 크기 입니다
+  //   const imgSize = new kakao.maps.Size(24, 35);
+  //   const markerImage = new kakao.maps.MarkerImage(imgSrc, imgSize);
 
-    // 마커를 생성합니다
-    var marker = new kakao.maps.Marker({
+  // 마커를 생성합니다
+  markers.value = [];
+  positions.value.forEach((position) => {
+    const marker = new kakao.maps.Marker({
       map: map, // 마커를 표시할 지도
-      position: positions[i].latlng, // 마커를 표시할 위치
-      title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-      image: markerImage, // 마커 이미지
-      clickable: true
+      position: position.latlng, // 마커를 표시할 위치
+      title: position.title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됨.
+      clickable: true, // // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+      // image: markerImage, // 마커의 이미지
     });
-    markers.push(marker);
-     // 마커 위에 커스텀오버레이를 표시합니다
-    // 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
-   // 마커에 표시할 인포윈도우를 생성합니다 
-   var content = `
-    <div class="wrap">
-      <div class="info">  
-        <div class="title">
-            ${positions[i].title}
-          </div>
-        <div class="body">
-              <div class="img">
-                  <img src=${positions[i].firstimage ?? positions[i].firstimage2 ?? "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png"} width="73" height="70">
-            </div>
-              <div class="desc">
-                <div class="ellipsis">${positions[i].addr1}</div>
-                <div class="jibun ellipsis">${positions[i].addr2}</div>
-                <div class="jibun ellipsis">(우) ${positions[i].zipcode} (tel) ${positions[i].tel}</div>
-            </div>
-        </div>
-      </div>   
-    </div>
-    `;
- 
-   var infowindow = new kakao.maps.InfoWindow({
-    content // 인포윈도우에 표시할 내용
-   });
-    
-   // 마커에 이벤트 추가
-   // mouseover: 정보창 표시
-   // mouseout: 정보창 비표시
-   kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
-   kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+    markers.value.push(marker);
+  });
 
+  // 4. 지도를 이동시켜주기
+  // 배열.reduce( (누적값, 현재값, 인덱스, 요소)=>{ return 결과값}, 초기값);
+  const bounds = positions.value.reduce(
+    (bounds, position) => bounds.extend(position.latlng),
+    new kakao.maps.LatLngBounds()
+  );
+
+  map.setBounds(bounds);
+};
+
+const deleteMarkers = () => {
+  if (markers.value.length > 0) {
+    markers.value.forEach((marker) => marker.setMap(null));
   }
-  clusterer.addMarkers(markers);
-  // 첫번째 검색 정보를 이용하여 지도 중심을 이동 시킵니다
-  if(map.getLevel()!=13){
-  map.setCenter(positions[0].latlng);}
-}
 
-const makeOverListener = (map, marker, infowindow) => {
-  return function() {
-      infowindow.open(map, marker);
-  };
-}
-
-const makeOutListener = (infowindow) => {
-  return function() {
-      infowindow.close();
-  };
-}
-
-watch(filters, () => {
-  fetchPlaceByContentTypeId();
-})
+  if (overlays.value.length > 0) {
+    overlays.value.forEach((overlay) => overlay.setMap(null));
+  }
+};
 </script>
 
 <template>
-<div>
-  <select id="sido" @change="fetchPlace">
-    <!-- Your options here -->
-  </select>
-  <select id="gugun" @change="fetchPlace">
-    <!-- Your options here -->
-  </select>
-  <div id="map" ref="mapContainer"></div>
-  <button v-for="filter in filters" @click="toggleFilter(filter.value)">{{ filter.name }}</button>
-</div>
+  <div id="map"></div>
 </template>
 
-<style scoped>
+<style>
 #map {
   width: 100%;
-  height: 400px;
+  height: 700px;
 }
 </style>
