@@ -11,55 +11,62 @@ const props = defineProps({ stations: Array, selectStation: Object });
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
+    createWatch();
   } else {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${
       import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY
     }&libraries=services,clusterer`;
     /* global kakao */
-    script.onload = () => kakao.maps.load(() => initMap());
+    script.onload = () =>
+      kakao.maps.load(() => {
+        initMap();
+        createWatch();
+      });
     document.head.appendChild(script);
   }
 });
 
-watch(
-  () => props.selectStation.value,
-  () => {
-    // 이동할 위도 경도 위치를 생성합니다
-    var moveLatLon = new kakao.maps.LatLng(props.selectStation.lat, props.selectStation.lng);
+function createWatch() {
+  watch(
+    () => props.selectStation.value,
+    () => {
+      // 이동할 위도 경도 위치를 생성합니다
+      var moveLatLon = new kakao.maps.LatLng(props.selectStation.lat, props.selectStation.lng);
 
-    // 지도 중심을 부드럽게 이동시킵니다
-    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
-    map.panTo(moveLatLon);
-  },
-  { deep: true }
-);
+      // 지도 중심을 부드럽게 이동시킵니다
+      // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+      map.panTo(moveLatLon);
+    },
+    { deep: true }
+  );
 
-watch(
-  () => props.stations.value,
-  () => {
-    positions.value = [];
-    overlays.value = [];
+  watch(
+    () => props.stations.value,
+    () => {
+      positions.value = [];
+      overlays.value = [];
 
-    props.stations.forEach((station) => {
-      let obj = {};
-      let floatObj = {};
+      props.stations.forEach((station) => {
+        let obj = {};
+        let floatObj = {};
 
-      obj.latlng = new kakao.maps.LatLng(station.lat, station.lng);
-      obj.title = station.statNm;
+        obj.latlng = new kakao.maps.LatLng(station.lat, station.lng);
+        obj.title = station.statNm;
 
-      floatObj = new kakao.maps.CustomOverlay({
-        content: "<div>임시 오버레이</div>",
-        map: map,
-        position: obj.latlng,
+        floatObj = new kakao.maps.CustomOverlay({
+          content: "<div>임시 오버레이</div>",
+          map: map,
+          position: obj.latlng,
+        });
+        positions.value.push(obj);
+        overlays.value.push(floatObj);
       });
-      positions.value.push(obj);
-      overlays.value.push(floatObj);
-    });
-    loadMarkers();
-  },
-  { deep: true }
-);
+      loadMarkers();
+    },
+    { deep: true }
+  );
+}
 
 const initMap = () => {
   window.kakao = kakao;

@@ -10,6 +10,9 @@ import com.ssafy.web.common.dto.ResponseListDto;
 import com.ssafy.web.member.model.MemberDto;
 
 import com.ssafy.web.util.PageNavigation;
+
+import io.swagger.annotations.ApiOperation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +36,7 @@ public class BoardController {
 		this.boardService = boardService;
 	}
 
-
+	@ApiOperation(value = "회원 등록", notes = "회원을 등록합니다.")
 	@PostMapping("/write")
 	public ResponseEntity<MessageResponseDto> write(@RequestBody BoardDto boardDto, HttpSession session) throws Exception {
 		MemberDto memberDto = (MemberDto) session.getAttribute("userinfo");
