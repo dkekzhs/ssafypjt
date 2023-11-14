@@ -4,17 +4,43 @@
 
 <mapper namespace="com.ssafy.web.comment.model.mapper.CommentMapper">
 
-<insert id="add" parameterType="commentDto" useGeneratedKeys="true" keyProperty="comment_id">
-    INSERT INTO comments
-      (article_no, content, user_id, parent_comment_id, created_time, root_id)
-    VALUES
-      (#{article_no}, #{content}, #{user_id}, 
-      <if test="parent_comment_id != null">#{parent_comment_id},</if> 
-      <if test="parent_comment_id == null">#{comment_id},</if> 
-      NOW(),
-      <if test="root_id != null">#{root_id}</if> 
-      <if test="root_id == null">#{comment_id}</if> 
-      )
-</insert>
+    <!-- 댓글 등록하기 입력 0이면 LAST_INSERT_ID(마지막으로 생성된 Auto_Increment 값) !-->
+    <insert id="add" parameterType="commentDto">
+        INSERT INTO comments (article_no,content, user_id, parent_comment_id, root_id, created_time)
+        VALUES (
+        #{article_no},
+        #{content},
+        #{user_id},
+        IF(#{parent_comment_id} = 0, LAST_INSERT_ID(), #{parent_comment_id}),
+        IF(#{root_id} = 0, LAST_INSERT_ID(), #{root_id}),
+        now())
+        <selectKey keyProperty="comment_id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- 댓글 가져오기 (root_id, 생성시간으로 정렬) !-->
+    <select id="getComments" parameterType="int">
+        SELECT *
+        FROM comments
+        WHERE article_no = #{article_no}
+        ORDER BY root_id ASC, created_time ASC
+    </select>
+
+    <!-- 글삭제 시 댓글을 다 삭제 !-->
+    <delete id="deleteCommentsByArticleNo" parameterType="int">
+        DELETE FROM comments
+        WHERE article_no = #{article_no}
+    </delete>
+
+    <!-- 댓글 삭제시 내용 비우기!-->
+    <update id="deleteComment" parameterType="int">
+        UPDATE comments
+        SET content = null
+        WHERE comment_id = #{comment_id}
+    </update>
+
+
+
 
 </mapper>
