@@ -5,12 +5,12 @@ import lombok.Builder;
 
 public class TravelListResponseDto <T> {
     private int status;
-    private T data;
+    private T list;
 
     @Builder
-    public TravelListResponseDto(int status, T data) {
+    public TravelListResponseDto(int status, T list) {
         this.status = status;
-        this.data = data;
+        this.list = list;
     }
 
     public int getStatus() {
@@ -21,11 +21,12 @@ public class TravelListResponseDto <T> {
         this.status = status;
     }
 
-    public T getData() {
-        return data;
-    }
+	public T getList() {
+		return list;
+	}
 
-    public void setData(T data) {
-        this.data = data;
-    }
+	public void setList(T list) {
+		this.list = list;
+	}
+
 }

@@ -36,7 +36,7 @@ public class TravelController {
 		System.out.println(ret);
 
 		return ResponseEntity.ok(TravelListResponseDto.builder()
-				.status(200).data(ret).build());
+				.status(200).list(ret).build());
 	}
 
 	@PostMapping("/search/getSidoList")
@@ -46,7 +46,7 @@ public class TravelController {
 		List<Map<String,String>> ret = travelService.getSidoList();
 
 		return ResponseEntity.ok(TravelListResponseDto.builder()
-				.status(200).data(ret).build());
+				.status(200).list(ret).build());
 	}
 
 	@PostMapping("/search/getTypeList")
@@ -56,7 +56,7 @@ public class TravelController {
 		List<Map<String,String>> ret = travelService.getTypeList();
 
 		return ResponseEntity.ok(TravelListResponseDto.builder()
-				.status(200).data(ret).build());
+				.status(200).list(ret).build());
 	}
 
 	@PostMapping("/search/gugunCode")
@@ -67,6 +67,6 @@ public class TravelController {
 		System.out.println(req.getContentTypeId());
 		List<TravelDto> ret = travelService.searchByCode(req.getSidoCode(),req.getGugunCode(), req.getContentTypeId());
 		return ResponseEntity.ok(TravelListResponseDto.builder()
-				.status(200).data(ret).build());
+				.status(200).list(ret).build());
 	}
 }
