@@ -12,5 +12,8 @@ function getGugun(body, success, fail) {
   apiClient.post("/travel/search/getGugunList", body).then(success).catch(fail);
 }
 
+function getTravelSite(body, success, fail) {
+  apiClient.post("/travel/search/travel", body).then(success).catch(fail);
+}
 
-export { getSido, getType,getGugun };
+export { getSido, getType, getGugun, getTravelSite };
