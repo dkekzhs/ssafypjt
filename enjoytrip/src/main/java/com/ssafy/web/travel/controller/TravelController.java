@@ -59,7 +59,7 @@ public class TravelController {
 				.status(200).list(ret).build());
 	}
 
-	@PostMapping("/search/gugunCode")
+	@PostMapping("/search/travel")
 	public ResponseEntity<TravelListResponseDto> searchByGugunCode(@RequestBody TravelDto req)
 			throws NumberFormatException, Exception {
 		System.out.println(req.getSidoCode());
