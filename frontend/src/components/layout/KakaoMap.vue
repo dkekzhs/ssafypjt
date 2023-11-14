@@ -51,7 +51,7 @@ function createWatch() {
         let obj = {};
         let floatObj = {};
 
-        obj.latlng = new kakao.maps.LatLng(station.lat, station.lng);
+        obj.latlng = new kakao.maps.LatLng(station.latitude, station.longitude);
         obj.title = station.statNm;
 
         floatObj = new kakao.maps.CustomOverlay({

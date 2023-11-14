@@ -10,6 +10,8 @@ const sidoList = ref([]);
 const gugunList = ref([{ text: "구군선택", value: "" }]);
 const chargingStations = ref([]);
 const selectStation = ref({});
+const selectSido = ref(0);
+const selectGugun = ref(0);
 
 const param = ref({
   serviceKey: VITE_OPEN_API_SERVICE_KEY,
@@ -41,9 +43,12 @@ const getSidoList = () => {
 
 const getChargingStations = () => {
   getTravelSite(
-    param.value,
+    {
+      sidoCode: selectSido.value,
+      gugunCode: selectGugun.value,
+    },
     ({ data }) => {
-      chargingStations.value = data.items[0].item;
+      chargingStations.value = data.list;
     },
     (err) => {
       console.log(err);
@@ -66,11 +71,18 @@ const onChangeSido = (val) => {
       console.log(err);
     }
   );
+
+  selectSido.value = val;
 };
 
 const onChangeGugun = (val) => {
-  param.value.zscode = val;
+  // param.value.zscode = val;
+  selectGugun.value = val;
   getChargingStations();
+};
+
+const viewStation = (station) => {
+  selectStation.value = station;
 };
 </script>
 
@@ -85,7 +97,7 @@ const onChangeGugun = (val) => {
       <div class="col"><VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" /></div>
     </div>
 
-    <KakaoMap :stations="sidoList" :selectStation="selectStation" />
+    <KakaoMap :stations="chargingStations" :selectStation="selectStation" />
     <table class="table table-hover">
       <thead>
         <tr class="text-center">
@@ -101,15 +113,15 @@ const onChangeGugun = (val) => {
         <tr
           class="text-center"
           v-for="station in chargingStations"
-          :key="station.statId + station.chgerId"
+          :key="station.addr1 + station.addr2"
           @click="viewStation(station)"
         >
-          <th>{{ station.statNm }}</th>
-          <td>{{ station.statId }}</td>
-          <td>{{ station.stat }}</td>
-          <td>{{ station.addr }}</td>
-          <td>{{ station.lat }}</td>
-          <td>{{ station.lng }}</td>
+          <th>{{ station.title }}</th>
+          <td>{{ station.addr1 }}</td>
+          <td>{{ station.addr2 }}</td>
+          <td>{{ station.tel }}</td>
+          <td>{{ station.latitude }}</td>
+          <td>{{ station.longitude }}</td>
         </tr>
       </tbody>
     </table>
