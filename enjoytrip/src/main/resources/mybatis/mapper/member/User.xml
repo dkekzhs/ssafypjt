@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.web.member.model.mapper.UserMapper">
+
+  <select id="login" parameterType="user"  resultType="String">
+    select user_name
+    from members
+    where user_id=#{id} and user_password=#{pw}    
+  </select>
+  
+  <insert id="saveToken" parameterType="user" >
+  	insert into 
+  	member_login (user_id, salt, access_token, refresh_token)
+  	values (#{id}, #{salt},#{access_token}, #{refresh_token})
+  	on duplicate key 
+  	update salt=#{salt},access_token=#{access_token},refresh_token=#{refresh_token}
+  </insert>
+  
+  </mapper>

@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { memberLogin, memberLogout } from "../util/member/memberApi";
-import { setCookie, getCookie, deleteCookie } from "../util/cookie/cookie";
+import { memberLogin, memberLogout } from "@/api/member/memberApi";
+import { setCookie, getCookie, deleteCookie } from "@/util/cookie/cookie";
 
 let isLoggedIn = getCookie("user_name") ? false : true;
 

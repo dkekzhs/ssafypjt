@@ -1,5 +1,5 @@
 <script setup>
-import { listArticle, detailArticle } from "@/util/board/boardApi"
+import { listArticle, detailArticle } from "@/api/board/boardApi"
 import { ref } from "vue";
 const param = {
  pgno : 1,

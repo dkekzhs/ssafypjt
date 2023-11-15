@@ -1,4 +1,4 @@
-package com.ssafy.web.member.controller;
+package com.ssafy.web.member.service;
 
 import java.util.UUID;
 
@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.web.member.model.User;
 import com.ssafy.web.member.model.mapper.MemberMapper;
+import com.ssafy.web.member.model.mapper.UserMapper;
 import com.ssafy.web.util.JwtTokenProvider;
 
 @Service
 public class UserServiceImpl implements UserService{
 	@Autowired
-	MemberMapper mm ;
+	UserMapper um ;
 	@Override
 	public String[] login(User user) {
 		//jwt init 
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService{
 		user.setRefresh_token(refresh_token);
 		user.setAccess_token(access_token);
 		user.setSalt(salt);
-		mm.saveToken(user);
+		um.saveToken(user);
 		return new String [] {access_token,refresh_token};
 	}
 

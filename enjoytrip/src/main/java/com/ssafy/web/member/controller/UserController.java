@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.web.member.model.MemberDto;
 import com.ssafy.web.member.model.User;
+import com.ssafy.web.member.service.UserService;
 
 @RestController
 @RequestMapping("/user")

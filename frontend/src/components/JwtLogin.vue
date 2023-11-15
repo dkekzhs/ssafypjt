@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue"
-import { memberJwtLogin } from "@/util/member/memberApi";
+import { memberJwtLogin } from "@/api/member/memberApi";
 const id = ref("");
 const pw = ref("");
 
@@ -11,7 +11,7 @@ function loginHandler() {
     memberJwtLogin(body, res => {
         console.log(res);
         sessionStorage.setItem("access_token", res.data[0]);
-        sessionStorage.setItem("refresh_token", res.data[1]);
+        sessionStorage.setItem("refresh_token", data.data[1]);
     },
         err => {
             console.log(err);

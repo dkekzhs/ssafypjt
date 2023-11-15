@@ -1,4 +1,4 @@
-package com.ssafy.web.member.controller;
+package com.ssafy.web.member.service;
 
 import com.ssafy.web.member.model.User;
 

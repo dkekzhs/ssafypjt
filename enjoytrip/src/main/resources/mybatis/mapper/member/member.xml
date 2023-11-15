@@ -13,19 +13,7 @@
 	</select>
 	
 
-  <select id="login" parameterType="user"  resultType="String">
-    select user_name
-    from members
-    where user_id=#{id} and user_password=#{pw}    
-  </select>
-  
-  <insert id="saveToken" parameterType="user" >
-  	insert into 
-  	member_login (user_id, salt, access_token, refresh_token)
-  	values (#{id}, #{salt},#{access_token}, #{refresh_token})
-  	on duplicate key 
-  	update salt=#{salt},access_token=#{access_token},refresh_token=#{refresh_token}
-  </insert>
+
 
 	
 </mapper>
