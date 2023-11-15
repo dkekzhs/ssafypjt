@@ -5,8 +5,8 @@ import lombok.Builder;
 public class MessageResponseDto {
 	private int status;
 	private String message;
-	
-	
+
+
 	public int getStatus() {
 		return status;
 	}
