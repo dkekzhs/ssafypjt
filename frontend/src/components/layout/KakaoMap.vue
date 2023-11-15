@@ -4,6 +4,7 @@ import { ref, watch, onMounted } from "vue";
 var map;
 const positions = ref([]);
 const markers = ref([]);
+const overPositions = ref([]);
 const overlays = ref([]);
 
 const props = defineProps({ stations: Array, selectStation: Object });
@@ -45,7 +46,7 @@ function createWatch() {
     () => props.stations.value,
     () => {
       positions.value = [];
-      overlays.value = [];
+      overPositions.value = [];
 
       props.stations.forEach((station) => {
         let obj = {};
@@ -55,12 +56,12 @@ function createWatch() {
         obj.title = station.statNm;
 
         floatObj = new kakao.maps.CustomOverlay({
-          content: "<div>임시 오버레이</div>",
+          content: "<div>안녕하세요</div>",
           map: map,
           position: obj.latlng,
         });
         positions.value.push(obj);
-        overlays.value.push(floatObj);
+        overPositions.value.push(floatObj);
       });
       loadMarkers();
     },
@@ -92,6 +93,8 @@ const loadMarkers = () => {
 
   // 마커를 생성합니다
   markers.value = [];
+  overlays.value = [];
+
   positions.value.forEach((position) => {
     const marker = new kakao.maps.Marker({
       map: map, // 마커를 표시할 지도
@@ -100,7 +103,17 @@ const loadMarkers = () => {
       clickable: true, // // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
       // image: markerImage, // 마커의 이미지
     });
+
+    const customOverlay = new kakao.maps.CustomOverlay({
+      map: map,
+      position: position.latlng,
+    });
+
+    kakao.maps.event.addListener(marker, "click", (e) => {
+      customOverlay.setMap(map);
+    });
     markers.value.push(marker);
+    overlays.value.push(customOverlay);
   });
 
   // 4. 지도를 이동시켜주기
