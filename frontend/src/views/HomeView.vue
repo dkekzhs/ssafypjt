@@ -3,15 +3,23 @@ import { ref, onMounted } from "vue";
 import KakaoMap from "../components/layout/KakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
 import { getSido, getType, getGugun, getTravelSite } from "@/util/travel/travelApi";
+import VCheckbox from "../components/common/VCheckbox.vue";
 
 const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
 
 const sidoList = ref([]);
 const gugunList = ref([{ text: "구군선택", value: "" }]);
+const optionList = ref([
+  { text: "전체", value: 0 },
+  { text: "ㅁㄴㅇㄹ", value: 12 },
+  { text: "ㅂㅈㄷㄱ", value: 14 },
+  { text: "ㅋㅌㅊㅍ", value: 15 },
+]);
 const chargingStations = ref([]);
 const selectStation = ref({});
 const selectSido = ref(0);
 const selectGugun = ref(0);
+const selectOption = ref([]);
 
 const param = ref({
   serviceKey: VITE_OPEN_API_SERVICE_KEY,
@@ -81,6 +89,11 @@ const onChangeGugun = (val) => {
   getChargingStations();
 };
 
+const onChangeOption = (val) => {
+  selectOption.value = val;
+  console.log(selectOption.value);
+};
+
 const viewStation = (station) => {
   selectStation.value = station;
 };
@@ -95,6 +108,9 @@ const viewStation = (station) => {
         <VSelect :selectOption="sidoList" @onKeySelect="onChangeSido" />
       </div>
       <div class="col"><VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" /></div>
+      <div class="col">
+        <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
+      </div>
     </div>
 
     <KakaoMap :stations="chargingStations" :selectStation="selectStation" />
