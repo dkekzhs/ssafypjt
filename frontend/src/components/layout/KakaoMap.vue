@@ -33,7 +33,10 @@ function createWatch() {
     () => props.selectStation.value,
     () => {
       // 이동할 위도 경도 위치를 생성합니다
-      var moveLatLon = new kakao.maps.LatLng(props.selectStation.lat, props.selectStation.lng);
+      var moveLatLon = new kakao.maps.LatLng(
+        props.selectStation.lat,
+        props.selectStation.lng
+      );
 
       // 지도 중심을 부드럽게 이동시킵니다
       // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
@@ -50,38 +53,40 @@ function createWatch() {
 
       props.stations.forEach((station) => {
         let obj = {};
-        let floatObj = {};
-
+        obj = station;
         obj.latlng = new kakao.maps.LatLng(station.latitude, station.longitude);
-        obj.title = station.statNm;
-        function closeOverlay() {
-          floatObj.setMap(null);
-        }
-        floatObj = new kakao.maps.CustomOverlay({
-          content:
-            '<div class="wrap">' +
-            '    <div class="info">' +
-            '        <div class="title">' +
-            '            <div class="close" title="닫기"></div>' +
-            "        </div>" +
-            "    </div>" +
-            "</div>",
-          map: map,
-          clickable: true,
-          position: obj.latlng,
-        });
 
-        floatObj.a.getElementsByClassName("close")[0].addEventListener("click", function () {
-          console.log("asdfasdf");
-          floatObj.setMap(null);
-        });
         positions.value.push(obj);
-        overPositions.value.push(floatObj);
       });
       loadMarkers();
     },
     { deep: true }
   );
+}
+
+function createContent(elem) {
+  let ret =
+    '<div class="wrap">' +
+    '    <div class="info">' +
+    '        <div class="title">' +
+    elem.title +
+    '            <div class="close" title="닫기"></div>' +
+    "        </div>" +
+    '        <div class="body">' +
+    '            <div class="img">' +
+    '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
+    "           </div>" +
+    '            <div class="desc">' +
+    '                <div class="ellipsis">' +
+    elem.addr1 +
+    "</div>" +
+    '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' +
+    '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' +
+    "            </div>" +
+    "        </div>" +
+    "    </div>" +
+    "</div>";
+  return ret;
 }
 
 const initMap = () => {
@@ -108,7 +113,7 @@ const loadMarkers = () => {
 
   // 마커를 생성합니다
   markers.value = [];
-  overlays.value = [];
+  overlays.value = []; // 마커 오버레이
 
   positions.value.forEach((position) => {
     const marker = new kakao.maps.Marker({
@@ -122,10 +127,21 @@ const loadMarkers = () => {
     const customOverlay = new kakao.maps.CustomOverlay({
       map: map,
       position: position.latlng,
+      content: createContent(position),
+      clickable: true,
     });
 
+    customOverlay.a
+      .getElementsByClassName("close")[0]
+      .addEventListener("click", function () {
+        customOverlay.setMap(null);
+      });
+
+    customOverlay.setMap(null);
+
     kakao.maps.event.addListener(marker, "click", (e) => {
-      customOverlay.setMap(map);
+      if (customOverlay.getMap()) customOverlay.setMap(null);
+      else customOverlay.setMap(map);
     });
     markers.value.push(marker);
     overlays.value.push(customOverlay);

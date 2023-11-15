@@ -2,7 +2,12 @@
 import { ref, onMounted } from "vue";
 import KakaoMap from "../components/layout/KakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
-import { getSido, getType, getGugun, getTravelSite } from "@/util/travel/travelApi";
+import {
+  getSido,
+  getType,
+  getGugun,
+  getTravelSite,
+} from "@/util/travel/travelApi";
 import VCheckbox from "../components/common/VCheckbox.vue";
 
 const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
@@ -127,7 +132,9 @@ const viewStation = (station) => {
       <div class="col d-flex flex-row-reverse">
         <VSelect :selectOption="sidoList" @onKeySelect="onChangeSido" />
       </div>
-      <div class="col"><VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" /></div>
+      <div class="col">
+        <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
+      </div>
       <div class="col">
         <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
       </div>
@@ -149,7 +156,7 @@ const viewStation = (station) => {
         <tr
           class="text-center"
           v-for="station in chargingStations"
-          :key="station.addr1 + station.addr2"
+          :key="station.zipcode"
           @click="viewStation(station)"
         >
           <th>{{ station.title }}</th>
