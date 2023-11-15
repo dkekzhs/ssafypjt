@@ -10,6 +10,8 @@ function loginHandler() {
     alert(id.value + ": " + pw.value);
     memberJwtLogin(body, res => {
         console.log(res);
+        sessionStorage.setItem("access_token", res.data[0]);
+        sessionStorage.setItem("refresh_token", res.data[1]);
     },
         err => {
             console.log(err);
