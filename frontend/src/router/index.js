@@ -32,6 +32,11 @@ const router = createRouter({
       name: "todo",
       component: () => import("../views/TodoView.vue"),
     },
+    {
+      path: "/jwtlogin",
+      name: "jwtlogin",
+      component: () => import("../views/Login.vue"),
+    },
   ],
 });
 

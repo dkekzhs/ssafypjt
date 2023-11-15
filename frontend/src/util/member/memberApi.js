@@ -8,4 +8,9 @@ function memberLogout(body, success, fail) {
   apiClient.post("/user/logout", body).then(success).catch(fail);
 }
 
-export { memberLogin, memberLogout };
+function memberJwtLogin(body, success, fail) {
+  apiClient.post("/user/jwtlogin", body).then(success).catch(fail);
+}
+
+
+export { memberLogin, memberLogout, memberJwtLogin };

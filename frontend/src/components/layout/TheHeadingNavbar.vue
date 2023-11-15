@@ -41,6 +41,9 @@ console.log(menuList);
           <li class="nav-item">
             <router-link :to="{ name: 'board' }">board</router-link>
           </li>
+          <li class="nav-item">
+            <router-link :to="{ name: 'jwtlogin' }" class="nav-link">JWT 로그인</router-link>
+          </li>
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
