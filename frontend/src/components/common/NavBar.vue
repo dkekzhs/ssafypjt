@@ -69,8 +69,16 @@ const logout = () => {
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#">공지사항</a></li>
               <li><a class="dropdown-item" href="#">FAQ</a></li>
-              <li><hr class="dropdown-divider" /></li>
               <li><a class="dropdown-item" href="#">학사규정</a></li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  href="https://kauth.kakao.com/oauth/authorize?client_id=ea4e0a205ceee6e61843fcf77e9aad18&redirect_uri=http://localhost/login_kakao&response_type=code"
+                >
+                  카카오 로그인
+                  <img src="@/assets/kakao_login_small" />
+                </a>
+              </li>
             </ul>
           </li>
           <li class="nav-item">
