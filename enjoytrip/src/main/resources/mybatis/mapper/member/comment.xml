@@ -40,7 +40,4 @@
         WHERE comment_id = #{comment_id}
     </update>
 
-
-
-
 </mapper>

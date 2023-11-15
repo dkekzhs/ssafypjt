@@ -10,16 +10,17 @@ const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
 const sidoList = ref([]);
 const gugunList = ref([{ text: "구군선택", value: "" }]);
 const optionList = ref([
-  { text: "전체", value: 0 },
-  { text: "ㅁㄴㅇㄹ", value: 12 },
-  { text: "ㅂㅈㄷㄱ", value: 14 },
-  { text: "ㅋㅌㅊㅍ", value: 15 },
+  { text: "전체", value: 0, checked: false },
+  { text: "ㅁㄴㅇㄹ", value: 12, checked: false },
+  { text: "ㅂㅈㄷㄱ", value: 14, checked: false },
+  { text: "ㅋㅌㅊㅍ", value: 15, checked: false },
 ]);
 const chargingStations = ref([]);
 const selectStation = ref({});
 const selectSido = ref(0);
 const selectGugun = ref(0);
 const selectOption = ref([]);
+const selectAll = ref(false);
 
 const param = ref({
   serviceKey: VITE_OPEN_API_SERVICE_KEY,
@@ -90,7 +91,26 @@ const onChangeGugun = (val) => {
 };
 
 const onChangeOption = (val) => {
+  /*
+  if (val == 0 && selectAll.value == false) {
+    // select all
+    selectAll.value = true;
+    selectOption.value = [];
+    for (let option of optionList.value) {
+      selectOption.value.push(option.value);
+    }
+  } else if (selectAll.value == true && selectOption._rawValue.includes(0) == false) {
+    // 전체 선택 토글
+    selectAll.value = false;
+    selectOption.value = [];
+  } else {
+    selectOption.value = val;
+  }
+  */
   selectOption.value = val;
+  for (let option of optionList.value) {
+    option.checked = !option.checked;
+  }
   console.log(selectOption.value);
 };
 

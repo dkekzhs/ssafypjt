@@ -19,6 +19,7 @@ const onSelect = () => {
         v-model="keys"
         @change="onSelect"
         :disabled="option.value === ''"
+        :checked="option.checked"
       />
       {{ option.text }}
     </label>
