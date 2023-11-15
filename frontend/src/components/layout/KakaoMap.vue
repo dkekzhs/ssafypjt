@@ -6,6 +6,7 @@ const positions = ref([]);
 const markers = ref([]);
 const overPositions = ref([]);
 const overlays = ref([]);
+const travelList = ref([]);
 
 const props = defineProps({ stations: Array, selectStation: Object });
 
@@ -82,6 +83,7 @@ function createContent(elem) {
     "</div>" +
     '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' +
     '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' +
+    '                <div class="add" title="추가"></div>' +
     "            </div>" +
     "        </div>" +
     "    </div>" +
@@ -131,10 +133,25 @@ const loadMarkers = () => {
       clickable: true,
     });
 
+    customOverlay.info = position;
+
     customOverlay.a
       .getElementsByClassName("close")[0]
       .addEventListener("click", function () {
         customOverlay.setMap(null);
+      });
+
+    customOverlay.a
+      .getElementsByClassName("add")[0]
+      .addEventListener("click", function () {
+        console.log(customOverlay);
+
+        travelList.value = travelList.value.filter(
+          (elem) => elem !== customOverlay.info
+        );
+        travelList.value.push(customOverlay.info);
+
+        console.log("추가된 여행지 리스트 >> " + travelList.value);
       });
 
     customOverlay.setMap(null);
@@ -142,6 +159,12 @@ const loadMarkers = () => {
     kakao.maps.event.addListener(marker, "click", (e) => {
       if (customOverlay.getMap()) customOverlay.setMap(null);
       else customOverlay.setMap(map);
+
+      /*
+      클릭한 곳으로 화면 옮기기
+      let moveLatLon = marker.getPosition();
+      map.panTo(moveLatLon);
+      */
     });
     markers.value.push(marker);
     overlays.value.push(customOverlay);
@@ -225,7 +248,18 @@ const deleteMarkers = () => {
   height: 17px;
   background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png");
 }
-.info .close:hover {
+
+.add {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: #888;
+  width: 17px;
+  height: 17px;
+  background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png");
+}
+
+.info .close:hover .add:hover {
   cursor: pointer;
 }
 .info .body {
