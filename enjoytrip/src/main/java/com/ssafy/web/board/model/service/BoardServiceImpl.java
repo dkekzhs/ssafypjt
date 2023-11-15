@@ -1,29 +1,35 @@
 package com.ssafy.web.board.model.service;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.ssafy.web.board.model.BoardDto;
+import com.ssafy.web.board.model.DetailAndCommentsDto;
+import com.ssafy.web.board.model.LikeRequestStatusDto;
 import com.ssafy.web.board.model.PageDto;
+import com.ssafy.web.board.model.mapper.BoardLikeMapper;
+import com.ssafy.web.board.model.mapper.BoardMapper;
+import com.ssafy.web.comment.model.CommentDto;
+import com.ssafy.web.comment.model.mapper.CommentMapper;
+import com.ssafy.web.util.PageNavigation;
+import com.ssafy.web.util.SizeConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.web.board.model.BoardDto;
-import com.ssafy.web.board.model.mapper.BoardMapper;
-import com.ssafy.web.util.PageNavigation;
-import com.ssafy.web.util.SizeConstant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class BoardServiceImpl implements BoardService {
 	
-	private BoardMapper boardMapper;
+	private final BoardMapper boardMapper;
+	private final CommentMapper commentMapper;
+	private final BoardLikeMapper boardLikeMapper;
 
 	@Autowired
-	public BoardServiceImpl(BoardMapper boardMapper) {
-		super();
+	public BoardServiceImpl(BoardMapper boardMapper, CommentMapper commentMapper , BoardLikeMapper boardLikeMapper) {
 		this.boardMapper = boardMapper;
+		this.commentMapper = commentMapper;
+		this.boardLikeMapper = boardLikeMapper;
 	}
 
 	@Override
@@ -81,8 +87,12 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public BoardDto getArticle(int articleNo) throws Exception {
-		return boardMapper.getArticle(articleNo);
+	public DetailAndCommentsDto getArticle(int articleNo) throws Exception {
+		BoardDto article = boardMapper.getArticle(articleNo);
+		List<CommentDto> comments = commentMapper.getComments(articleNo);
+
+		return DetailAndCommentsDto.builder()
+				.board(article).comments(comments).build();
 	}
 
 	@Override
@@ -101,6 +111,13 @@ public class BoardServiceImpl implements BoardService {
 	public void deleteArticle(int articleNo) throws Exception {
 		// TODO : BoardDaoImpl의 deleteArticle 호출
 		boardMapper.deleteArticle(articleNo);
+		commentMapper.deleteCommentsByArticleNo(articleNo);
 		}
+
+	@Override
+	public int boardLike(LikeRequestStatusDto dto) {
+
+		return boardLikeMapper.updateLikeStatus(dto);
 	}
+}
 

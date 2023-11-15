@@ -2,15 +2,15 @@ package com.ssafy.web.board.controller;
 
 import java.util.List;
 
-import com.ssafy.web.board.model.BoardDto;
-import com.ssafy.web.board.model.BoardListDto;
-import com.ssafy.web.board.model.PageDto;
+import com.ssafy.web.board.model.*;
+import com.ssafy.web.board.model.mapper.BoardLikeMapper;
 import com.ssafy.web.common.dto.MessageResponseDto;
 import com.ssafy.web.common.dto.ResponseListDto;
 import com.ssafy.web.member.model.MemberDto;
 
 import com.ssafy.web.util.PageNavigation;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,13 +59,14 @@ public class BoardController {
 	}
 
 	@GetMapping("/view{article_no}")
-	public ResponseEntity<ResponseListDto> view(@PathVariable("article_no") int article_no)
+	public ResponseEntity<DetailAndCommentsDto> view(@PathVariable("article_no") int article_no)
 			throws Exception {
-		BoardDto boardDto = boardService.getArticle(article_no);
+		DetailAndCommentsDto response = boardService.getArticle(article_no);
 		boardService.updateHit(article_no);
 
-		return ResponseEntity.ok(ResponseListDto.builder()
-						.status(200).list(boardDto)
+		return ResponseEntity.ok(DetailAndCommentsDto.builder()
+						.status(200).board(response.getBoard())
+						.comments(response.getComments())
 				.build());
 	}
 
@@ -86,7 +87,20 @@ public class BoardController {
 		return ResponseEntity.ok(MessageResponseDto.builder()
 				.status(200).message("삭제성공").build());
 	}
-
+	@ApiOperation(value = "좋아요", notes = "좋아요 누르면 토글로 작동 mapper")
+	@PostMapping("/like")
+	public ResponseEntity<MessageResponseDto> like(LikeRequestStatusDto dto) throws Exception {
+		System.out.println("좋아요");
+		int i = boardService.boardLike(dto);
+		if(i==1){
+			System.out.println("뭐라도 함");
+		}
+		else{
+			System.out.println("실패");
+		}
+		return ResponseEntity.ok(MessageResponseDto.builder()
+				.status(200).message("좋아요~").build());
+	}
 
 	
 
