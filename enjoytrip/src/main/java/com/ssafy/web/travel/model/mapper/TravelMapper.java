@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.web.travel.model.PlanDto;
+import com.ssafy.web.travel.model.PlanDto2;
 import com.ssafy.web.travel.model.TravelDto;
 
 @Mapper
@@ -24,7 +25,7 @@ public interface TravelMapper {
 
 	List<TravelDto> searchByTitle(String title, int sidoCode, int gugunCode) throws Exception;
 	
-	int CreatePlanBoardWithShare(Map<String, Object> map);
+	int CreatePlanBoardWithShare(PlanDto2 dto);
 	int sharePlan(PlanDto dto);
 
 

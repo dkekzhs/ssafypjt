@@ -57,13 +57,10 @@ public class TravelServiceImpl implements TravelService {
 	@Override
 	public int create(PlanDto2 dto) {
 		//처리
-		Map<String , Object> map = new HashMap<String, Object>();
-		String json = new Gson().toJson(dto.getShare_user_id_list());
-		map.put("planDto",dto);
-		map.put("list",json);
-		System.out.println(map);
-		int i = travelMapper.CreatePlanBoardWithShare(map);
-		System.out.println(map);
+		dto.setData();
+		int i = travelMapper.CreatePlanBoardWithShare(dto);
+		System.out.println(dto.getData());
+		System.out.println(dto.getShare_user_id_list());
 		return i;
 	}
 

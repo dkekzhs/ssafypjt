@@ -2,12 +2,22 @@ package com.ssafy.web.travel.model;
 
 import java.util.List;
 
+import com.google.gson.Gson;
+
 //flag 0== 전체공개  1 == 친구 공개 2 == 지정된 사람 공유 3== 나만보기
 public class PlanDto2 {
 	private String user_id;
 	private int plan_id,flag;
 	private List<String> share_user_id_list;
 	private String temp;
+	private String data;
+	
+	public void setData() {
+		this.data= new Gson().toJson(share_user_id_list);
+	}
+	public String getData() {
+		return this.data;
+	}
 	
 	public String getTemp() {
 		return temp;
