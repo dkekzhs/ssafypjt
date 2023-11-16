@@ -10,18 +10,20 @@ public class DetailAndCommentsDto {
     private BoardDto board;
     private List<CommentDto> comments;
 
-    @Builder
-    public DetailAndCommentsDto(BoardDto board, List<CommentDto> comments) {
 
-        this.board = board;
-        this.comments = comments;
-    }
     @Builder
     public DetailAndCommentsDto(BoardDto board, List<CommentDto> comments, int status) {
         this.status = status;
         this.board = board;
         this.comments = comments;
     }
+    @Builder
+    public DetailAndCommentsDto(BoardDto board, List<CommentDto> comments) {
+
+        this.board = board;
+        this.comments = comments;
+    }
+
 
 
     public int getStatus() {

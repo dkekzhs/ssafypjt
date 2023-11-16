@@ -1,9 +1,6 @@
 package com.ssafy.web.board.model.service;
 
-import com.ssafy.web.board.model.BoardDto;
-import com.ssafy.web.board.model.DetailAndCommentsDto;
-import com.ssafy.web.board.model.LikeRequestStatusDto;
-import com.ssafy.web.board.model.PageDto;
+import com.ssafy.web.board.model.*;
 import com.ssafy.web.board.model.mapper.BoardLikeMapper;
 import com.ssafy.web.board.model.mapper.BoardMapper;
 import com.ssafy.web.comment.model.CommentDto;
@@ -117,7 +114,10 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int boardLike(LikeRequestStatusDto dto) {
 
-		return boardLikeMapper.updateLikeStatus(dto);
+		return boardLikeMapper.executeAllQueries(
+				BoardLikeVO.builder().article_no(dto.getArticle_no())
+						.like_status(dto.getLike_status())
+						.user_id(dto.getUser_id()).build());
 	}
 }
 
