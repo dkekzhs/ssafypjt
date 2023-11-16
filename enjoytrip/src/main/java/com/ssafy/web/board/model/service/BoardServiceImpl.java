@@ -114,10 +114,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int boardLike(LikeRequestStatusDto dto) {
 
-		return boardLikeMapper.executeAllQueries(
-				BoardLikeVO.builder().article_no(dto.getArticle_no())
-						.like_status(dto.getLike_status())
-						.user_id(dto.getUser_id()).build());
+		return boardLikeMapper.callUpsertLikeStatus(dto);
 	}
 }
 

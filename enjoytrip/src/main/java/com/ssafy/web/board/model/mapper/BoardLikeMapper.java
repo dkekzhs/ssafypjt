@@ -8,11 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface BoardLikeMapper {
     int updateLikeStatus(LikeRequestStatusDto dto);
 
-    int executeAllQueries(BoardLikeVO dto);
-    boolean isExistLike(BoardLikeVO dto);
-    int insertLike(BoardLikeVO dto);
-
-    int updateLike(BoardLikeVO dto);
-
-    int deleteLike(BoardLikeVO dto);
+    int callUpsertLikeStatus(LikeRequestStatusDto dto);
 }

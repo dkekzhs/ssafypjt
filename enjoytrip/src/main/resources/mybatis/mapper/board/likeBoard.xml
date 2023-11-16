@@ -13,51 +13,9 @@
     <!--                             ELSE #{like_status}-->
     <!--    END;-->
     <!--</update>-->
-    <select id="isExistLike" resultType="Boolean" parameterType="boardLikeVO">
-        SELECT COUNT(*) > 0
-        FROM BOARD_LIKE
-        WHERE article_no = #{article_no} AND user_id = #{user_id}
-    </select>
-
-    <insert id="insertLike" parameterType="boardLikeVO">
-        INSERT INTO BOARD_LIKE (article_no, user_id, like_status)
-        VALUES (#{article_no}, #{user_id}, #{like_status})
-    </insert>
-
-    <update id="updateLike" parameterType="boardLikeVO">
-        UPDATE BOARD_LIKE
-        SET like_status = #{like_status}
-        WHERE article_no = #{article_no} AND user_id = #{user_id}
-    </update>
-
-    <delete id="deleteLike" parameterType="boardLikeVO">
-        DELETE
-        FROM BOARD_LIKE
-        WHERE article_no = #{article_no} AND user_id = #{user_id} AND like_status = #{like_status}
-    </delete>
-
-
-    <update id="executeAllQueries" parameterType="boardLikeVO">
-
-        <selectKey resultType="int" keyProperty="ifExistBoardLike">
-            SELECT like_status
-            FROM BOARD_LIKE
-            WHERE article_no = #{article_no} AND user_id = #{user_id}
-        </selectKey>
-        <choose>
-            <!-- 이미 보드 라이크 테이블 로우가 존재하는 경우 -->
-            <when test="ifExistBoardLike == null">
-                <include refid="insertLike"/>
-            </when>
-            <when test="ifExistBoardLike == #{like_status}">
-                <include refid="deleteLike"/>
-            </when>
-            <!-- 새로 보드 라이크 테이블 로우를 추가하는 경우 -->
-            <otherwise>
-                <include refid="updateLike"/>
-            </otherwise>
-        </choose>
-    </update>
+<select id="callUpsertLikeStatus" parameterType="likeRequestStatusDto" resultType="Integer">
+    CALL upsertLikeStatus(#{article_no}, #{user_id}, #{like_status})
+</select>
 
 
 
