@@ -1,10 +1,12 @@
 package com.ssafy.web.travel.model.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.ssafy.web.travel.model.PlanDto;
 import com.ssafy.web.travel.model.TravelDto;
 
 @Mapper
@@ -21,5 +23,9 @@ public interface TravelMapper {
 	List<TravelDto> mapList(TravelDto travelDto) throws Exception;
 
 	List<TravelDto> searchByTitle(String title, int sidoCode, int gugunCode) throws Exception;
+	
+	int CreatePlanBoardWithShare(Map<String, Object> map);
+	int sharePlan(PlanDto dto);
+
 
 }

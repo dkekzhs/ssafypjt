@@ -27,7 +27,8 @@
 	<select id="getGugunList" parameterType="int"
 		resultType="java.util.Map">
 		select distinct gugun_code, gugun_name
-		from sido A join gugun B
+		from sido A join
+		gugun B
 		on A.sido_code = #{sidoCode} AND B.sido_code = #{sidoCode}
 	</select>
 
@@ -113,4 +114,33 @@
 		ORDER BY content_id LIMIT 0, 20
 	</select>
 
+	<!-- 여행 일정 공유 테이블에 plan_id, user_id 정보 추가 -->
+	<insert id="sharePlan" parameterType="planDto">
+		<!-- map에는 plan_id, user_id, share_user_id_list 등이 포함되어 있어야 함 -->
+		INSERT INTO share (plan_id, user_id)
+		VALUES
+		<foreach collection="#{share_user_id_list}" item="shareUserId"
+			separator=",">
+			(#{plan_id}, #{shareUserId})
+		</foreach>
+	</insert>
+
+	<!-- 여행지 상세 정보를 여행 계획에 추가 -->
+	<insert id="insertPlanDetail" parameterType="com.ssafy.web.travel.model.PlanDetailDto">
+		INSERT INTO
+		plan_detail (plan_id, content_id)
+		VALUES (#{planId}, #{contentId})
+	</insert>
+	<!-- 여행 계획으로부터 여행지 상세 정보 삭제 -->
+	<delete id="deletePlanDetail" parameterType="com.ssafy.web.travel.model.PlanDetailDto">
+		DELETE FROM
+		plan_detail
+		WHERE plan_id = #{planId} AND content_id = #{contentId}
+	</delete>
+	<delete id="deletePlanAndDetails" parameterType="planDto">
+		CALL deletePlanAndDetails(#{user_id},#{plan_id})
+	</delete>
+	<insert id="CreatePlanBoardWithShare" parameterType="map">
+		CALL CreatePlanBoardWithShare(#{planDto.user_id},#{planDto.flag},#{list});
+	</insert>
 </mapper>

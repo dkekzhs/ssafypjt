@@ -1,5 +1,7 @@
 package com.ssafy.web.travel.controller;
 
+import com.ssafy.web.travel.model.PlanDto;
+import com.ssafy.web.travel.model.PlanDto2;
 import com.ssafy.web.travel.model.TravelDto;
 import com.ssafy.web.travel.model.TravelListResponseDto;
 import com.ssafy.web.travel.model.mapper.TravelMapper;
@@ -69,4 +71,11 @@ public class TravelController {
 		return ResponseEntity.ok(TravelListResponseDto.builder()
 				.status(200).list(ret).build());
 	}
+	
+	@PostMapping("/plan/create")
+	public ResponseEntity<?> createPlan(@RequestBody PlanDto2 dto){
+		int create = travelService.create(dto);
+		return ResponseEntity.ok(create);
+	}
+	
 }

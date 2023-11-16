@@ -1,11 +1,15 @@
 package com.ssafy.web.travel.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+import com.ssafy.web.travel.model.PlanDto;
+import com.ssafy.web.travel.model.PlanDto2;
 import com.ssafy.web.travel.model.TravelDto;
 import com.ssafy.web.travel.model.mapper.TravelMapper;
 
@@ -48,6 +52,19 @@ public class TravelServiceImpl implements TravelService {
 	@Override
 	public List<TravelDto> searchByTitle(String title, int sidoCode, int gugunCode) throws Exception {
 		return travelMapper.searchByTitle(title, sidoCode, gugunCode);
+	}
+
+	@Override
+	public int create(PlanDto2 dto) {
+		//처리
+		Map<String , Object> map = new HashMap<String, Object>();
+		String json = new Gson().toJson(dto.getShare_user_id_list());
+		map.put("planDto",dto);
+		map.put("list",json);
+		System.out.println(map);
+		int i = travelMapper.CreatePlanBoardWithShare(map);
+		System.out.println(map);
+		return i;
 	}
 
 	
