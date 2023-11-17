@@ -5,12 +5,21 @@ import java.util.Date;
 public class MemberDto {
 	private String user_id, user_name , user_password, email_id, email_domain;
 	private Date join_date;
+	private int age;
 	
-	
+
 	@Override
 	public String toString() {
 		return "MemberDto [user_id=" + user_id + ", user_name=" + user_name + ", user_password=" + user_password
-				+ ", email_id=" + email_id + ", email_domain=" + email_domain + ", join_date=" + join_date + "]";
+				+ ", email_id=" + email_id + ", email_domain=" + email_domain + ", join_date=" + join_date + ", age="
+				+ age + "]";
+	}
+	
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
 	}
 	public String getUser_id() {
 		return user_id;

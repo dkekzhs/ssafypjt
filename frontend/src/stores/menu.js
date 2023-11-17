@@ -1,9 +1,10 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { memberLogin, memberLogout } from "@/api/member/memberApi";
+import { memberLogin, memberLogout, getPublicKey } from "@/api/member/memberApi";
 import { setCookie, getCookie, deleteCookie } from "@/util/cookie/cookie";
-
+import * as RSA from '@/util/encrypt/rsa.js';
 let isLoggedIn = getCookie("user_name") ? false : true;
+
 
 export const useUserStore = defineStore("userStore", () => {
   const user = ref({
@@ -47,8 +48,22 @@ export function logout() {
     console.log("로그인 유저 없음");
   }
 }
+export function encryptText(text, exponent, modulus) {
+  var rsa = new RSA.RSAKey();
+  rsa.setPublic(modulus, exponent);
+  return rsa.encrypt(text);
+}
 
-export function login(id, pw) {
+
+export async function login(id, pw) {
+  const data = await getPublicKey();
+  console.log(data.data.exponent);
+  if (getCookie("exponent")== null && getCookie("modulus") == null) {
+    setCookie("exponent", data.data.exponent);
+    setCookie("modulus", data.data.modulus);
+  }
+  pw = encryptText(pw, getCookie("exponent"), getCookie("modulus"));
+  console.log("userPw " + pw);
   memberLogin(
     { user_id: id, user_password: pw },
     (res) => {

@@ -21,7 +21,7 @@ import com.ssafy.web.member.service.UserService;
 import com.ssafy.web.user.model.service.OAuthService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user2")
 public class UserController {
 
 	@Autowired

@@ -2,18 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ssafy.web.member.model.mapper.MemberMapper">
+<mapper
+	namespace="com.ssafy.web.member.model.mapper.MemberMapper">
 
-
-
-	<select id="loginMember" parameterType="memberDto" resultType="memberDto">
+	<select id="loginMember" parameterType="memberDto"
+		resultType="memberDto">
 		select *
 		from members
-		where user_id = #{user_id} and user_password = #{user_password}
+		where user_id = #{user_id} and
+		user_password = #{user_password}
 	</select>
-	
 
+	<insert id="insertSalt" parameterType="map">
+		INSERT INTO salt (user_id, salt)
+		VALUES (#{id}, #{salt})
+	</insert>
+	<insert id="memberInsert" parameterType="memberDto">
+		insert into members(id,password,name,email,age) values
+		(#{user_id},#{user_password},#{user_name},#{user_email},
+		#{age})
+	</insert>
 
-
-	
+	<select id="getSaltFromDB" parameterType="String"
+		resultType="String">
+		select salt from salt where id = #{user_id}
+	</select>
 </mapper>

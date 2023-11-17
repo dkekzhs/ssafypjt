@@ -10,6 +10,19 @@ import com.ssafy.web.member.model.User;
 @Repository
 @Mapper
 public interface MemberMapper {
-	public MemberDto loginMember(MemberDto memberDto);
+	MemberDto loginMember(MemberDto memberDto);
 
+	int memberInsert(MemberDto member);
+
+	void updateProfile(MemberDto member);
+
+	void updatePassword(MemberDto m, String newPwd);
+
+    void delete(MemberDto m);
+
+	boolean checkId(String id);
+
+	int insertSalt(String id, String salt) ;
+
+	String getSaltFromDB(String id) ;
 }

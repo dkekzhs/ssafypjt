@@ -12,5 +12,9 @@ function memberJwtLogin(body, success, fail) {
   apiClient.post("/user/jwtlogin", body).then(success).catch(fail);
 }
 
+ async function getPublicKey() {
+   return await apiClient.post("/user/getPublicKey");
+}
 
-export { memberLogin, memberLogout, memberJwtLogin };
+
+export { memberLogin, memberLogout, memberJwtLogin,getPublicKey};
