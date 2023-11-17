@@ -7,13 +7,15 @@ import org.springframework.web.socket.TextMessage;
 
 public class ChatRoomManager {
 
-	private ChatRoomManager instance = null; 
+	private static ChatRoomManager instance = null; 
 	private Map<String, ChatRoom> manager = null;
+	private final int maxRoomSize = 10;
+	private final int maxClientSize = 10;
 	
 	private ChatRoomManager() {
 		manager = new ConcurrentHashMap<String,ChatRoom>();
 	}
-	public ChatRoomManager getInstance() {
+	public static ChatRoomManager getInstance() {
 		if(instance == null) {
 			instance = new ChatRoomManager();
 		}
@@ -48,5 +50,12 @@ public class ChatRoomManager {
 	public void deleteChatRoom(String roomId) {
 		if(manager.containsKey(roomId)) 
 			manager.remove(roomId);
+	}
+	
+	public ChatRoom getChatRoom(String roomId) {
+		if(manager.containsKey(roomId)) {
+			return manager.get(roomId);
+		}
+		return null;
 	}
 }

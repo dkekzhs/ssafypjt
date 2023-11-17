@@ -16,13 +16,17 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketHandler extends TextWebSocketHandler {
 
 	private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<String, WebSocketSession>();
-
+	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
 		// 공간이 없다 => 연결을 강제로 해제시킨다.
 		System.out.println("URL >> " + session.getUri());
-
+		System.out.println("attributes >> " + session.getAttributes());
+		System.out.println(session.getId());
+		System.out.println(session.getLocalAddress());
+		System.out.println(session.getRemoteAddress());
+		System.out.println(session.getUri());
 		URI uri = session.getUri();
 		if (uri == null)
 			return;
@@ -34,17 +38,22 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		switch (toks[toks.length - 1]) {
 		case "createChatRoom": {
 			// 방을 생성 후 현재 session client를 방에 추가
+			ChatRoom room = new ChatRoom();
+			room.addClient(session);
+			ChatRoomManager.getInstance().addChatRoom(session.getId(), room);
+			System.out.println("방이 생성되었습니다 >> " + room);
 		}
 			break;
 
 		case "chat": {
 			// session client를 해당 방에 추가
+			// db를 조회하고 해당하는 방 아이디 가져오기
+			
+			String roomId = "";
+			ChatRoomManager.getInstance().getChatRoom(roomId);
 		}
 			break;
 		}
-		// 채팅방 별로 sessions를 저장해야함 파라미터로 CHAT_ROOM?
-		// 채팅방 팩토리가 있어야하는거 아닌가??
-
 		var sessionId = session.getId();
 		sessions.put(sessionId, session);
 

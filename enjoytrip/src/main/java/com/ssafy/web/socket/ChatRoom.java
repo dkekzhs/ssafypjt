@@ -15,7 +15,7 @@ public class ChatRoom {
 		return clients;
 	}
 
-	private ChatRoom () {
+	ChatRoom () {
 		clients =  new ConcurrentHashMap<String, WebSocketSession>();
 	}
 	
