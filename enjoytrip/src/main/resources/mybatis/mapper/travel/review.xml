@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.web.travel.model.mapper.TravelMapper">
+<!-- 리뷰 존재 여부 확인 -->
+<select id="checkReviewExists" parameterType="reviewDto" resultType="boolean">
+  SELECT EXISTS (
+    SELECT 1
+    FROM review
+    WHERE user_id = #{user_id}
+    AND content_id = #{content_id}
+  ) AS can_review
+</select>
+
+<!-- 리뷰 삽입 -->
+<insert id="CreateReview" parameterType="reviewDto">
+    INSERT INTO review (regist_date,user_id, content_id, rating, review_text)
+    VALUES (now(), #{user_id}, #{content_id}, #{rating}, #{review_text})
+</insert>
+
+<!-- 리뷰 삭제 -->
+<update id="deleteReview" parameterType="reviewDto">
+  UPDATE review
+  SET delete_flag = 1
+  WHERE review_id = #{review_id}
+</update>
+
+<select id="getReviewList" parameterType="ReviewDto">
+	select * from review where delete_flag != 1 and content_id = #{content_id}
+</select>
+</mapper>

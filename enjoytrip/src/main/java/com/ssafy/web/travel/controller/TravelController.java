@@ -2,6 +2,7 @@ package com.ssafy.web.travel.controller;
 
 import com.ssafy.web.travel.model.PlanDto;
 import com.ssafy.web.travel.model.PlanDto2;
+import com.ssafy.web.travel.model.ReviewDto;
 import com.ssafy.web.travel.model.TravelDto;
 import com.ssafy.web.travel.model.TravelListResponseDto;
 import com.ssafy.web.travel.model.mapper.TravelMapper;
@@ -77,5 +78,35 @@ public class TravelController {
 		int create = travelService.create(dto);
 		return ResponseEntity.ok(create);
 	}
+	
+	@PostMapping("/review/create")
+	public ResponseEntity<?> createReview(@RequestBody ReviewDto dto){
+		int create = travelService.CreateReview(dto);
+		if(create == 1) {
+			return ResponseEntity.ok("1");
+		}else {
+			return ResponseEntity.ok("0");
+		}
+		
+	}
+	@PostMapping("/review/delte")
+	public ResponseEntity<?> deleteReview(@RequestBody ReviewDto dto){
+		int create = travelService.deleteReview(dto);
+		if(create == 1) {
+			return ResponseEntity.ok("1");
+		}else {
+			return ResponseEntity.ok("0");
+		}
+		
+	}
+	
+	@PostMapping("/review/list")
+	public ResponseEntity<?> reviewList(@RequestBody ReviewDto dto){
+		List<ReviewDto> create = travelService.getReviewList(dto);
+		return ResponseEntity.ok(create);
+		
+	}
+	
+	
 	
 }
