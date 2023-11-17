@@ -25,16 +25,15 @@ public class CommentController {
 	@PostMapping("/add")
 	public ResponseEntity<MessageResponseDto> add(@RequestBody CommentDto dto){
 		int comment = cs.add(dto);
+		
 		if(comment == 1) {
-			 ResponseEntity.ok(MessageResponseDto.builder().status(200)
+			return ResponseEntity.ok(MessageResponseDto.builder().status(200)
 						.message("댓글 달기 성공").build());
 		}
 		else {
-			 ResponseEntity.ok(MessageResponseDto.builder().status(200)
+			 return ResponseEntity.ok(MessageResponseDto.builder().status(200)
 						.message("댓글 달기 실패").build());
 		}
-		return ResponseEntity.ok(MessageResponseDto.builder().status(200)
-				.message("댓글 달기 성공").build());
 	}
 
 	@GetMapping("/getComments")

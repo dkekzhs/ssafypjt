@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ssafy.web.socket.model.mapper.ChatMapper">
+
+	<insert id="addUser" parameterType="chatRoomDto">
+		INSERT INTO chat_room (room_id, user_id)
+		VALUES (#{room_id}, #{user_id})
+	</insert>
+
+	<select id="isValid" parameterType="chatRoomDto">
+		SELECT COUNT(*)
+		FROM chat_room
+		WHERE room_id = #{room_id} AND user_id = #{user_id}
+	</select>
+
+	<delete id="deleteRoom" parameterType="chatRoomDto">
+		DELETE
+		FROM chat_room
+		WHERE room_id = #{room_id}
+	</delete>
+
+	<select id="getNumOfUser" parameterType="chatRoomDto" resultType="int">
+		SELECT COUNT(*)
+		FROM chat_room
+		WHERE room_id = #{room_id}
+	</select>
+</mapper>
