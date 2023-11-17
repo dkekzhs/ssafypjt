@@ -6,10 +6,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.ssafy.web.travel.model.PlanDto;
 import com.ssafy.web.travel.model.PlanDto2;
+import com.ssafy.web.travel.model.ReviewDto;
 import com.ssafy.web.travel.model.TravelDto;
 import com.ssafy.web.travel.model.mapper.TravelMapper;
 
@@ -17,15 +19,15 @@ import com.ssafy.web.travel.model.mapper.TravelMapper;
 public class TravelServiceImpl implements TravelService {
 
 	private TravelMapper travelMapper;
-	
+
 	@Autowired
 	public TravelServiceImpl(TravelMapper travelMapper) {
 		super();
 		this.travelMapper = travelMapper;
 	}
-	
+
 	@Override
-	public List<Map<String, String>>  getGugunList(int sidoCode) throws Exception {
+	public List<Map<String, String>> getGugunList(int sidoCode) throws Exception {
 		return travelMapper.getGugunList(sidoCode);
 	}
 
@@ -56,7 +58,7 @@ public class TravelServiceImpl implements TravelService {
 
 	@Override
 	public int create(PlanDto2 dto) {
-		//처리
+		// 처리
 		dto.setData();
 		int i = travelMapper.CreatePlanBoardWithShare(dto);
 		System.out.println(dto.getData());
@@ -64,5 +66,40 @@ public class TravelServiceImpl implements TravelService {
 		return i;
 	}
 
-	
+	@Override
+	@Transactional
+	public int CreateReview(ReviewDto dto) {
+		boolean canReviewFlag = travelMapper.checkReviewExists(dto);
+		if (!canReviewFlag) {
+			travelMapper.CreateReview(dto);
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	@Transactional
+	public int deleteReview(ReviewDto dto) {
+		boolean canReviewDelteFlag = travelMapper.checkReviewExists(dto);
+		if (canReviewDelteFlag) {
+			travelMapper.deleteReview(dto);
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	@Transactional
+	public List<ReviewDto> getReviewList(ReviewDto dto) {
+		//when
+		boolean canReview = !travelMapper.checkReviewExists(dto);
+		List<ReviewDto> reviewList = travelMapper.getReviewList(dto);
+		
+		//여기서 리뷰dto말고 dto 하나 더 만들어서 처리 해야됨
+		
+		return reviewList;
+	}
+
 }

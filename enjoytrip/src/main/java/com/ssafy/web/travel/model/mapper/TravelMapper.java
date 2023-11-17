@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.web.travel.model.PlanDto;
 import com.ssafy.web.travel.model.PlanDto2;
+import com.ssafy.web.travel.model.ReviewDto;
 import com.ssafy.web.travel.model.TravelDto;
 
 @Mapper
@@ -27,6 +28,14 @@ public interface TravelMapper {
 	
 	int CreatePlanBoardWithShare(PlanDto2 dto);
 	int sharePlan(PlanDto dto);
+
+	int CreateReview(ReviewDto dto);
+	
+	boolean checkReviewExists(ReviewDto dto);
+	int deleteReview(ReviewDto dto);
+
+	List<ReviewDto> getReviewList(ReviewDto dto);
+	
 
 
 }

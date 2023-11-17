@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ssafy.web.travel.model.PlanDto;
 import com.ssafy.web.travel.model.PlanDto2;
+import com.ssafy.web.travel.model.ReviewDto;
 import com.ssafy.web.travel.model.TravelDto;
 
 public interface TravelService {
@@ -22,5 +23,13 @@ public interface TravelService {
 	List<TravelDto> searchByTitle(String title, int sidoCode, int gugunCode) throws Exception;
 
 	int create(PlanDto2 dto);
+
+	int CreateReview(ReviewDto dto);
+
+	int deleteReview(ReviewDto dto);
+
+	List<ReviewDto> getReviewList(ReviewDto dto);
+
+
 
 }
