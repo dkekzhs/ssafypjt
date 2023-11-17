@@ -22,6 +22,15 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 		.addHandler(webSocketHandler(), "/chat")
 		.setAllowedOriginPatterns("*")
 		.withSockJS();
+		
+		registry
+		.addHandler(webSocketHandler(), "/createChatRoom")
+		.setAllowedOriginPatterns("*");
+		
+		registry
+		.addHandler(webSocketHandler(), "/createChatRoom")
+		.setAllowedOriginPatterns("*")
+		.withSockJS();
 	}
 
 	@Bean
