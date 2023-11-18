@@ -20,4 +20,6 @@ public interface BoardService {
 	void deleteArticle(int articleNo) throws Exception;
 
 	int boardLike(LikeRequestStatusDto dto);
+
+    DetailAndCommentsDto getArticle(int article_no, String user_id) throws  Exception;
 }

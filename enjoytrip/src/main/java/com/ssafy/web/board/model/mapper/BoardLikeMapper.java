@@ -1,6 +1,7 @@
 package com.ssafy.web.board.model.mapper;
 
 
+import com.ssafy.web.board.model.LikeCountDto;
 import com.ssafy.web.board.model.LikeRequestStatusDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,4 +10,7 @@ public interface BoardLikeMapper {
     int updateLikeStatus(LikeRequestStatusDto dto);
 
     int callUpsertLikeStatus(LikeRequestStatusDto dto);
+
+    LikeCountDto getArticleLikesAndStatus(LikeRequestStatusDto dto);
+
 }

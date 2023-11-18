@@ -1,9 +1,17 @@
 package com.ssafy.web.board.model;
 
+import lombok.Builder;
+
 public class LikeRequestStatusDto {
     private String user_id;
     private int article_no;
     private int like_status;
+
+    @Builder
+    public LikeRequestStatusDto(String user_id, int article_no) {
+        this.user_id = user_id;
+        this.article_no = article_no;
+    }
 
     public int getArticle_no() {
         return article_no;

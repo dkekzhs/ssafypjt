@@ -10,6 +10,18 @@ public class DetailAndCommentsDto {
     private BoardDto board;
     private List<CommentDto> comments;
 
+    private LikeCountDto likes;
+
+
+
+    @Builder
+    public DetailAndCommentsDto(int status, BoardDto board, List<CommentDto> comments, LikeCountDto likes) {
+        this.status = status;
+        this.board = board;
+        this.comments = comments;
+        this.likes = likes;
+    }
+
 
     @Builder
     public DetailAndCommentsDto(BoardDto board, List<CommentDto> comments, int status) {
@@ -23,7 +35,13 @@ public class DetailAndCommentsDto {
         this.board = board;
         this.comments = comments;
     }
+    public LikeCountDto getLikes() {
+        return likes;
+    }
 
+    public void setLikes(LikeCountDto likes) {
+        this.likes = likes;
+    }
 
 
     public int getStatus() {

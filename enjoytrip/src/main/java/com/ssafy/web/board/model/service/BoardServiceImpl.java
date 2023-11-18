@@ -116,5 +116,19 @@ public class BoardServiceImpl implements BoardService {
 
 		return boardLikeMapper.callUpsertLikeStatus(dto);
 	}
+
+	@Override
+	public DetailAndCommentsDto getArticle(int article_no, String user_id) throws  Exception{
+		BoardDto article = boardMapper.getArticle(article_no);
+		List<CommentDto> comments = commentMapper.getComments(article_no);
+		LikeCountDto likes = boardLikeMapper.getArticleLikesAndStatus(
+				LikeRequestStatusDto.builder()
+						.article_no(article_no).user_id(user_id)
+						.build()
+		);
+		System.out.println(likes);
+		return DetailAndCommentsDto.builder()
+				.board(article).comments(comments).likes(likes).build();
+	}
 }
 

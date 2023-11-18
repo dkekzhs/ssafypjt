@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.web.board.model.service.BoardService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 
@@ -59,14 +60,23 @@ public class BoardController {
 	}
 
 	@GetMapping("/view{article_no}")
-	public ResponseEntity<DetailAndCommentsDto> view(@PathVariable("article_no") int article_no)
+	public ResponseEntity<DetailAndCommentsDto> view(@PathVariable("article_no") int article_no,
+													 HttpServletRequest request)
 			throws Exception {
-		DetailAndCommentsDto response = boardService.getArticle(article_no);
-		boardService.updateHit(article_no);
-
+		DetailAndCommentsDto response = null;
+		HttpSession session = request.getSession(false);
+		if(session != null){
+			MemberDto info = (MemberDto) session.getAttribute("user_info");
+			response = boardService.getArticle(article_no,info.getUser_id());
+			boardService.updateHit(article_no);
+		}
+		else{
+			response = boardService.getArticle(article_no);
+			boardService.updateHit(article_no);
+		}
 		return ResponseEntity.ok(DetailAndCommentsDto.builder()
 						.status(200).board(response.getBoard())
-						.comments(response.getComments())
+						.comments(response.getComments()).likes(response.getLikes())
 				.build());
 	}
 

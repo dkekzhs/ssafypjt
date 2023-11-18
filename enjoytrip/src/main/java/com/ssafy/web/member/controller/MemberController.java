@@ -49,6 +49,7 @@ public class MemberController {
 			HttpSession session = request.getSession(false);
 			if(session  == null){
 				session  =request.getSession();
+				session.setAttribute("user_info",login);
 			}
 			
 			return ResponseEntity.ok(LoginResponseDto.builder()

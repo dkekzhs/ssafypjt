@@ -17,7 +17,9 @@
     CALL upsertLikeStatus(#{article_no}, #{user_id}, #{like_status})
 </select>
 
-
+    <select id="getArticleLikesAndStatus" parameterType="likeRequestStatusDto" resultType="likeCountDto">
+        CALL GetArticleLikesAndStatus(#{article_no}, #{user_id})
+    </select>
 
 </mapper>
 
