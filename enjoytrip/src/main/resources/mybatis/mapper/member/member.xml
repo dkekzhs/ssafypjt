@@ -18,13 +18,13 @@
 		VALUES (#{id}, #{salt})
 	</insert>
 	<insert id="memberInsert" parameterType="memberDto">
-		insert into members(id,password,name,email,age) values
-		(#{user_id},#{user_password},#{user_name},#{user_email},
+		insert into members(user_id,user_password,user_name,email_id,age) values
+		(#{user_id},#{user_password},#{user_name},#{email_id},
 		#{age})
 	</insert>
 
 	<select id="getSaltFromDB" parameterType="String"
 		resultType="String">
-		select salt from salt where id = #{user_id}
+		select salt from salt where user_id = #{user_id}
 	</select>
 </mapper>

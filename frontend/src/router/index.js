@@ -28,6 +28,12 @@ const router = createRouter({
       component: () => import("../views/BoardView.vue"),
     },
     {
+      path: '/board/detail/:id',
+      name: 'boardDetail',
+      component: import("@/components/board/BoardDetail.vue"),
+      props: true
+    },
+    {
       path: "/todo",
       name: "todo",
       component: () => import("../views/TodoView.vue"),
@@ -42,6 +48,7 @@ const router = createRouter({
       name: "regist",
       component: () => import("../views/RegistView.vue"),
     },
+    
   ],
 });
 

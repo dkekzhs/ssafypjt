@@ -19,18 +19,24 @@ public class MemberServiceImpl implements MemberService{
 	private final int REQUEST_SEC=60;
 	
 	private RSAKeyManager keyManager = RSAKeyManager.getInstnace();
-	
+
 	@Autowired
-	private MemberMapper memberMapper;
+	public MemberServiceImpl(MemberMapper memberMapper) {
+		this.memberMapper = memberMapper;
+	}
+
+	private final MemberMapper memberMapper;
 	
 	@Override
 	public MemberDto loginMember(MemberDto dto, String ip) {
 		String privatekey = RSA_2048.keyToString(RSAKeyManager.getInstnace().getPrivateKey(ip));
+
 		String password = RSA_2048.decrypt(dto.getUser_password(),privatekey);
+		System.out.println(password);
 		String salt = memberMapper.getSaltFromDB(dto.getUser_id());
 		password = SHA_512.SHA512(password, salt);
 			dto.setUser_password(password);
-	
+		System.out.println(dto.getUser_password());
 		return memberMapper.loginMember(dto);
 		
 	}
@@ -59,7 +65,7 @@ public class MemberServiceImpl implements MemberService{
 		String password = RSA_2048.decrypt(dto.getUser_password(),privatekey);
 		String salt = SHA_512.getSalt();
 		
-		password = SHA_512.DSHA512(password, salt);
+		password = SHA_512.SHA512(password, salt);
 		dto.setUser_password(password);
 
 		int saltStatus = memberMapper.insertSalt(dto.getUser_id(), salt);

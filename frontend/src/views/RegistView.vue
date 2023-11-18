@@ -3,7 +3,8 @@
 import { ref } from "vue";
 import { regist } from "@/stores/menu";
 const user = ref({
-    "user_id": "",
+	"user_id": "",
+	"user_name": "",
     "user_password": "",
     "email_id": "",
     "email_domain": "",
@@ -18,10 +19,11 @@ const user = ref({
 		<div id="modalBody" class="modalBody">
 			<span id="closeSignupBtn" class="closeBtn">&times;</span>
 			<div class="form">
-					<input v-mdoel="user.user_id" id="id" name="id" type="text" placeholder="아이디" /> 
-					<input v-mdoel="user.user_password" id="password" name="password" type="password" placeholder="비밀번호" />
-					<input  v-mdoel="user.age" id="rrn" name="rrn" type="text" placeholder="나이" /> 
-					<button @onclick="regist(user.value)" type="button">회원 등록</button>
+					<input v-model="user.user_id" type="text" placeholder="아이디" /> 
+					<input v-model="user.user_name" type="text" placeholder="이름 입력" />
+					<input v-model="user.user_password" type="password" placeholder="비밀번호" />
+					<input  v-model="user.age" type="text" placeholder="나이" /> 
+					<button @click="regist(user)">회원가입</button>
 			</div>
 		</div>
 	</div>

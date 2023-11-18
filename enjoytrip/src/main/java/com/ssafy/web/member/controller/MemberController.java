@@ -1,26 +1,19 @@
 package com.ssafy.web.member.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.ssafy.web.common.dto.MessageResponseDto;
+import com.ssafy.web.member.model.LoginResponseDto;
+import com.ssafy.web.member.model.MemberDto;
+import com.ssafy.web.member.model.RsaDto;
+import com.ssafy.web.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.web.common.dto.MessageResponseDto;
-import com.ssafy.web.common.dto.ResponseListDto;
-import com.ssafy.web.member.model.LoginResponseDto;
-import com.ssafy.web.member.model.MemberDto;
-import com.ssafy.web.member.model.RsaDto;
-import com.ssafy.web.member.service.MemberService;
-import com.ssafy.web.util.secure.RSA_2048;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/user")
@@ -30,6 +23,7 @@ public class MemberController {
 	
 	@PostMapping("/getPublicKey")
 	public ResponseEntity<RsaDto> getPublicKey(HttpServletRequest request){
+
 		RsaDto dto = ms.getPublicKey(request.getRemoteAddr());
 		return ResponseEntity.ok(dto);
 	}
@@ -63,11 +57,7 @@ public class MemberController {
 					.user_name(login.getUser_name())
 					.build());
 		}
-		return ResponseEntity.ok(LoginResponseDto.builder()
-				.status(400)
-				.message("로그인 실패")
-				.user_name(login.getUser_name())
-				.build());
+		return ResponseEntity.badRequest().body(LoginResponseDto.builder().message("로그인 실패").build());
 	}
 	
 	@PostMapping("/logout")

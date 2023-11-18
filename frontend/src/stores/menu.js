@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { memberLogin, memberLogout, getPublicKey } from "@/api/member/memberApi";
+import { memberLogin, memberLogout, getPublicKey, memberRegist } from "@/api/member/memberApi";
 import { setCookie, getCookie, deleteCookie } from "@/util/cookie/cookie";
 import * as RSA from '@/util/encrypt/rsa.js';
 let isLoggedIn = getCookie("user_name") ? false : true;
@@ -67,10 +67,17 @@ export async function login(id, pw) {
   memberLogin(
     { user_id: id, user_password: pw },
     (res) => {
-      let user_name = res.data.user_name;
-      useUserStore().user.name = user_name;
-      useMenuStore().changeMenuState();
-      setCookie("user_name", user_name);
+      //실패일 경우 메세지 alert 띄우기 
+      console.log(res);
+      if (res.data.status == 400) {
+        alert(res.data.message);
+      }
+      else {
+        let user_name = res.data.user_name;
+        useUserStore().user.name = user_name;
+        useMenuStore().changeMenuState();
+        setCookie("user_name", user_name);
+      }
     },
     (err) => {
       console.log("login 중 에러 발생 >> " + err);
@@ -87,15 +94,16 @@ export async function regist(body) {
     setCookie("exponent", data.data.exponent);
     setCookie("modulus", data.data.modulus);
   }
-  body.user_password = encryptText(pw, getCookie("exponent"), getCookie("modulus"));
-  console.log("userPw " + body);
+  console.log(body);
+  body.user_password =  encryptText(body.user_password, getCookie("exponent"), getCookie("modulus"));
+
   memberRegist(
     body,
     (res) => {
         console.log(res)
     },
     (err) => {
-      console.log("login 중 에러 발생 >> " + err);
+      console.log(err);
 
     }
   );
