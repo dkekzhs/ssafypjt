@@ -10,7 +10,6 @@ public class ChatRoomManager {
 	private static ChatRoomManager instance = null; 
 	private Map<String, ChatRoom> manager = null;
 	private final int maxRoomSize = 10;
-	private final int maxClientSize = 10;
 	
 	private ChatRoomManager() {
 		manager = new ConcurrentHashMap<String,ChatRoom>();
