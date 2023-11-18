@@ -12,9 +12,15 @@ function memberJwtLogin(body, success, fail) {
   apiClient.post("/user/jwtlogin", body).then(success).catch(fail);
 }
 
+
+function memberRegist(body, success, fail) {
+  apiClient.post("/user/insert", body).then(success).catch(fail);
+}
+
+
  async function getPublicKey() {
    return await apiClient.post("/user/getPublicKey");
 }
 
 
-export { memberLogin, memberLogout, memberJwtLogin,getPublicKey};
+export { memberLogin, memberLogout, memberJwtLogin,getPublicKey,memberRegist};

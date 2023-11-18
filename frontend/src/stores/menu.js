@@ -17,7 +17,7 @@ export const useUserStore = defineStore("userStore", () => {
 
 export const useMenuStore = defineStore("menuStore", () => {
   const menuList = ref([
-    { name: "회원가입", show: isLoggedIn, routeName: "home" },
+    { name: "회원가입", show: isLoggedIn, routeName: "regist" },
     { name: "로그인", show: isLoggedIn, routeName: "login" },
     { name: "오늘할일", show: !isLoggedIn, routeName: "home" },
     { name: "내정보", show: !isLoggedIn, routeName: "home" },
@@ -76,6 +76,27 @@ export async function login(id, pw) {
       console.log("login 중 에러 발생 >> " + err);
       useUserStore().user.name = null;
       deleteCookie("user_name");
+    }
+  );
+}
+
+export async function regist(body) {
+  const data = await getPublicKey();
+  console.log(data.data.exponent);
+  if (getCookie("exponent")== null && getCookie("modulus") == null) {
+    setCookie("exponent", data.data.exponent);
+    setCookie("modulus", data.data.modulus);
+  }
+  body.user_password = encryptText(pw, getCookie("exponent"), getCookie("modulus"));
+  console.log("userPw " + body);
+  memberRegist(
+    body,
+    (res) => {
+        console.log(res)
+    },
+    (err) => {
+      console.log("login 중 에러 발생 >> " + err);
+
     }
   );
 }

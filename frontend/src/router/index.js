@@ -37,6 +37,11 @@ const router = createRouter({
       name: "jwtlogin",
       component: () => import("@/components/JwtLogin.vue"),
     },
+    {
+      path: "/regist",
+      name: "regist",
+      component: () => import("../views/RegistView.vue"),
+    },
   ],
 });
 
