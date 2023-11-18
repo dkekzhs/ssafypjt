@@ -9,6 +9,7 @@ import org.springframework.web.socket.WebSocketSession;
 public class ChatRoom {
 	private ChatRoom instance = null;
 	private Map<String, WebSocketSession> clients = null;
+	private final int maxClientSize = 10;
 	
 	
 	public Map<String, WebSocketSession> getClients() {
@@ -27,6 +28,9 @@ public class ChatRoom {
 	}
 	
 	public void addClient(WebSocketSession client) {
+		if(clients.size() >= maxClientSize)
+			return;
+		
 		String key = client.getId();
 		clients.put(key, client);
 	}

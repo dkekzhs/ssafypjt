@@ -43,6 +43,8 @@ public class ChatRoomManager {
 	
 	// chat room 추가
 	public void addChatRoom(String roomId, ChatRoom room) {
+		if(manager.size() >= maxRoomSize)
+			return;
 		manager.put(roomId, room);
 	}
 	
