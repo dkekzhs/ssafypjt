@@ -66,5 +66,20 @@ public class ChatController {
 
 		return ret;
 	}
+	
+	@PostMapping("/getRoomId")
+	public ResponseEntity<MessageResponseDto> getRoomId(@RequestBody ChatRoomDto dto) {
+		String roomId = chatService.getUserRoomId(dto);
+		
+		
+		ResponseEntity<MessageResponseDto> ret = null;
+		if (roomId == null) {
+			ret = ResponseEntity.ok(MessageResponseDto.builder().status(401).message("유저에 해당하는 채팅방을 찾지 못했습니다.").build());
+		} else {
+			ret = ResponseEntity.ok(MessageResponseDto.builder().status(200).message("유저가 접속한 채팅방을 찾았습니다.").build());
+		}
+
+		return ret;
+	}
 
 }

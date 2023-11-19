@@ -6,7 +6,8 @@
 <mapper namespace="com.ssafy.web.socket.model.mapper.ChatMapper">
 
 	<insert id="addUser" parameterType="chatRoomDto">
-		INSERT INTO chat_room (room_id, user_id)
+		INSERT INTO chat_room
+		(room_id, user_id)
 		VALUES (#{room_id}, #{user_id})
 	</insert>
 
@@ -19,12 +20,21 @@
 	<delete id="deleteRoom" parameterType="chatRoomDto">
 		DELETE
 		FROM chat_room
-		WHERE room_id = #{room_id}
+		WHERE
+		room_id = #{room_id}
 	</delete>
 
-	<select id="getNumOfUser" parameterType="chatRoomDto" resultType="int">
+	<select id="getNumOfUser" parameterType="chatRoomDto"
+		resultType="int">
 		SELECT COUNT(*)
 		FROM chat_room
 		WHERE room_id = #{room_id}
+	</select>
+
+	<select id="getUserRoomId" parameterType="chatRoomDto"
+		resultType="String">
+		SELECT room_id
+		FROM chat_room
+		WHERE user_id = #{user_id}
 	</select>
 </mapper>

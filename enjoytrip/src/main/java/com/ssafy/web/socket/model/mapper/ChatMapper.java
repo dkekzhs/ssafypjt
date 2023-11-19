@@ -16,4 +16,6 @@ public interface ChatMapper {
 	public int deleteRoom(ChatRoomDto dto);
 	
 	public int getNumOfUser(ChatRoomDto dto);
+
+	public String getUserRoomId(ChatRoomDto dto);
 }
