@@ -27,12 +27,14 @@ public class ChatRoom {
 		return instance;
 	}
 	
-	public void addClient(WebSocketSession client) {
+	public Boolean addClient(WebSocketSession client) {
 		if(clients.size() >= maxClientSize)
-			return;
+			return false;
 		
 		String key = client.getId();
 		clients.put(key, client);
+		
+		return true;
 	}
 	
 	public void removeClient(String clientId) {

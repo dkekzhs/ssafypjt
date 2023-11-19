@@ -35,6 +35,11 @@ public class ChatServiceImpl implements ChatService {
 	public int getNumOfUser(ChatRoomDto dto) {
 		return chatMapper.getNumOfUser(dto);
 	}
+
+	@Override
+	public String getUserRoomId(ChatRoomDto dto) {
+		return chatMapper.getUserRoomId(dto);
+	}
 	
 	
 }

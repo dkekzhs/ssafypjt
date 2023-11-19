@@ -15,4 +15,7 @@ public interface ChatService {
 	
 	// 채팅방에 남아있는 유저 수 반환
 	public int getNumOfUser(ChatRoomDto dto);
+	
+	// user id에 해당하는 방 이름 가져오기
+	public String getUserRoomId(ChatRoomDto dto);
 }
