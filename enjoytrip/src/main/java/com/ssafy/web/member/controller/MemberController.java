@@ -45,12 +45,10 @@ public class MemberController {
 		System.out.println(dto);
 
 		MemberDto login = ms.loginMember(dto,request.getRemoteAddr());
+		System.out.println(login);
 		if(login != null) {
-			HttpSession session = request.getSession(false);
-			if(session  == null){
-				session  =request.getSession();
-				session.setAttribute("user_info",login);
-			}
+			HttpSession session = request.getSession();
+			session.setAttribute("user_info",login);
 			
 			return ResponseEntity.ok(LoginResponseDto.builder()
 					.status(200)

@@ -37,10 +37,11 @@ public class BoardController {
 		this.boardService = boardService;
 	}
 
-	@ApiOperation(value = "회원 등록", notes = "회원을 등록합니다.")
 	@PostMapping("/write")
-	public ResponseEntity<MessageResponseDto> write(@RequestBody BoardDto boardDto, HttpSession session) throws Exception {
-		MemberDto memberDto = (MemberDto) session.getAttribute("userinfo");
+	public ResponseEntity<MessageResponseDto> write(@RequestBody BoardDto boardDto ,HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession(false);
+		MemberDto memberDto = (MemberDto) session.getAttribute("user_info");
+		System.out.println(memberDto);
 		boardDto.setUser_id(memberDto.getUser_id());
 
 		boardService.writeArticle(boardDto);
