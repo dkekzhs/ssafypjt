@@ -12,7 +12,7 @@ function detailArticle(articleno, success, fail) {
 
 function registArticle(article, success, fail) {
   console.log("boardjs article", article);
-  apiClient.post(`/board/write`, JSON.stringify(article)).then(success).catch(fail);
+  apiClient.post(`/board/write`, article).then(success).catch(fail);
 }
 
 function getModifyArticle(articleno, success, fail) {
