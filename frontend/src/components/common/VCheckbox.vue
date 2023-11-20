@@ -11,7 +11,7 @@ const onSelect = () => {
 </script>
 
 <template>
-  <div>
+  <div class="v-checkbox-group">
     <label v-for="option in selectOption" :key="option.value">
       <input
         type="checkbox"
@@ -26,4 +26,21 @@ const onSelect = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Add Vuetify-like styling to the native checkboxes */
+.v-checkbox-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.v-checkbox-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.v-checkbox-input {
+  margin-right: 8px;
+  /* Add other styling as needed */
+}
+</style>

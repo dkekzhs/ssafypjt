@@ -3,6 +3,8 @@ import { defineStore } from "pinia";
 import { memberLogin, memberLogout, getPublicKey, memberRegist } from "@/api/member/memberApi";
 import { setCookie, getCookie, deleteCookie } from "@/util/cookie/cookie";
 import * as RSA from '@/util/encrypt/rsa.js';
+import router from '@/router/index'; // Vue Router가 설정된 파일을 import
+
 let isLoggedIn = getCookie("user_name") ? false : true;
 
 
@@ -18,7 +20,7 @@ export const useUserStore = defineStore("userStore", () => {
 export const useMenuStore = defineStore("menuStore", () => {
   const menuList = ref([
     { name: "jwt로그인", show: isLoggedIn, routeName: "jwtlogin", icon: 'mdi-login'},
-    { name: "게시판", show: isLoggedIn, routeName: "board", icon :'mdi-ballot' },
+    { name: "게시판", show: !isLoggedIn, routeName: "board", icon :'mdi-ballot' },
     { name: "회원가입", show: isLoggedIn, routeName: "regist", icon :'mdi-account-plus' },
     { name: "로그인", show: isLoggedIn, routeName: "login", icon : 'mdi-login' },
     {
@@ -78,6 +80,8 @@ export async function login(id, pw) {
         useUserStore().user.name = user_name;
         useMenuStore().changeMenuState();
         setCookie("user_name", user_name);
+        router.push({ name: 'home' });
+
       }
     },
     (err) => {

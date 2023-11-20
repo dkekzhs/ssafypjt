@@ -126,22 +126,21 @@ const viewStation = (station) => {
 
 <template>
   <h1>홈 화면입니다.</h1>
-  <div class="container text-center mt-3">
-    <div class="alert alert-success" role="alert">여행지 정보</div>
-    <div class="row mb-2">
-      <div class="col d-flex flex-row-reverse">
-        <VSelect :selectOption="sidoList" @onKeySelect="onChangeSido" />
-      </div>
-      <div class="col">
-        <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
-      </div>
-      <div class="col">
-        <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
-      </div>
-    </div>
 
-    <KakaoMap :stations="chargingStations" :selectStation="selectStation" />
-    <table class="table table-hover">
+  <v-row>
+    <v-col class="v-col-4" >
+      <VSelect class="v-text-field" :selectOption="sidoList" @onKeySelect="onChangeSido" />
+      <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
+      <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
+    </v-col>
+    <v-col class="v-col-8">
+      <KakaoMap :stations="chargingStations" :selectStation="selectStation" />
+    </v-col>
+  </v-row>
+
+  <!-- 아래 출력-->
+  <div class="container text-center mt-3">
+    <v-data-table :headers="headers" :items="chargingStations" item-key="zipcode" @click="viewStation">
       <thead>
         <tr class="text-center">
           <th scope="col">충전소명</th>
@@ -167,8 +166,10 @@ const viewStation = (station) => {
           <td>{{ station.longitude }}</td>
         </tr>
       </tbody>
-    </table>
+    </v-data-table>
   </div>
+
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>
