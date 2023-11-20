@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +17,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 	 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		if(CorsUtils.isPreFlightRequest(request)){
+			return true;
+		}
+		response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET");
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+
     	HttpSession session =  request.getSession(false);
     	System.out.println("asdasdasdsadsad"+ session);
     	if(session != null) {
@@ -27,9 +35,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     		}
 
 
-			response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-			response.setHeader("Access-Control-Allow-Methods", "POST, GET");
-			response.setHeader("Access-Control-Allow-Credentials", "true");
+
     		
     	}
 		System.out.println("인터셉터 발생 ");
