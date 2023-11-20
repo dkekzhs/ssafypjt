@@ -1,8 +1,9 @@
 <script setup>
-import { useMenuStore, useUserStore } from "@/stores/menu";
+import { friendPendingCount } from "@/api/member/friendApi";
+import { useMenuStore, useUserStore, FriendRequestsPage } from "@/stores/menu";
 import { storeToRefs } from "pinia";
 import { logout } from "@/stores/menu";
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useWindowSize } from "@vueuse/core";
 
 const menuStore = useMenuStore();
@@ -32,6 +33,21 @@ watch(width, (newVal) => {
     toolbar.value = true;
   }
 });
+//친구 카운트 세기
+const count = ref(0);
+function countFriend() {
+  friendPendingCount(res => {
+    count.value = res.data.message;
+
+  },
+    err => {
+      console.log(err);
+}
+  )
+}
+onMounted(() => {
+  countFriend();
+})
 </script>
 
 <template>
@@ -40,7 +56,7 @@ watch(width, (newVal) => {
       <template v-for="item in menuList" :key="item.name">
         <v-list-tile v-if="item.show">
           <template v-if="item.routeName == 'logout'">
-            <router-link to="/" @click="logout()">{{item.name}}</router-link>
+            <router-link to="/" @click="logout()">{{ item.name }}</router-link>
           </template>
           <template v-else>
             <v-list-tile-action>
@@ -71,20 +87,35 @@ watch(width, (newVal) => {
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="hidden-xs">
+      <!--Frined Count-->
+      <template v-if="menuStore.login">
+        <v-btn icon @click="FriendRequestsPage">
+          <v-icon>mdi-account-multiple</v-icon>
+            <span class="badge" slot="badge" >{{count}}</span>
+        </v-btn>
+      </template>
+      <!-- end -->
+
       <template v-for="item in menuList" :key="item.name">
         <v-btn flat :to="item.routeName" v-if="item.show">
           <template v-if="item.routeName == 'logout'">
-            <router-link to="/" @click="logout()">{{item.name}}</router-link>
+            <router-link to="/" @click="logout()">{{ item.name }}</router-link>
           </template>
           <template v-else>
             <v-icon left dark>{{ item.icon }}</v-icon>
-          <v-list-tile-content>{{ item.name }}</v-list-tile-content>
+            <v-list-tile-content>{{ item.name }}</v-list-tile-content>
           </template>
-
         </v-btn>
       </template>
     </v-toolbar-items>
   </v-toolbar>
 </template>
 
-<style scoped></style>
+<style scoped>
+.badge {
+  background-color: #ff6f61; /* 약간의 빨간색 배경 */
+  color: white; /* 텍스트 색상 */
+  border-radius: 12px; /* 동그란 형태로 만들기 위한 border-radius 설정 */
+
+}
+</style>

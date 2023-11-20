@@ -3,6 +3,15 @@ package com.ssafy.web.friend.model;
 public class FriendAddDto {
     private String to,from,status;
 
+    @Override
+    public String toString() {
+        return "FriendAddDto{" +
+                "to='" + to + '\'' +
+                ", from='" + from + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
+
     public String getTo() {
         return to;
     }

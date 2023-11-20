@@ -1,7 +1,7 @@
 package com.ssafy.web.friend.service;
 
 import com.ssafy.web.friend.model.FriendAddDto;
-import com.ssafy.web.friend.model.FriendRequestPendingDto;
+import com.ssafy.web.friend.model.FriendPendingDto;
 import com.ssafy.web.friend.model.mapper.FriendMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public List<FriendRequestPendingDto> friendRequestPending(String id) {
+    public List<FriendPendingDto> friendRequestPending(String id) {
         return fm.friendRequestPending(id);
     }
 
@@ -48,5 +48,10 @@ public class FriendServiceImpl implements FriendService{
             }
         }
         return friendNames;
+    }
+
+    @Override
+    public int friendCount(String user_id) {
+        return  fm.friendCount(user_id);
     }
 }

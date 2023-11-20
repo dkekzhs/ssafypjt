@@ -18,6 +18,7 @@ export const useUserStore = defineStore("userStore", () => {
 });
 
 export const useMenuStore = defineStore("menuStore", () => {
+  const login = ref(!isLoggedIn);
   const menuList = ref([
     { name: "jwt로그인", show: isLoggedIn, routeName: "jwtlogin", icon: 'mdi-login'},
     { name: "게시판", show: !isLoggedIn, routeName: "board", icon :'mdi-ballot' },
@@ -34,10 +35,12 @@ export const useMenuStore = defineStore("menuStore", () => {
   const changeMenuState = () => {
     console.log("changeMenuState");
     menuList.value = menuList.value.map((item) => ({ ...item, show: !item.show }));
+    login.value = !login.value;
   };
   return {
     menuList,
     changeMenuState,
+    login,
   };
 });
 
@@ -95,17 +98,17 @@ export async function login(id, pw) {
 export async function regist(body) {
   const data = await getPublicKey();
   console.log(data.data.exponent);
-  if (getCookie("exponent")== null && getCookie("modulus") == null) {
+  if (getCookie("exponent") == null && getCookie("modulus") == null) {
     setCookie("exponent", data.data.exponent);
     setCookie("modulus", data.data.modulus);
   }
   console.log(body);
-  body.user_password =  encryptText(body.user_password, getCookie("exponent"), getCookie("modulus"));
+  body.user_password = encryptText(body.user_password, getCookie("exponent"), getCookie("modulus"));
 
   memberRegist(
     body,
     (res) => {
-        console.log(res)
+      console.log(res)
     },
     (err) => {
       console.log(err);
@@ -113,3 +116,7 @@ export async function regist(body) {
     }
   );
 }
+export function FriendRequestsPage() {
+  router.push({name : 'friendPending'})
+}
+

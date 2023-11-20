@@ -3,15 +3,17 @@ package com.ssafy.web.friend.controller;
 import com.ssafy.web.common.dto.MessageResponseDto;
 import com.ssafy.web.common.dto.ResponseListDto;
 
+import com.ssafy.web.common.exception.AuthException;
 import com.ssafy.web.friend.model.FriendAddDto;
-import com.ssafy.web.friend.model.FriendRequestPendingDto;
+import com.ssafy.web.friend.model.FriendPendingDto;
 import com.ssafy.web.friend.service.FriendService;
+import com.ssafy.web.member.model.MemberDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -24,15 +26,22 @@ public class FriendController {
         this.fs = fs;
     }
 
+    @GetMapping("/count")
+    ResponseEntity<?> FriendsCount(HttpServletRequest servletRequest) {
+        HttpSession session = servletRequest.getSession(false);
+        MemberDto dto = (MemberDto) session.getAttribute("user_info");
+        int count = fs.friendCount(dto.getUser_id());
+        return ResponseEntity.ok(MessageResponseDto.builder().message(String.valueOf(count)).build());
+    }
+
     @PostMapping("/add")
     public ResponseEntity<MessageResponseDto> add(@RequestBody FriendAddDto dto
-    , HttpServletRequest request) throws Exception{
+            , HttpServletRequest request) throws Exception {
         int status = fs.add(dto);
         StringBuffer sb = new StringBuffer();
-        if(status == 1){
+        if (status == 1) {
             sb.append("친구 등록 성공");
-        }
-        else{
+        } else {
             sb.append("친구 등록 실패");
         }
         return ResponseEntity.ok(MessageResponseDto.builder()
@@ -40,48 +49,37 @@ public class FriendController {
     }
 
     @GetMapping("/friendRequestPending")
-    public ResponseEntity<ResponseListDto> friendRequestPending(@RequestBody HashMap<String,String> id,
-            HttpServletRequest request) throws Exception{
-        //        HttpSession session = request.getSession(false);
-//        if(session != null){
-//            String id =(String) session.getAttribute("id");
-//            List<FriendRequestPendingDto> data = fs.friendRequestPending(id);
-//            return data;
-//        }
-//        else{
-//            throw new Exception("friend Error");
-//        }
-            System.out.println(id);
-            List<FriendRequestPendingDto> data = fs.friendRequestPending(id.get("id"));
-
+    public ResponseEntity<ResponseListDto> friendRequestPending(HttpServletRequest request) throws Exception {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            MemberDto dto = (MemberDto) session.getAttribute("user_info");
+            List<FriendPendingDto> data = fs.friendRequestPending(dto.getUser_id());
             return ResponseEntity.ok(ResponseListDto.builder().status(200).list(data).build());
+        }
+        throw new AuthException("friendRequestPending error");
+
     }
 
     @PostMapping("/accept")
     public ResponseEntity<MessageResponseDto>
     friendAccept(@RequestBody FriendAddDto dto, HttpServletRequest request) throws Exception {
-//        HttpSession session = request.getSession(false);
-//        if(session != null){
-//            String id =(String) session.getAttribute("id");
-//                    return data;
-//        }
-//        else{
-//            throw new Exception("friend Error");
-//        }
-        int status = fs.accept(dto);
-        StringBuffer sb = new StringBuffer();
-        if(status == 1){
-            sb.append("친구 등록 성공");
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            MemberDto memberDto = (MemberDto) session.getAttribute("user_info");
+            dto.setTo(memberDto.getUser_id());
+            System.out.println(dto);
+            int status = fs.accept(dto);
+            StringBuffer sb = new StringBuffer();
+            if (status == 1) {
+                sb.append("친구 등록 성공");
+            } else {
+                sb.append("친구 등록 실패");
+            }
+            return ResponseEntity.ok(MessageResponseDto.builder()
+                    .status(200).message(sb.toString()).build());
         }
-        else{
-            sb.append("친구 등록 실패");
-        }
-        return ResponseEntity.ok(MessageResponseDto.builder()
-                .status(200).message(sb.toString()).build());
-
+        throw new AuthException("accpet error");
     }
-
-
 
 
 }

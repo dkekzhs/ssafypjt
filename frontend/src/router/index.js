@@ -53,7 +53,11 @@ const router = createRouter({
       name: "regist",
       component: () => import("../views/RegistView.vue"),
     },
-    
+    {
+      path: "/friendPending",
+      name: "friendPending",
+      component: () => import("../views/FriendPendingView.vue"),
+    },
   ],
 });
 
