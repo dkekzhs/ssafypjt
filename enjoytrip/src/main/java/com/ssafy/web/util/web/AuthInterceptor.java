@@ -23,9 +23,13 @@ public class AuthInterceptor implements HandlerInterceptor {
     		MemberDto dto = (MemberDto)session.getAttribute("user_info");
     		String user_id = dto.getUser_id();
     		if(!"".equals(user_id) && user_id != null) {
-
     			return true;
     		}
+
+
+			response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+			response.setHeader("Access-Control-Allow-Methods", "POST, GET");
+			response.setHeader("Access-Control-Allow-Credentials", "true");
     		
     	}
 		System.out.println("인터셉터 발생 ");
