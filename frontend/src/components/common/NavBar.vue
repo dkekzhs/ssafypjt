@@ -67,9 +67,6 @@ const logout = () => {
               HELP DESK
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">공지사항</a></li>
-              <li><a class="dropdown-item" href="#">FAQ</a></li>
-              <li><a class="dropdown-item" href="#">학사규정</a></li>
               <li>
                 <a
                   class="dropdown-item"

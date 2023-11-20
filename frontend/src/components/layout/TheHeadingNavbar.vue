@@ -2,6 +2,9 @@
 import { useMenuStore, useUserStore } from "@/stores/menu";
 import { storeToRefs } from "pinia";
 import { logout } from "@/stores/menu";
+import { ref, watch } from "vue";
+import { useWindowSize } from "@vueuse/core";
+
 const menuStore = useMenuStore();
 const userStore = useUserStore();
 
@@ -10,105 +13,78 @@ const userStore = useUserStore();
 const { menuList } = storeToRefs(menuStore);
 const { user } = storeToRefs(userStore);
 const { changeMenuState } = menuStore;
-console.log(menuList);
+console.log(menuList.value);
+
+const appTitle = ref("enjoyTrip");
+const sidebar = ref(false);
+const toolbar = ref(false);
+
+const { width } = useWindowSize();
+
+watch(width, (newVal) => {
+  if (newVal <= 600) {
+    // 화면이 작을 때 사이드바를 활성화하고 툴바를 비활성화합니다.
+    sidebar.value = true;
+    toolbar.value = false;
+  } else {
+    // 화면이 클 때 사이드바를 비활성화하고 툴바를 활성화합니다.
+    sidebar.value = false;
+    toolbar.value = true;
+  }
+});
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
-    <div class="container-fluid">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarScroll"
-        aria-controls="navbarScroll"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarScroll">
-        <ul
-          class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll"
-          style="--bs-scroll-height: 100px"
-        >
-          <li class="nav-item">
-            <router-link :to="{ name: 'home' }">home</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'login' }">login</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'board' }">board</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'jwtlogin' }" class="nav-link">JWT 로그인</router-link>
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              HELP DESK
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">공지사항</a></li>
-              <li><a class="dropdown-item" href="#">FAQ</a></li>
-              <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item" href="#">학사규정</a></li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  href="https://kauth.kakao.com/oauth/authorize?client_id=ea4e0a205ceee6e61843fcf77e9aad18&redirect_uri=http://localhost/enjoytrip/user/kakaologin&response_type=code"
-                >
-                  카카오 로그인
-                  <img src="@/assets/kakao_login_small.png" />
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'board' }" class="nav-link">게시판</router-link>
-          </li>
-        </ul>
-        <!-- <form class="d-flex" role="search">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="검색..."
-            aria-label="Search"
-          />
-          <button class="btn btn-outline-success" type="button">search</button>
-        </form> -->
-        <ul
-          class="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll"
-          style="--bs-scroll-height: 100px"
-        >
-          <template v-for="menu in menuList" :key="menu.routeName">
-            <template v-if="menu.show">
-              <template v-if="menu.routeName === 'logout'">
-                <li class="nav-item">
-                  <router-link to="/" @click="logout()" class="nav-link">{{
-                    menu.name
-                  }}</router-link>
-                </li>
-              </template>
-              <template v-else>
-                <li class="nav-item">
-                  <router-link :to="{ name: menu.routeName }" class="nav-link">{{
-                    menu.name
-                  }}</router-link>
-                </li>
-              </template>
-            </template>
+  <v-navigation-drawer v-model="sidebar">
+    <v-list>
+      <template v-for="item in menuList" :key="item.name">
+        <v-list-tile v-if="item.show">
+          <template v-if="item.routeName == 'logout'">
+            <router-link to="/" @click="logout()">{{item.name}}</router-link>
           </template>
-        </ul>
-      </div>
-    </div>
-  </nav>
+          <template v-else>
+            <v-list-tile-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <router-link :to="item.routeName" tag="span" style="cursor: pointer">
+                {{ item.name }}
+              </router-link>
+            </v-list-tile-content>
+            <br />
+          </template>
+        </v-list-tile>
+      </template>
+    </v-list>
+  </v-navigation-drawer>
+
+  <v-toolbar>
+    <span class="hidden-sm-and-up">
+      <v-toolbar @click="sidebar = !sidebar">
+        <v-icon>mdi-table-of-contents</v-icon>
+      </v-toolbar>
+    </span>
+    <v-toolbar-title>
+      <router-link to="/" tag="span" style="cursor: pointer">
+        {{ appTitle }}
+      </router-link>
+    </v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-toolbar-items class="hidden-xs">
+      <template v-for="item in menuList" :key="item.name">
+        <v-btn flat :to="item.routeName" v-if="item.show">
+          <template v-if="item.routeName == 'logout'">
+            <router-link to="/" @click="logout()">{{item.name}}</router-link>
+          </template>
+          <template v-else>
+            <v-icon left dark>{{ item.icon }}</v-icon>
+          <v-list-tile-content>{{ item.name }}</v-list-tile-content>
+          </template>
+
+        </v-btn>
+      </template>
+    </v-toolbar-items>
+  </v-toolbar>
 </template>
 
 <style scoped></style>

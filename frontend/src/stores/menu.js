@@ -17,14 +17,15 @@ export const useUserStore = defineStore("userStore", () => {
 
 export const useMenuStore = defineStore("menuStore", () => {
   const menuList = ref([
-    { name: "회원가입", show: isLoggedIn, routeName: "regist" },
-    { name: "로그인", show: isLoggedIn, routeName: "login" },
-    { name: "오늘할일", show: !isLoggedIn, routeName: "home" },
-    { name: "내정보", show: !isLoggedIn, routeName: "home" },
+    { name: "jwt로그인", show: isLoggedIn, routeName: "jwtlogin", icon: 'mdi-login'},
+    { name: "게시판", show: isLoggedIn, routeName: "board", icon :'mdi-ballot' },
+    { name: "회원가입", show: isLoggedIn, routeName: "regist", icon :'mdi-account-plus' },
+    { name: "로그인", show: isLoggedIn, routeName: "login", icon : 'mdi-login' },
     {
       name: "로그아웃",
       routeName: "logout",
       show: !isLoggedIn,
+      icon : "mdi-logout",
     },
   ]);
 

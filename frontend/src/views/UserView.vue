@@ -10,6 +10,7 @@ const pw = ref("");
 </script>
 
 <template>
+
   <div>
     <input v-model="id" type="text" />
     <input v-model="pw" type="text" />
