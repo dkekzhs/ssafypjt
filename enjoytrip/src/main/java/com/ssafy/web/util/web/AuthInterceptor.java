@@ -29,6 +29,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     	if(session != null) {
     		System.out.println(session);
     		MemberDto dto = (MemberDto)session.getAttribute("user_info");
+    		if(dto == null) throw new AuthException("로그인해주세요");
     		String user_id = dto.getUser_id();
     		if(!"".equals(user_id) && user_id != null) {
     			return true;

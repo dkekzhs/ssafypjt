@@ -15,7 +15,7 @@ public interface FriendService {
 
     int accept(FriendAddDto dto);
 
-    Set<String> findFriends(String id);
+    List<FriendAddDto> findFriends(String id);
 
     int friendCount(String user_id);
 }
