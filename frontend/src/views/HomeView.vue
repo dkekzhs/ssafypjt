@@ -1,8 +1,15 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import KakaoMap from "../components/layout/KakaoMap.vue";
+import TravelList from "@/components/travel/TravelList.vue";
+import Rating from "@/components/travel/Rating.vue";
 import VSelect from "@/components/common/VSelect.vue";
-import { getSido, getType, getGugun, getTravelSite } from "@/util/travel/travelApi";
+import {
+  getSido,
+  getType,
+  getGugun,
+  getTravelSite,
+} from "@/util/travel/travelApi";
 import VCheckbox from "../components/common/VCheckbox.vue";
 import { useMenuStore } from "@/stores/menu";
 import PlanModal from "@/components/modal/PlanModal.vue";
@@ -128,20 +135,31 @@ function openModal() {
 
 <template>
   <h1>홈 화면입니다.</h1>
-
+  <Rating />
   <v-row class="v-row">
     <v-col class="v-col-4">
-      <VSelect class="v-text-field" :selectOption="sidoList" @onKeySelect="onChangeSido" />
+      <VSelect
+        class="v-text-field"
+        :selectOption="sidoList"
+        @onKeySelect="onChangeSido"
+      />
       <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
       <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
+      <TravelList />
+
       <!-- 모달 버튼-->
       <template v-if="menuStore.login" class="asdf">
         <v-col cols="auto">
-          <v-btn class="asdfbtn" icon="mdi-plus" size="small" @click="openModal"></v-btn>
+          <v-btn
+            class="asdfbtn"
+            icon="mdi-plus"
+            size="small"
+            @click="openModal"
+          ></v-btn>
         </v-col>
         <div id="modal" class="modal" @click.self="closeModal">
           <div class="modal-content">
-            <PlanModal></PlanModal>
+            <PlanModal />
           </div>
         </div>
       </template>
