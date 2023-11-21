@@ -1,16 +1,45 @@
 <script setup>
 import { ref } from "vue";
-
+import { friendList } from "@/api/member/friendApi";
 const travelTitle = ref("여행 계획");
-const friendList = ref([
-  { name: "친구1", isShared: false },
-  { name: "친구2", isShared: false },
-  { name: "친구3", isShared: false },
+const friends = ref([
 ]);
-const newFriend = ref("");
 
+function myFriendList() {
+  friendList(res => {
+    console.log(res);
+    friends.value = [];
+    for (let elem of res.data.data) {
+      console.log(elem);
+      friends.value.push({
+        name: elem.to,
+        isShared: false
+      });
+    }
+  },
+    err => {
+      console.log(err);
+  })
+}
+function createPlan() {
+  const socket = new WebSocket("ws://localhost:80/enjoytrip/createChatRoom");
+  socket.onopen = () => {
+    let invited = [];
+    for (let elem of friends.value) {
+      if (elem.isShared) {
+        invited.push(elem.name);
+      }
+    }
+    socket.send(JSON.stringify({
+      type: "invitedUser",
+      data: invited,
+      title: travelTitle.value
+    }));
+  }
+  closeModal();
+}
 const toggleShare = function (index) {
-  friendList.value[index].isShared = !friendList.value[index].isShared;
+  friends.value[index].isShared = !friends.value[index].isShared;
 };
 
 const closeModal = function () {
@@ -29,7 +58,7 @@ const closeModal = function () {
       <div>
         <h3>친구 목록</h3>
         <ul>
-          <li v-for="(friend, index) in friendList" :key="index">
+          <li v-for="(friend, index) in friends" :key="index">
             {{ friend.name }}
             <button @click="toggleShare(index)">
               {{ friend.isShared ? "해제" : "공유" }}
@@ -37,9 +66,9 @@ const closeModal = function () {
           </li>
         </ul>
       </div>
-
+      <button @click="myFriendList">친구새로고침</button>
       <!-- 완료 버튼 -->
-      <button @click="closeModal">완료</button>
+      <button @click="createPlan">완료</button>
       <button @click="closeModal">모달 닫기</button>
     </div>
   </div>

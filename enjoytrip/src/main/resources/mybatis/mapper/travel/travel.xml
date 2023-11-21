@@ -140,8 +140,8 @@
 	<delete id="deletePlanAndDetails" parameterType="planDto">
 		CALL deletePlanAndDetails(#{user_id},#{plan_id})
 	</delete>
-	<insert id="CreatePlanBoardWithShare" parameterType="planDto2">
-		CALL CreatePlanBoardWithShare(#{user_id},#{flag},CAST(#{data} AS JSON));
+	<insert id="CreatePlanBoardWithShare" parameterType="planDto2" useGeneratedKeys="true" keyProperty="last_plan_id" >
+		CALL CreatePlanBoardWithShare(#{user_id},#{flag},CAST(#{data} AS JSON),#{plan_name});
 	</insert>
 	
 </mapper>

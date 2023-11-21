@@ -2,6 +2,8 @@ package com.ssafy.web.socket;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,12 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.ssafy.web.socket.model.ChatRoomDto;
 import com.ssafy.web.socket.service.ChatService;
+import com.ssafy.web.travel.model.PlanDto;
+import com.ssafy.web.travel.model.PlanDto2;
+import com.ssafy.web.travel.service.TravelService;
 
 import lombok.var;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +34,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	@Autowired
 	private ChatService chatService;
-
+	
+	@Autowired
+	private TravelService travelService;
 	// 모든 세션 객체를 저장하는 해시맵
 	private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<String, WebSocketSession>();
 
@@ -41,40 +49,30 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	 * 쿠키를 얻어올 수 있다.
 	 * 
 	 * @param session
-	 * @return UUID
-	public String getIdFromHeader(WebSocketSession session) {
-		HttpHeaders headers = session.getHandshakeHeaders();
-		List<String> cookies = headers.get(HttpHeaders.COOKIE);
-		String id = null;
-		for (String cookie : cookies) {
-			String[] parts = cookie.trim().split("=");
-			String key = parts[0];
-			String value = parts[1];
-			if (key.equals("id")) {
-				id = value;
-				break;
-			}
-		}
-
-		return id;
-	}
-	
+	 * @return UUID public String getIdFromHeader(WebSocketSession session) {
+	 *         HttpHeaders headers = session.getHandshakeHeaders(); List<String>
+	 *         cookies = headers.get(HttpHeaders.COOKIE); String id = null; for
+	 *         (String cookie : cookies) { String[] parts =
+	 *         cookie.trim().split("="); String key = parts[0]; String value =
+	 *         parts[1]; if (key.equals("id")) { id = value; break; } }
+	 * 
+	 *         return id; }
+	 * 
 	 */
-	
+
 	public String getIdFromSession(WebSocketSession session) {
 		String id = null;
 		String key = null;
-		
+
 		for (Entry<String, Object> map : session.getAttributes().entrySet()) {
-			key = (String)map.getKey();
-			
-			if(key.equals("user_id")) {
+			key = (String) map.getKey();
+
+			if (key.equals("user_id")) {
 				return (String) map.getValue();
 			}
 		}
 		return null;
 	}
-	
 
 	/**
 	 * 웹 소켓 연결 수립 후 요청 URI에 따라 방장이 채팅방을 생성하거나, 채팅원이 채팅방에 입장함을 알 수 있다.
@@ -88,8 +86,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		String roomId = null;
 		String toks[] = null;
 		URI uri = null;
-
-		
 
 		System.out.println("URL >> " + session.getUri());
 		System.out.println("attributes >> " + session.getAttributes());
@@ -145,7 +141,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				System.out.println("유저에 해당하는 방이 없습니다.");
 				session.close();
 				return;
-			
+
 			}
 		}
 			break;
@@ -177,10 +173,57 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		// 문자열을 JSON으로 변환
 		JsonNode jsonNode = objectMapper.readTree(message.getPayload());
 
+		String roomId = sessionToRoomId.get(session.getId());
+
 		// JSON 출력
 		System.out.println("JSON: " + jsonNode);
 
-		String roomId = sessionToRoomId.get(session.getId());
+		switch (jsonNode.get("type").asText()) {
+		case "invitedUser":
+			// PlanService를 가져와서 AI 키값 가져와서 넣어주기만 하면 되는거 아니에요
+			System.out.println(jsonNode.get("title"));
+			String plan_name = jsonNode.get("title").asText();
+			System.out.println(plan_name);
+	        
+			JsonNode dataArray = jsonNode.get("data");
+	        System.out.println("dataArray >> " + dataArray.textValue());
+	        
+			String id = getIdFromSession(session);// 사용자 아이디를 쿠키로 부터 받아온다.
+			System.out.println("id >> " + id);
+			List<String> test = new ArrayList<String>();
+            for (JsonNode node : dataArray) {
+            	test.add(node.asText());
+			}
+			
+			
+			PlanDto2 planDto = new PlanDto2();
+			planDto.setShare_user_id_list(test);
+			planDto.setFlag(2);
+			planDto.setUser_id(id);
+			planDto.setPlan_name(plan_name);
+			
+			System.out.println("planDto >> " + planDto);
+			int plan_id = travelService.create(planDto);
+			System.out.println("plan_id >> " + plan_id);
+			
+			List<String> friends = new ArrayList<String>();
+   
+            System.out.println(dataArray);
+            for (JsonNode node : dataArray) {
+            	ChatRoomDto dto = new ChatRoomDto();
+    			dto.setRoom_id(roomId);
+    			dto.setUser_id(node.asText());
+    			dto.setPlan_id(plan_id);
+    			System.out.println("plan_dto elem >> " + dto);
+    			chatService.addUser(dto);
+			}
+			// ChatRoomDto dto = new ChatRoomDto();
+//			dto.setRoom_id(roomId);
+//			dto.setUser_id(user_id);
+//			chatService.addUser(dto);
+			break;
+
+		}
 
 		if (roomId == null) {
 			System.out.println("메시지를 보낼 수 있는 채팅방이 존재하지 않습니다.");
@@ -215,7 +258,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	 */
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		
 
 		System.out.println("연결 종료되었습니다");
 		System.out.println(status);
@@ -225,7 +267,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		String id = session.getId();
 		if (id == null)
 			return;
-		if(sessionToRoomId.get(id) == null)	// 방에 들어올 수 없는 인원이 들어왔다가 퇴장당한 경우
+		if (sessionToRoomId.get(id) == null) // 방에 들어올 수 없는 인원이 들어왔다가 퇴장당한 경우
 			return;
 		if (sessionToRoomId.get(id).equals(id)) { // 방장이 나간 경우
 			// 방 인원을 모두 제거하기

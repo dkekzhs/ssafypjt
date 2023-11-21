@@ -10,5 +10,8 @@ function friendPendingList(success, fail) {
 function friendAccept(from, success, fail) {
   apiClient.post("/friend/accept", from).then(success).catch(fail);
 }
+function friendList( success, fail) {
+  apiClient.get("/friend/myfriend").then(success).catch(fail);
+}
 
-export { friendPendingList ,friendPendingCount, friendAccept};
+export { friendPendingList ,friendPendingCount, friendAccept,friendList};

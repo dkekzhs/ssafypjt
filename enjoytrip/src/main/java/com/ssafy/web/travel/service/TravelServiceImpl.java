@@ -60,9 +60,11 @@ public class TravelServiceImpl implements TravelService {
 	public int create(PlanDto2 dto) {
 		// 처리
 		dto.setData();
+		System.out.println("service : " + dto.getData());
 		int i = travelMapper.CreatePlanBoardWithShare(dto);
-		System.out.println(dto.getData());
-		System.out.println(dto.getShare_user_id_list());
+//		System.out.println(dto.getData());
+//		System.out.println(dto.getShare_user_id_list());
+		System.out.println(i);
 		return i;
 	}
 
