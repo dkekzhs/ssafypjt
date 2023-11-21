@@ -30,4 +30,9 @@
     <select id="friendCount" parameterType="String" resultType="int">
         select count(*) from friend where `to` =#{user_id} and status = 0
     </select>
+
+    <delete id="refuse" parameterType="friendAddDto">
+        DELETE FROM friend
+        WHERE `from` = #{from} AND `to` = #{to} AND status = 0
+    </delete>
 </mapper>

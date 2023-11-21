@@ -5,6 +5,7 @@ import { setCookie, getCookie, deleteCookie } from "@/util/cookie/cookie";
 import * as RSA from '@/util/encrypt/rsa.js';
 import router from '@/router/index'; // Vue Router가 설정된 파일을 import
 
+
 let isLoggedIn = getCookie("user_name") ? false : true;
 
 
@@ -52,6 +53,7 @@ export function logout() {
     deleteCookie("user_name");
     deleteCookie("exponent");
     deleteCookie("modulus");
+    router.push({ name: 'home' });
   } else {
     console.log("로그인 유저 없음");
   }

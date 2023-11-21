@@ -14,4 +14,11 @@ function friendList( success, fail) {
   apiClient.get("/friend/myfriend").then(success).catch(fail);
 }
 
-export { friendPendingList ,friendPendingCount, friendAccept,friendList};
+function addFriend(data, success, fail) {
+  apiClient.post("/friend/add" , data).then(success).catch(fail);
+}
+function refuseFriend(data, success, fail) {
+  apiClient.post("/friend/refuse", data).then(success).catch(fail);
+}
+
+export { friendPendingList ,friendPendingCount, friendAccept,friendList, addFriend, refuseFriend};

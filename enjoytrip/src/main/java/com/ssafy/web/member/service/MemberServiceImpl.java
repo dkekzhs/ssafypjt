@@ -1,6 +1,7 @@
 package com.ssafy.web.member.service;
 
 import java.security.spec.RSAPublicKeySpec;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,6 +78,13 @@ public class MemberServiceImpl implements MemberService{
 		return 0;
 	}
 
-	
-	
+	@Override
+	public List<String> getUserList(String user_id, String search) {
+		List<String> userList = memberMapper.getUserList(user_id, search);
+		System.out.println(userList);
+		return userList;
+	}
+
+
+
 }

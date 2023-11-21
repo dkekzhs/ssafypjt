@@ -18,4 +18,6 @@ public interface FriendService {
     List<FriendAddDto> findFriends(String id);
 
     int friendCount(String user_id);
+
+    int refuse(FriendAddDto dto);
 }
