@@ -50,6 +50,8 @@ export function logout() {
     useMenuStore().changeMenuState();
     useUserStore().user.name = "";
     deleteCookie("user_name");
+    deleteCookie("exponent");
+    deleteCookie("modulus");
   } else {
     console.log("로그인 유저 없음");
   }

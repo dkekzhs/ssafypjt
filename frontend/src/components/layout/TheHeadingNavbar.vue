@@ -56,7 +56,7 @@ onMounted(() => {
       <template v-for="item in menuList" :key="item.name">
         <v-list-tile v-if="item.show">
           <template v-if="item.routeName == 'logout'">
-            <router-link to="/" @click="logout()">{{ item.name }}</router-link>
+            <v-btn @click="logout()">{{ item.name }}</v-btn> 
           </template>
           <template v-else>
             <v-list-tile-action>
@@ -87,6 +87,7 @@ onMounted(() => {
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="hidden-xs">
+
       <!--Frined Count-->
       <template v-if="menuStore.login">
         <v-btn icon @click="FriendRequestsPage">
@@ -94,17 +95,15 @@ onMounted(() => {
             <span class="badge" slot="badge" >{{count}}</span>
         </v-btn>
       </template>
+      
       <!-- end -->
-
       <template v-for="item in menuList" :key="item.name">
-        <v-btn flat :to="item.routeName" v-if="item.show">
-          <template v-if="item.routeName == 'logout'">
-            <router-link to="/" @click="logout()">{{ item.name }}</router-link>
+        <template v-if="item.routeName == 'logout' && item.show">
+            <v-btn @click="logout()">{{ item.name }}</v-btn> 
           </template>
-          <template v-else>
+        <v-btn flat :to="item.routeName" v-if="item.show && item.routeName != 'logout'">
             <v-icon left dark>{{ item.icon }}</v-icon>
             <v-list-tile-content>{{ item.name }}</v-list-tile-content>
-          </template>
         </v-btn>
       </template>
     </v-toolbar-items>
