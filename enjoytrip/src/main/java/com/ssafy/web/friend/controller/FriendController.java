@@ -38,7 +38,13 @@ public class FriendController {
     @PostMapping("/add")
     public ResponseEntity<MessageResponseDto> add(@RequestBody FriendAddDto dto
             , HttpServletRequest request) throws Exception {
-        int status = fs.add(dto);
+        int status =0;
+        HttpSession session = request.getSession(false);
+        if(session != null){
+            MemberDto memberDto = (MemberDto) session.getAttribute("user_info");
+            dto.setFrom(memberDto.getUser_id());
+            status = fs.add(dto);
+        }
         StringBuffer sb = new StringBuffer();
         if (status == 1) {
             sb.append("친구 등록 성공");
@@ -92,6 +98,25 @@ public class FriendController {
             return ResponseEntity.ok(ResponseListDto.builder().list(data).build());
         }
     	throw new AuthException("내친구찾기 오류");
+    }
+    @PostMapping("/refuse")
+    public ResponseEntity<MessageResponseDto> friendRefuse(@RequestBody FriendAddDto dto, HttpServletRequest request) throws  AuthException{
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            MemberDto memberDto = (MemberDto) session.getAttribute("user_info");
+            dto.setTo(memberDto.getUser_id());
+            System.out.println(dto);
+            int status = fs.refuse(dto);
+            StringBuffer sb = new StringBuffer();
+            if (status == 1) {
+                sb.append("친구 거절");
+            } else {
+                sb.append("친구 거절 실패");
+            }
+            return ResponseEntity.ok(MessageResponseDto.builder()
+                    .status(200).message(sb.toString()).build());
+        }
+        throw new AuthException("친구거절 error");
     }
     
 

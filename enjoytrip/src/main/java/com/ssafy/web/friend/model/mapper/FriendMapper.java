@@ -20,4 +20,6 @@ public interface FriendMapper {
     List<FriendAddDto> findFriends(String id);
 
     int friendCount(String user_id);
+
+    int refuse(FriendAddDto dto);
 }

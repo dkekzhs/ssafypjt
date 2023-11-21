@@ -21,6 +21,8 @@ function memberRegist(body, success, fail) {
  async function getPublicKey() {
    return await apiClient.post("/user/getPublicKey");
 }
+function getUsers(user_id, success, fail) {
+  apiClient.post("/user/search", user_id).then(success).catch(fail);
+}
 
-
-export { memberLogin, memberLogout, memberJwtLogin,getPublicKey,memberRegist};
+export { memberLogin, memberLogout, memberJwtLogin,getPublicKey,memberRegist,getUsers};

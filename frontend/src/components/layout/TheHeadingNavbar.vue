@@ -3,7 +3,7 @@ import { friendPendingCount } from "@/api/member/friendApi";
 import { useMenuStore, useUserStore, FriendRequestsPage } from "@/stores/menu";
 import { storeToRefs } from "pinia";
 import { logout } from "@/stores/menu";
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, computed } from "vue";
 import { useWindowSize } from "@vueuse/core";
 
 const menuStore = useMenuStore();
@@ -33,21 +33,28 @@ watch(width, (newVal) => {
     toolbar.value = true;
   }
 });
+
 //친구 카운트 세기
+const login = computed(() => menuStore.login)
 const count = ref(0);
+watch(login, (newValue) => {
+  console.log(newValue)
+  if (newValue == true) {
+    countFriend();
+  }
+});
 function countFriend() {
   friendPendingCount(res => {
     count.value = res.data.message;
-
+    
   },
     err => {
+      logout();
       console.log(err);
 }
   )
 }
-onMounted(() => {
-  countFriend();
-})
+
 </script>
 
 <template>
@@ -95,7 +102,7 @@ onMounted(() => {
             <span class="badge" slot="badge" >{{count}}</span>
         </v-btn>
       </template>
-      
+
       <!-- end -->
       <template v-for="item in menuList" :key="item.name">
         <template v-if="item.routeName == 'logout' && item.show">

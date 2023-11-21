@@ -47,4 +47,9 @@ public class FriendServiceImpl implements FriendService{
     public int friendCount(String user_id) {
         return  fm.friendCount(user_id);
     }
+
+    @Override
+    public int refuse(FriendAddDto dto) {
+        return fm.refuse(dto);
+    }
 }

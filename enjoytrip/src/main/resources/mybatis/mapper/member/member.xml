@@ -27,4 +27,14 @@
 		resultType="String">
 		select salt from salt where user_id = #{user_id}
 	</select>
+	<select id="getUserList" parameterType="String" resultType="String">
+		SELECT user_id
+		FROM members
+		WHERE user_id NOT IN (
+			SELECT `to` FROM Friend WHERE `from` = #{user_id}
+			UNION
+			SELECT `from` FROM Friend WHERE `to` = #{user_id}
+		)
+		  AND user_id LIKE CONCAT('%', #{search}, '%') AND user_id != #{user_id}
+	</select>
 </mapper>
