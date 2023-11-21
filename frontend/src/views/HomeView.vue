@@ -9,8 +9,9 @@ import {
   getTravelSite,
 } from "@/util/travel/travelApi";
 import VCheckbox from "../components/common/VCheckbox.vue";
-
+import { useMenuStore } from "@/stores/menu";
 const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
+const menuStore = useMenuStore();
 
 const sidoList = ref([]);
 const gugunList = ref([{ text: "구군선택", value: "" }]);
@@ -122,17 +123,30 @@ const onChangeOption = (val) => {
 const viewStation = (station) => {
   selectStation.value = station;
 };
+
+function handleButtonClick(){
+  alert("모달 오픈 해야됨");
+}
 </script>
 
 <template>
   <h1>홈 화면입니다.</h1>
 
-  <v-row>
+  <v-row class="v-row">
+    
     <v-col class="v-col-4" >
       <VSelect class="v-text-field" :selectOption="sidoList" @onKeySelect="onChangeSido" />
       <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
       <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
+      <!-- 모달 버튼-->
+      <template v-if="menuStore.login" class="asdf">
+        <v-col cols="auto">
+        <v-btn class="asdfbtn" icon="mdi-plus" size="small" @click="handleButtonClick"></v-btn>
+      </v-col>
+    </template>
+
     </v-col>
+
     <v-col class="v-col-8">
       <KakaoMap :stations="chargingStations" :selectStation="selectStation" />
     </v-col>
@@ -172,4 +186,16 @@ const viewStation = (station) => {
 </template>
 
 <style scoped>
+.v-row { 
+  height: 100%;
+}
+
+.asdf {
+  position: relative;
+  float:left;
+}
+
+.asdfbtn {
+  bottom: 0px;
+}
 </style>
