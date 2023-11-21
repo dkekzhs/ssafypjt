@@ -14,7 +14,9 @@
 		<result column="register_time" property="register_time" />
 	</resultMap>
 
-
+	<select id="getAuthor" parameterType="int" resultType="String">
+		select user_id from board where article_no = #{article_no}	
+	</select>
 
 
 	<insert id="writeArticle" parameterType="boardDto">

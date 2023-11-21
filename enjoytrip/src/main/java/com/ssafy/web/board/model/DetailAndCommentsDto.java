@@ -11,10 +11,31 @@ public class DetailAndCommentsDto {
     private List<CommentDto> comments;
 
     private LikeCountDto likes;
+    private boolean edit;
 
 
+    public boolean isEdit() {
+		return edit;
+	}
 
-    @Builder
+
+	public void setEdit(boolean edit) {
+		this.edit = edit;
+	}
+	
+	@Builder
+	public DetailAndCommentsDto(int status, BoardDto board, List<CommentDto> comments, LikeCountDto likes,
+			boolean edit) {
+		super();
+		this.status = status;
+		this.board = board;
+		this.comments = comments;
+		this.likes = likes;
+		this.edit = edit;
+	}
+
+
+	@Builder
     public DetailAndCommentsDto(int status, BoardDto board, List<CommentDto> comments, LikeCountDto likes) {
         this.status = status;
         this.board = board;

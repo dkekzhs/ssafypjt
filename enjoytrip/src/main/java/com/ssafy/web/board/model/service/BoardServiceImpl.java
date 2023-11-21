@@ -130,5 +130,10 @@ public class BoardServiceImpl implements BoardService {
 		return DetailAndCommentsDto.builder()
 				.board(article).comments(comments).likes(likes).build();
 	}
+
+	@Override
+	public String getAuthor(int article_no) {
+		return boardMapper.getAuthor(article_no);
+	}
 }
 

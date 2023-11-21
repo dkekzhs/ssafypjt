@@ -17,15 +17,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 	 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    	System.out.println("???????????");
 		if(CorsUtils.isPreFlightRequest(request)){
 			return true;
 		}
-		response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-		response.setHeader("Access-Control-Allow-Methods", "POST, GET");
-		response.setHeader("Access-Control-Allow-Credentials", "true");
 
     	HttpSession session =  request.getSession(false);
-    	System.out.println("asdasdasdsadsad"+ session);
+    	System.out.println("AuthInterCeptor session Check  = "+ session);
     	if(session != null) {
     		System.out.println(session);
     		MemberDto dto = (MemberDto)session.getAttribute("user_info");
@@ -40,8 +38,6 @@ public class AuthInterceptor implements HandlerInterceptor {
     		
     	}
 		System.out.println("인터셉터 발생 ");
-    	System.out.println("인터셉터 발생 "); 
-    	System.out.println("인터셉터 발생 ");
     	throw new AuthException("로그인해주세요");
     }
 

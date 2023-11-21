@@ -28,5 +28,7 @@ public interface BoardMapper {
 
 	void deleteArticle(int articleNo) throws SQLException;
 
+	String getAuthor(int article_no);
+
 
 }

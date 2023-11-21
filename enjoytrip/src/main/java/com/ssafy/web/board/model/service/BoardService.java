@@ -22,4 +22,5 @@ public interface BoardService {
 	int boardLike(LikeRequestStatusDto dto);
 
     DetailAndCommentsDto getArticle(int article_no, String user_id) throws  Exception;
+	String getAuthor(int article_no);
 }

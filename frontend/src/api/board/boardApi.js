@@ -7,7 +7,7 @@ function listArticle(param, success, fail) {
 
 function detailArticle(articleno, success, fail) {
     console.log(articleno)
-    apiClient.get(`/board/view${articleno}`).then(success).catch(fail);
+    apiClient.get(`/board/view/${articleno}`).then(success).catch(fail);
 }
 
 function registArticle(article, success, fail) {
