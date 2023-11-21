@@ -2,8 +2,10 @@ package com.ssafy.web.socket;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	 * 
 	 * @param session
 	 * @return UUID
-	 */
 	public String getIdFromHeader(WebSocketSession session) {
 		HttpHeaders headers = session.getHandshakeHeaders();
 		List<String> cookies = headers.get(HttpHeaders.COOKIE);
@@ -57,6 +58,23 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 		return id;
 	}
+	
+	 */
+	
+	public String getIdFromSession(WebSocketSession session) {
+		String id = null;
+		String key = null;
+		
+		for (Entry<String, Object> map : session.getAttributes().entrySet()) {
+			key = (String)map.getKey();
+			
+			if(key.equals("user_id")) {
+				return (String) map.getValue();
+			}
+		}
+		return null;
+	}
+	
 
 	/**
 	 * 웹 소켓 연결 수립 후 요청 URI에 따라 방장이 채팅방을 생성하거나, 채팅원이 채팅방에 입장함을 알 수 있다.
@@ -70,6 +88,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		String roomId = null;
 		String toks[] = null;
 		URI uri = null;
+
+		
 
 		System.out.println("URL >> " + session.getUri());
 		System.out.println("attributes >> " + session.getAttributes());
@@ -93,7 +113,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			room.addClient(session);
 
 			if (ChatRoomManager.getInstance().addChatRoom(roomId, room)) { // 채팅방 매니저에 채팅방 추가
-				String id = getIdFromHeader(session); // 사용자 아이디를 쿠키로 부터 받아온다.
+				String id = getIdFromSession(session);// 사용자 아이디를 쿠키로 부터 받아온다.
 				if (id == null) {
 					System.out.println("id 쿠키가 존재하지 않습니다. 방을 추가할 수 없습니다.");
 					return;
@@ -109,7 +129,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 		case "chat": { // 채팅원이 채팅방에 참여하는 경우
 			ChatRoomDto dto = new ChatRoomDto();
-			dto.setUser_id(getIdFromHeader(session)); // 유저 아이디 설정
+			dto.setUser_id(getIdFromSession(session)); // 유저 아이디 설정
 			roomId = chatService.getUserRoomId(dto); // 유저 아이디에 해당하는 채팅방 아이디 가져오기
 			if (roomId != null) {
 				room = ChatRoomManager.getInstance().getChatRoom(roomId);

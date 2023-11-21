@@ -34,10 +34,7 @@ function createWatch() {
     () => props.selectStation.value,
     () => {
       // 이동할 위도 경도 위치를 생성합니다
-      var moveLatLon = new kakao.maps.LatLng(
-        props.selectStation.lat,
-        props.selectStation.lng
-      );
+      var moveLatLon = new kakao.maps.LatLng(props.selectStation.lat, props.selectStation.lng);
 
       // 지도 중심을 부드럽게 이동시킵니다
       // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
@@ -135,24 +132,18 @@ const loadMarkers = () => {
 
     customOverlay.info = position;
 
-    customOverlay.a
-      .getElementsByClassName("close")[0]
-      .addEventListener("click", function () {
-        customOverlay.setMap(null);
-      });
+    customOverlay.a.getElementsByClassName("close")[0].addEventListener("click", function () {
+      customOverlay.setMap(null);
+    });
 
-    customOverlay.a
-      .getElementsByClassName("add")[0]
-      .addEventListener("click", function () {
-        console.log(customOverlay);
+    customOverlay.a.getElementsByClassName("add")[0].addEventListener("click", function () {
+      console.log(customOverlay);
 
-        travelList.value = travelList.value.filter(
-          (elem) => elem !== customOverlay.info
-        );
-        travelList.value.push(customOverlay.info);
+      travelList.value = travelList.value.filter((elem) => elem !== customOverlay.info);
+      travelList.value.push(customOverlay.info);
 
-        console.log("추가된 여행지 리스트 >> " + travelList.value);
-      });
+      console.log("추가된 여행지 리스트 >> " + travelList.value);
+    });
 
     customOverlay.setMap(null);
 
@@ -177,6 +168,12 @@ const loadMarkers = () => {
     new kakao.maps.LatLngBounds()
   );
 
+  const cluster = new kakao.maps.MarkerClusterer({
+    map: map,
+    averageCenter: true,
+    minLevel: 3,
+  });
+  cluster.addMarkers(markers.value);
   map.setBounds(bounds);
 };
 

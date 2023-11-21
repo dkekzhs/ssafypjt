@@ -15,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer{
 		// TODO Auto-generated method stub
 
 		registry.addMapping("/**")
-				.allowedOrigins("http://localhost:5173", "http://localhost:5174")
+				.allowedOrigins("http://localhost:5173", "http://localhost:5174",
+						"http://70.12.107.143:5173/","http://70.12.107.143:5174/")
 				.allowedMethods("POST","GET")
 				.allowCredentials(true);
 
