@@ -37,17 +37,10 @@ public class FriendServiceImpl implements FriendService{
 
     @Override
     @Transactional
-    public Set<String> findFriends(String id) {
+    public List<FriendAddDto> findFriends(String id) {
         List<FriendAddDto> friends = fm.findFriends(id);
-        Set<String> friendNames = new HashSet<>();
-        for (FriendAddDto f: friends) {
-            if (f.getFrom().equals(id)) {
-                friendNames.add(f.getTo());
-            } else {
-                friendNames.add(f.getFrom());
-            }
-        }
-        return friendNames;
+
+        return friends;
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/friend")
@@ -80,6 +81,18 @@ public class FriendController {
         }
         throw new AuthException("accpet error");
     }
-
+    
+    @GetMapping("/myfriend")
+    public ResponseEntity<?> myFriend(HttpServletRequest request) throws AuthException{
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            MemberDto memberDto = (MemberDto) session.getAttribute("user_info");
+            System.out.println(memberDto);
+            List<FriendAddDto> data = fs.findFriends(memberDto.getUser_id());
+            return ResponseEntity.ok(ResponseListDto.builder().list(data).build());
+        }
+    	throw new AuthException("내친구찾기 오류");
+    }
+    
 
 }
