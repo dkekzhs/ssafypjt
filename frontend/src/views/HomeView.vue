@@ -2,14 +2,10 @@
 import { ref, onMounted } from "vue";
 import KakaoMap from "../components/layout/KakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
-import {
-  getSido,
-  getType,
-  getGugun,
-  getTravelSite,
-} from "@/util/travel/travelApi";
+import { getSido, getType, getGugun, getTravelSite } from "@/util/travel/travelApi";
 import VCheckbox from "../components/common/VCheckbox.vue";
 import { useMenuStore } from "@/stores/menu";
+import PlanModal from "@/components/modal/PlanModal.vue";
 const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
 const menuStore = useMenuStore();
 
@@ -27,6 +23,7 @@ const selectSido = ref(0);
 const selectGugun = ref(0);
 const selectOption = ref([]);
 const selectAll = ref(false);
+const isModalOpen = ref(false);
 
 const param = ref({
   serviceKey: VITE_OPEN_API_SERVICE_KEY,
@@ -124,8 +121,8 @@ const viewStation = (station) => {
   selectStation.value = station;
 };
 
-function handleButtonClick(){
-  alert("모달 오픈 해야됨");
+function openModal() {
+  document.getElementById("modal").style.display = "flex";
 }
 </script>
 
@@ -133,18 +130,21 @@ function handleButtonClick(){
   <h1>홈 화면입니다.</h1>
 
   <v-row class="v-row">
-    
-    <v-col class="v-col-4" >
+    <v-col class="v-col-4">
       <VSelect class="v-text-field" :selectOption="sidoList" @onKeySelect="onChangeSido" />
       <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
       <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
       <!-- 모달 버튼-->
       <template v-if="menuStore.login" class="asdf">
         <v-col cols="auto">
-        <v-btn class="asdfbtn" icon="mdi-plus" size="small" @click="handleButtonClick"></v-btn>
-      </v-col>
-    </template>
-
+          <v-btn class="asdfbtn" icon="mdi-plus" size="small" @click="openModal"></v-btn>
+        </v-col>
+        <div id="modal" class="modal" @click.self="closeModal">
+          <div class="modal-content">
+            <PlanModal></PlanModal>
+          </div>
+        </div>
+      </template>
     </v-col>
 
     <v-col class="v-col-8">
@@ -154,7 +154,12 @@ function handleButtonClick(){
 
   <!-- 아래 출력-->
   <div class="container text-center mt-3">
-    <v-data-table :headers="headers" :items="chargingStations" item-key="zipcode" @click="viewStation">
+    <v-data-table
+      :headers="headers"
+      :items="chargingStations"
+      item-key="zipcode"
+      @click="viewStation"
+    >
       <thead>
         <tr class="text-center">
           <th scope="col">충전소명</th>
@@ -182,20 +187,31 @@ function handleButtonClick(){
       </tbody>
     </v-data-table>
   </div>
-
 </template>
 
 <style scoped>
-.v-row { 
-  height: 100%;
+.modal {
+  border: 10px solid #f00;
+  left: calc(50%);
+  z-index: 100;
+  display: none;
+  position: fixed;
+  top: 20%;
+  width: auto;
+  height: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: baseline;
+  justify-content: flex-start;
 }
-
-.asdf {
-  position: relative;
-  float:left;
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  width: 80%;
+  margin: 20px auto;
 }
-
 .asdfbtn {
-  bottom: 0px;
+  position: fixed;
+  bottom: 160px;
+  left: 50px;
 }
 </style>
