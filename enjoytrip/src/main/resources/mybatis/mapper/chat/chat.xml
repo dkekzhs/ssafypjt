@@ -7,8 +7,8 @@
 
 	<insert id="addUser" parameterType="chatRoomDto">
 		INSERT INTO chat_room
-		(room_id, user_id)
-		VALUES (#{room_id}, #{user_id})
+		(room_id, user_id,plan_id)
+		VALUES (#{room_id}, #{user_id},#{plan_id})
 	</insert>
 
 	<select id="isValid" parameterType="chatRoomDto">

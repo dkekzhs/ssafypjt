@@ -3,15 +3,13 @@ package com.ssafy.web.socket;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.ssafy.web.common.exception.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -19,11 +17,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.ssafy.web.socket.model.ChatRoomDto;
 import com.ssafy.web.socket.service.ChatService;
-import com.ssafy.web.travel.model.PlanDto;
-import com.ssafy.web.travel.model.PlanDto2;
+import com.ssafy.web.travel.model.PlanSocketDto;
 import com.ssafy.web.travel.service.TravelService;
 
 import lombok.var;
@@ -180,49 +176,32 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 		switch (jsonNode.get("type").asText()) {
 		case "invitedUser":
-			// PlanService를 가져와서 AI 키값 가져와서 넣어주기만 하면 되는거 아니에요
-			System.out.println(jsonNode.get("title"));
-			String plan_name = jsonNode.get("title").asText();
-			System.out.println(plan_name);
-	        
-			JsonNode dataArray = jsonNode.get("data");
-	        System.out.println("dataArray >> " + dataArray.textValue());
-	        
-			String id = getIdFromSession(session);// 사용자 아이디를 쿠키로 부터 받아온다.
-			System.out.println("id >> " + id);
-			List<String> test = new ArrayList<String>();
-            for (JsonNode node : dataArray) {
-            	test.add(node.asText());
-			}
-			
-			
-			PlanDto2 planDto = new PlanDto2();
-			planDto.setShare_user_id_list(test);
-			planDto.setFlag(2);
-			planDto.setUser_id(id);
-			planDto.setPlan_name(plan_name);
-			
-			System.out.println("planDto >> " + planDto);
-			int plan_id = travelService.create(planDto);
-			System.out.println("plan_id >> " + plan_id);
-			
-			List<String> friends = new ArrayList<String>();
-   
-            System.out.println(dataArray);
-            for (JsonNode node : dataArray) {
-            	ChatRoomDto dto = new ChatRoomDto();
-    			dto.setRoom_id(roomId);
-    			dto.setUser_id(node.asText());
-    			dto.setPlan_id(plan_id);
-    			System.out.println("plan_dto elem >> " + dto);
-    			chatService.addUser(dto);
-			}
-			// ChatRoomDto dto = new ChatRoomDto();
-//			dto.setRoom_id(roomId);
-//			dto.setUser_id(user_id);
-//			chatService.addUser(dto);
-			break;
 
+			String plan_name = jsonNode.get("title").asText();
+			JsonNode dataArray = jsonNode.get("data");
+			String id = getIdFromSession(session);
+			List<String> friends = new ArrayList<String>();
+            for (JsonNode node : dataArray) {
+				friends.add(node.asText());
+			}
+			if(friends.size() > 10 ) throw new AuthException("인원초과");
+
+			int plan_id = travelService.create(PlanSocketDto.builder()
+							.share_user_id_list(friends)
+							.flag(2)
+							.user_id(id)
+							.plan_name(plan_name).build());
+			System.out.println("plan_id >> " + plan_id);
+
+
+            for (String friend : friends) {
+				ChatRoomDto chatRoomDto = new ChatRoomDto();
+				chatRoomDto.setRoom_id(roomId);
+				chatRoomDto.setPlan_id(plan_id);
+				chatRoomDto.setUser_id(friend);
+    			chatService.addUser(chatRoomDto);
+			}
+			break;
 		}
 
 		if (roomId == null) {

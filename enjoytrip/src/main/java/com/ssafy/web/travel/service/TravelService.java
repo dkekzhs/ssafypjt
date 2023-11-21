@@ -3,8 +3,7 @@ package com.ssafy.web.travel.service;
 import java.util.List;
 import java.util.Map;
 
-import com.ssafy.web.travel.model.PlanDto;
-import com.ssafy.web.travel.model.PlanDto2;
+import com.ssafy.web.travel.model.PlanSocketDto;
 import com.ssafy.web.travel.model.ReviewDto;
 import com.ssafy.web.travel.model.TravelDto;
 
@@ -22,7 +21,7 @@ public interface TravelService {
 
 	List<TravelDto> searchByTitle(String title, int sidoCode, int gugunCode) throws Exception;
 
-	int create(PlanDto2 dto);
+	int create(PlanSocketDto dto);
 
 	int CreateReview(ReviewDto dto);
 

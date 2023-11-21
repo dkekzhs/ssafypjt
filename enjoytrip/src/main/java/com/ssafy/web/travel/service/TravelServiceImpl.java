@@ -1,6 +1,5 @@
 package com.ssafy.web.travel.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.gson.Gson;
-import com.ssafy.web.travel.model.PlanDto;
-import com.ssafy.web.travel.model.PlanDto2;
+import com.ssafy.web.travel.model.PlanSocketDto;
 import com.ssafy.web.travel.model.ReviewDto;
 import com.ssafy.web.travel.model.TravelDto;
 import com.ssafy.web.travel.model.mapper.TravelMapper;
@@ -57,9 +54,10 @@ public class TravelServiceImpl implements TravelService {
 	}
 
 	@Override
-	public int create(PlanDto2 dto) {
+	public int create(PlanSocketDto dto) {
 		// 처리
 		dto.setData();
+
 		System.out.println("service : " + dto.getData());
 		int i = travelMapper.CreatePlanBoardWithShare(dto);
 //		System.out.println(dto.getData());
