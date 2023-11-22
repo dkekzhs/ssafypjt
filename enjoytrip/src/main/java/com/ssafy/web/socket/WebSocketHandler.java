@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import com.ssafy.web.common.exception.AuthException;
+import com.ssafy.web.travel.model.PlanDetailDto;
 import com.ssafy.web.travel.model.SocketPlanDto;
 import com.ssafy.web.travel.model.TravelDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +114,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					System.out.println("id 쿠키가 존재하지 않습니다. 방을 추가할 수 없습니다.");
 					return;
 				}
-				chatService.addUser(new ChatRoomDto(roomId, id)); // DB에 (room id, 방장 id) 추가. 초대 멤버들의 정보도 추가해야한다.
+				chatService.addUser(ChatRoomDto.builder().user_id(id).room_id(roomId).build()); // DB에 (room id, 방장 id) 추가. 초대 멤버들의 정보도 추가해야한다.
 				sessionToRoomId.put(roomId, roomId);
 				System.out.println("방이 생성되었습니다 >> " + room);
 			} else {
@@ -187,7 +188,37 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			case "getPlanList":
 				getPlan(session, roomId);
 				break;
+			case "addPlan":
+				addPlan(jsonNode,session, roomId);
 
+		}
+
+	}
+	private void addPlan(JsonNode jsonNode, WebSocketSession session, String roomId){
+		String id = getIdFromSession(session);
+
+		int plan_id = chatService.getPlanId(ChatRoomDto.builder().user_id(id).room_id(roomId).build());
+		int content_id = Integer.parseInt(jsonNode.get("content_id").asText());
+		int order = Integer.parseInt(jsonNode.get("order").asText());
+		int i = travelService.addPlan(PlanDetailDto.builder()
+				.order(order).plan_id(plan_id).content_id(content_id).build());
+		if(i ==1){
+			SocketPlanDto planOne = travelService.getPlanOne(content_id);
+			planOne.setOrder(order);
+			// session에 해당하는 room을 찾아야 한다.
+			if (session.isOpen()) {
+				var clients = ChatRoomManager.getInstance().getChatRoom(roomId).getClients();
+				Message message = Message.builder().type("addPlan").sender(id).data(planOne).build();
+				String json = new Gson().toJson(message);
+				clients.values().forEach(s -> {
+					try {
+						s.sendMessage(new TextMessage(json));
+						System.out.println(s.getId() + "에게 메시지 : " +json + "을 전송하였습니다. addPlan 입니다");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+			}
 		}
 
 	}

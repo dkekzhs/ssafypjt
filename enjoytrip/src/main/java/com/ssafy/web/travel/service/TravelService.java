@@ -3,10 +3,7 @@ package com.ssafy.web.travel.service;
 import java.util.List;
 import java.util.Map;
 
-import com.ssafy.web.travel.model.PlanSocketDto;
-import com.ssafy.web.travel.model.ReviewDto;
-import com.ssafy.web.travel.model.SocketPlanDto;
-import com.ssafy.web.travel.model.TravelDto;
+import com.ssafy.web.travel.model.*;
 
 public interface TravelService {
 
@@ -32,6 +29,8 @@ public interface TravelService {
 
 	List<SocketPlanDto> getAttractionInfoByPlanId(int plan_id);
 
+	int addPlan(PlanDetailDto dto);
 
+	SocketPlanDto getPlanOne(int content_id);
 
 }

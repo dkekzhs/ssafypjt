@@ -150,5 +150,12 @@
 				 INNER JOIN plan_detail pd ON ai.content_id = pd.content_id
 		WHERE pd.plan_id = #{planId}
 	</select>
-	
+	<insert id="addPlan" parameterType="planDetailDto">
+		INSERT INTO plan_detail(plan_id,content_id,`order`) values (#{plan_id},#{content_id},#{order})
+	</insert>
+	<select id="getPlanOne" parameterType="int" resultType="socketPlanDto">
+		SELECT title,first_image as image , addr1, content_id FROM attraction_info
+		WHERE content_id = #{content_id}
+	</select>
+
 </mapper>

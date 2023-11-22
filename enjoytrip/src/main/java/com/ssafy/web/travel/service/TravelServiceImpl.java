@@ -3,14 +3,11 @@ package com.ssafy.web.travel.service;
 import java.util.List;
 import java.util.Map;
 
-import com.ssafy.web.travel.model.SocketPlanDto;
+import com.ssafy.web.travel.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.web.travel.model.PlanSocketDto;
-import com.ssafy.web.travel.model.ReviewDto;
-import com.ssafy.web.travel.model.TravelDto;
 import com.ssafy.web.travel.model.mapper.TravelMapper;
 
 @Service
@@ -106,6 +103,16 @@ public class TravelServiceImpl implements TravelService {
 	@Override
 	public List<SocketPlanDto> getAttractionInfoByPlanId(int plan_id) {
 		return travelMapper.getAttractionInfoByPlanId(plan_id);
+	}
+
+	@Override
+	public int addPlan(PlanDetailDto dto) {
+		return travelMapper.addPlan(dto);
+	}
+
+	@Override
+	public SocketPlanDto getPlanOne(int content_id) {
+		return travelMapper.getPlanOne(content_id);
 	}
 
 }

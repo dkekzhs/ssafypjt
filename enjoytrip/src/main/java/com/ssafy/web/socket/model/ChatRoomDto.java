@@ -1,8 +1,12 @@
 package com.ssafy.web.socket.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatRoomDto {
 
 	private String room_id;
@@ -20,17 +24,6 @@ public class ChatRoomDto {
 	public void setPlan_id(int plan_id) {
 		this.plan_id = plan_id;
 	}
-
-	public ChatRoomDto() {
-		super();
-	}
-
-	public ChatRoomDto(String room_id, String user_id) {
-		super();
-		this.room_id = room_id;
-		this.user_id = user_id;
-	}
-
 
 
 	public String getRoom_id() {

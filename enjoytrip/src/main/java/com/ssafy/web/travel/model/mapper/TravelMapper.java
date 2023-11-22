@@ -33,6 +33,8 @@ public interface TravelMapper {
 
 	List<SocketPlanDto> getAttractionInfoByPlanId(int plan_id);
 	
+	int addPlan(PlanDetailDto dto);
 
+	SocketPlanDto getPlanOne(int content_id);
 
 }

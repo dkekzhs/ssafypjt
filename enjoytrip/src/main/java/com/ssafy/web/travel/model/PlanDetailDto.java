@@ -1,20 +1,19 @@
 package com.ssafy.web.travel.model;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PlanDetailDto {
 
 	private int plan_id;
 	private int content_id;
-	
-	
-	public PlanDetailDto() {
-		super();
-	}
-	
-	public PlanDetailDto(int plan_id, int content_id) {
-		super();
-		this.plan_id = plan_id;
-		this.content_id = content_id;
-	}
+	private int order;
+
 	public int getPlan_id() {
 		return plan_id;
 	}
@@ -27,9 +26,13 @@ public class PlanDetailDto {
 	public void setContent_id(int content_id) {
 		this.content_id = content_id;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "PlanDetailDto [plan_id=" + plan_id + ", content_id=" + content_id + "]";
+		return "PlanDetailDto{" +
+				"plan_id=" + plan_id +
+				", content_id=" + content_id +
+				", order=" + order +
+				'}';
 	}
 }
