@@ -37,4 +37,11 @@
 		FROM chat_room
 		WHERE user_id = #{user_id}
 	</select>
+
+	<select id="getPlanId" parameterType="chatRoomDto"
+			resultType="int">
+		SELECT plan_id
+		FROM chat_room
+		WHERE user_id = #{user_id} and room_id = #{room_id}
+	</select>
 </mapper>

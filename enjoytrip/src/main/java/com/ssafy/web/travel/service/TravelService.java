@@ -29,6 +29,8 @@ public interface TravelService {
 
 	List<ReviewDto> getReviewList(ReviewDto dto);
 
+	List<TravelDto> getAttractionInfoByPlanId(int plan_id);
+
 
 
 }

@@ -18,4 +18,7 @@ public interface ChatService {
 	
 	// user id에 해당하는 방 이름 가져오기
 	public String getUserRoomId(ChatRoomDto dto);
+
+	// plan_id  가져오기
+	public int getPlanId(ChatRoomDto dto);
 }

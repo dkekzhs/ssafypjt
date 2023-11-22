@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import com.ssafy.web.common.exception.AuthException;
+import com.ssafy.web.travel.model.TravelDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -177,17 +178,35 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 		switch (jsonNode.get("type").asText()) {
 			case "invitedUser":
-				invitedUser(jsonNode,session,roomId);
+				invitedUser(jsonNode, session, roomId);
 				break;
 			case "message":
-				ChatMessage(jsonNode,session,roomId);
+				ChatMessage(jsonNode, session, roomId);
 				break;
-			case "getPlan":
+			case "getPlanList":
+				getPlan(session, roomId);
+				break;
 
 		}
 
+	}
+	public void getPlan(WebSocketSession session, String roomId){
+		String id = getIdFromSession(session);
+		ChatRoomDto dto = new ChatRoomDto();
+		dto.setUser_id(id);
+		dto.setRoom_id(roomId);
+		int plan_id = chatService.getPlanId(dto);
+		List<TravelDto> list = travelService.getAttractionInfoByPlanId(plan_id);
+		Message message = Message.builder().type("getPlanList").sender(id).data(list).build();
+		String json = new Gson().toJson(message);
+		try {
+			session.sendMessage(new TextMessage(json));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
+
 	public void ChatMessage(JsonNode jsonNode, WebSocketSession session, String roomId) {
 		if (roomId == null) {
 			System.out.println("메시지를 보낼 수 있는 채팅방이 존재하지 않습니다.");

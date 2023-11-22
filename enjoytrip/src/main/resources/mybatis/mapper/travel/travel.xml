@@ -143,5 +143,12 @@
 	<select id="CreatePlanBoardWithShare" parameterType="planSocketDto" statementType="CALLABLE" resultType="int">
 		CALL CreatePlanBoardWithShare(#{user_id},#{flag},CAST(#{data} AS JSON),#{plan_name});
 	</select>
+
+	<select id="getAttractionInfoByPlanId" parameterType="int" resultType="travelDto">
+		SELECT ai.*
+		FROM attraction_info ai
+				 INNER JOIN plan_detail pd ON ai.content_id = pd.content_id
+		WHERE pd.plan_id = #{planId}
+	</select>
 	
 </mapper>

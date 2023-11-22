@@ -34,6 +34,8 @@ public interface TravelMapper {
 	int deleteReview(ReviewDto dto);
 
 	List<ReviewDto> getReviewList(ReviewDto dto);
+
+	List<TravelDto> getAttractionInfoByPlanId(int plan_id);
 	
 
 

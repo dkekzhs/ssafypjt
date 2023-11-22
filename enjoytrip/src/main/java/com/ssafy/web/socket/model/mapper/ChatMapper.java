@@ -18,4 +18,6 @@ public interface ChatMapper {
 	public int getNumOfUser(ChatRoomDto dto);
 
 	public String getUserRoomId(ChatRoomDto dto);
+
+	int getPlanId(ChatRoomDto dto);
 }

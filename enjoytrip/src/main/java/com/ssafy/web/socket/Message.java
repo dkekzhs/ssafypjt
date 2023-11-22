@@ -7,12 +7,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class Message {
+public class Message<T> {
 
 	private String type;
 	private String sender;
 	private String receiver;
-	private Object data;
+	private T data;
 	
 	public void setSender(String sender) {this.sender = sender;}
 	

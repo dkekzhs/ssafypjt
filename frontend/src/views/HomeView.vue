@@ -197,10 +197,13 @@ function check() {
   );
 }
 
+function getPlanListSocket(){
+  socketStore.sendMessage({"type" : "getPlanList"});
+}
 </script>
 
 <template>
-
+  <button @click="getPlanListSocket">getPlanListTest</button>
   <h1>홈 화면입니다.</h1>
   <Rating />
   <v-row class="v-row">

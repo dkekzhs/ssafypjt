@@ -102,4 +102,9 @@ public class TravelServiceImpl implements TravelService {
 		return reviewList;
 	}
 
+	@Override
+	public List<TravelDto> getAttractionInfoByPlanId(int plan_id) {
+		return travelMapper.getAttractionInfoByPlanId(plan_id);
+	}
+
 }
