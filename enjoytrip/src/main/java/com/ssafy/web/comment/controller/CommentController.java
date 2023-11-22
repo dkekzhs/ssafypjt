@@ -31,6 +31,7 @@ public class CommentController {
 	@PostMapping("/add")
 	public ResponseEntity<MessageResponseDto> add(@RequestBody CommentDto dto, HttpServletRequest request) throws AuthException{
 		HttpSession session = request.getSession(false);
+		System.out.println(dto);
 		if (session != null) {
 			MemberDto info = (MemberDto) session.getAttribute("user_info");
 			dto.setUser_id(info.getUser_id());
