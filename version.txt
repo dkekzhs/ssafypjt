@@ -4,3 +4,4 @@ v231116 게시판 관리, 회원 관리, 여행 일정 관리, 댓글 관리 백
 v231117 웹 소켓 구현
 v231118 웹 소켓 예외 상황 처리 및 json 메시지 전달
 v231121 star rating 추가, draggable component 추가, procedure 수정
+v221122 web socket client side 핸들링 추가
