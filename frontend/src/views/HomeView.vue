@@ -8,6 +8,7 @@ import { getSido, getType, getGugun, getTravelSite } from "@/util/travel/travelA
 import VCheckbox from "../components/common/VCheckbox.vue";
 import { useMenuStore } from "@/stores/menu";
 import PlanModal from "@/components/modal/PlanModal.vue";
+import ChatModal from "@/components/modal/ChatModal.vue";
 const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
 const menuStore = useMenuStore();
 
@@ -160,7 +161,7 @@ const viewStation = (station) => {
 };
 
 function openModal() {
-  document.getElementById("modal").style.display = "flex";
+  document.getElementById("chat_modal").style.display = "flex";
 }
 </script>
 
@@ -182,6 +183,14 @@ function openModal() {
         <div id="modal" class="modal" @click.self="closeModal">
           <div class="modal-content">
             <PlanModal />
+          </div>
+        </div>
+        <v-col cols="auto">
+          <v-btn class="fdsabtn" icon="mdi-plus" size="small" @click="openModal"></v-btn>
+        </v-col>
+        <div id="chat_modal" class="modal" @click.self="closeModal">
+          <div class="modal-content">
+            <ChatModal />
           </div>
         </div>
       </template>
@@ -256,6 +265,12 @@ function openModal() {
 .asdfbtn {
   position: fixed;
   bottom: 160px;
+  left: 50px;
+}
+
+.fdsabtn {
+  position: fixed;
+  bottom: 200px;
   left: 50px;
 }
 </style>
