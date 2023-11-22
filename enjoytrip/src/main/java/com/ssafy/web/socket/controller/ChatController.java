@@ -1,5 +1,9 @@
 package com.ssafy.web.socket.controller;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.web.comment.model.CommentDto;
 import com.ssafy.web.common.dto.MessageResponseDto;
+import com.ssafy.web.member.model.MemberDto;
 import com.ssafy.web.socket.model.ChatRoomDto;
 import com.ssafy.web.socket.service.ChatService;
 
@@ -39,7 +44,15 @@ public class ChatController {
 	}
 
 	@PostMapping("/isValid")
-	public ResponseEntity<MessageResponseDto> isValid(@RequestBody ChatRoomDto dto) {
+	public ResponseEntity<MessageResponseDto> isValid( HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		ChatRoomDto dto = new ChatRoomDto();
+		if(session != null) {
+			MemberDto memberDto = (MemberDto) session.getAttribute("user_info");
+			dto.setUser_id(memberDto.getUser_id());
+			String room_id = chatService.getUserRoomId(dto);
+			dto.setRoom_id(room_id);
+		}
 		int result = chatService.isValid(dto);
 		ResponseEntity<MessageResponseDto> ret = null;
 

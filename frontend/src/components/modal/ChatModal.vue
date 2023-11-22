@@ -6,13 +6,15 @@
     </div>
     <div class="input-area">
       <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type a message..." />
-      <button @click="sendMessage">Send</button>
+      <button @click="test">Send</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, defineProps } from "vue";
+
+import { useSocketStore } from "@/api/chat/socket";
 
 const messages = ref([
   { id: 1, type: "received", sender: "John", content: "Hello!" },
@@ -21,7 +23,7 @@ const messages = ref([
 ]);
 
 const newMessage = ref("");
-
+const socketStore = useSocketStore();
 const sendMessage = () => {
   if (newMessage.value.trim() !== "") {
     messages.value.push({
@@ -39,6 +41,13 @@ const scrollToBottom = () => {
     chatContainer.scrollTop = chatContainer.scrollHeight + 30;
   }
 };
+function test() {
+  socketStore.socket.send({
+    type: "invitedUser",
+    data: "asdasd",
+    title: "asdasd",
+  });
+}
 
 onMounted(() => {
   scrollToBottom();

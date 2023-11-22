@@ -1,41 +1,51 @@
 <script setup>
 import { ref } from "vue";
 import { friendList } from "@/api/member/friendApi";
+import { useSocketStore } from "../../api/chat/socket";
 const travelTitle = ref("여행 계획");
-const friends = ref([
-]);
-
+const friends = ref([]);
+const socketStore = useSocketStore();
 function myFriendList() {
-  friendList(res => {
-    console.log(res);
-    friends.value = [];
-    for (let elem of res.data.data) {
-      console.log(elem);
-      friends.value.push({
-        name: elem.to,
-        isShared: false
-      });
-    }
-  },
-    err => {
+  friendList(
+    (res) => {
+      console.log(res);
+      friends.value = [];
+      for (let elem of res.data.data) {
+        console.log(elem);
+        friends.value.push({
+          name: elem.to,
+          isShared: false,
+        });
+      }
+    },
+    (err) => {
       console.log(err);
-  })
+    }
+  );
 }
 function createPlan() {
-  const socket = new WebSocket("ws://localhost:80/enjoytrip/createChatRoom");
-  socket.onopen = () => {
+  socketStore.connect("ws://70.12.107.143:80/enjoytrip/createChatRoom");
+  socketStore.onopen = () => {
+    console.log("chat Room created");
     let invited = [];
     for (let elem of friends.value) {
       if (elem.isShared) {
         invited.push(elem.name);
       }
     }
-    socket.send(JSON.stringify({
-      type: "invitedUser",
-      data: invited,
-      title: travelTitle.value
-    }));
-  }
+    socketStore.socket.send();
+  };
+
+  /*
+  socketStore.sendMessage({
+    type: "invitedUser",
+    data: invited,
+    title: travelTitle.value,
+  });
+  */
+  socketStore.onmessage = (e) => {
+    console.log(e.data);
+  };
   closeModal();
 }
 const toggleShare = function (index) {

@@ -9,6 +9,9 @@ import VCheckbox from "../components/common/VCheckbox.vue";
 import { useMenuStore } from "@/stores/menu";
 import PlanModal from "@/components/modal/PlanModal.vue";
 import ChatModal from "@/components/modal/ChatModal.vue";
+import { vaild } from "@/api/chat/chatApi";
+import { useSocketStore } from "@/api/chat/socket";
+
 const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
 const menuStore = useMenuStore();
 
@@ -27,7 +30,7 @@ const selectGugun = ref(0);
 const selectOption = ref([]);
 const selectAll = ref(false);
 const isModalOpen = ref(false);
-
+const isConnected = ref(false);
 const destinations = ref([
   {
     title: "파리",
@@ -43,6 +46,7 @@ const destinations = ref([
   },
   // 필요한 만큼 여행지를 추가할 수 있습니다.
 ]);
+const socketStore = useSocketStore();
 
 const addDestination = (destination) => {
   destinations.value.push(destination);
@@ -160,12 +164,44 @@ const viewStation = (station) => {
   selectStation.value = station;
 };
 
-function openModal() {
+function openChatModal() {
   document.getElementById("chat_modal").style.display = "flex";
+}
+function openModal() {
+  document.getElementById("modal").style.display = "flex";
+}
+function connectSocketChat() {
+  socketStore.connect("ws://70.12.107.143:80/enjoytrip/chat");
+  socket.value.onopen = () => {
+    console.log("Connected to server");
+  };
+}
+function check() {
+  vaild(
+    (res) => {
+      console.log(res);
+      if ("유저 채팅방 입장 성공" == res.data.message) {
+        isConnected.value = false;
+        openChatModal();
+        connectSocketChat();
+      } else {
+        isConnected.value = true;
+        openModal();
+      }
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+}
+function test() {
+  socketStore.connect("ws://70.12.107.143:80/enjoytrip/chat");
+  socketStore.socket.send();
 }
 </script>
 
 <template>
+  <button @click="test">assssssssssssssssssssssssssss</button>
   <h1>홈 화면입니다.</h1>
   <Rating />
   <v-row class="v-row">
@@ -177,21 +213,15 @@ function openModal() {
 
       <!-- 모달 버튼-->
       <template v-if="menuStore.login" class="asdf">
-        <v-col cols="auto">
-          <v-btn class="asdfbtn" icon="mdi-plus" size="small" @click="openModal"></v-btn>
-        </v-col>
+        <v-btn class="asdfbtn" icon="mdi-plus" size="small" @click="check"></v-btn>
+
         <div id="modal" class="modal" @click.self="closeModal">
           <div class="modal-content">
             <PlanModal />
           </div>
         </div>
-        <v-col cols="auto">
-          <v-btn class="fdsabtn" icon="mdi-plus" size="small" @click="openModal"></v-btn>
-        </v-col>
         <div id="chat_modal" class="modal" @click.self="closeModal">
-          <div class="modal-content">
-            <ChatModal />
-          </div>
+          <div class="modal-content"><ChatModal /></div>
         </div>
       </template>
     </v-col>

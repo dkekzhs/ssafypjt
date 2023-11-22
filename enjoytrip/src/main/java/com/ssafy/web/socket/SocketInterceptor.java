@@ -23,21 +23,21 @@ public class SocketInterceptor implements HandshakeInterceptor{
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) throws Exception {
-		
-
-	     
-		HttpServletRequest req = ((ServletServerHttpRequest)request).getServletRequest();
-		HttpSession session  =  req.getSession(false);
-		
-		System.out.println("Session >> " +  session);
-		
-		if(session != null) {
-			MemberDto dto = (MemberDto) session.getAttribute("user_info");
-			String user_id = dto.getUser_id();
-			attributes.put("user_id", user_id);
 			return true;
-		}
-		throw new AuthException("로그인 해주세요");
+//
+//	     
+//		HttpServletRequest req = ((ServletServerHttpRequest)request).getServletRequest();
+//		HttpSession session  =  req.getSession(false);
+//		
+//		System.out.println("Session >> " +  session);
+//		
+//		if(session != null) {
+//			MemberDto dto = (MemberDto) session.getAttribute("user_info");
+//			String user_id = dto.getUser_id();
+//			attributes.put("user_id", user_id);
+//			return true;
+//		}
+//		throw new AuthException("로그인 해주세요");
 		
 	}
 

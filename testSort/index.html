@@ -1,84 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>댓글 트리 구조 예제</title>
-  <style>
-    .comment {
-      margin-left: 20px;
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Example</title>
+  </head>
+  <body>
+    <script>
+      // 서버와 웹 소켓 연결
+      const socket = new WebSocket("ws://70.12.107.143:80/enjoytrip/createChatRoom");
 
-<div id="comments-container"></div>
+      // 연결이 열렸을 때 실행되는 함수
+      socket.onopen = (event) => {
+        console.log("WebSocket 연결이 열렸습니다.");
+      };
 
-<script>
-  // 예제 데이터
-  const comments = [
-    { comment_id: 1, parent_comment_id: null, text: "부모 댓글 1" },
-    { comment_id: 2, parent_comment_id: 1, text: "자식 댓글 1-1" },
-    { comment_id: 3, parent_comment_id: 1, text: "자식 댓글 1-2" },
-    { comment_id: 4, parent_comment_id: 2, text: "손자 댓글 1-1-1" },
-    { comment_id: 5, parent_comment_id: null, text: "부모 댓글 2" },
-    { comment_id: 6, parent_comment_id: 5, text: "자식 댓글 2-1" },
-    { comment_id: 7, parent_comment_id: 5, text: "자식 댓글 2-2" },
-  ];
+      // 메시지를 받았을 때 실행되는 함수
+      socket.onmessage = (event) => {
+        const receivedMessage = JSON.parse(event.data);
+        console.log("서버로부터 메시지 수신:", receivedMessage);
+        // 수신한 메시지를 처리하는 추가적인 코드를 작성할 수 있습니다.
+      };
 
-  // 댓글 트리 구조로 정렬하는 함수
-  function sortComments(comments) {
-    const commentMap = new Map();
-    const roots = [];
+      // 연결이 닫혔을 때 실행되는 함수
+      socket.onclose = (event) => {
+        console.log("WebSocket 연결이 닫혔습니다.");
+      };
 
-    comments.forEach(comment => {
-      const parentId = comment.parent_comment_id;
-      if (!parentId) {
-        roots.push(comment);
-      } else {
-        if (!commentMap.has(parentId)) {
-          commentMap.set(parentId, []);
-        }
-        commentMap.get(parentId).push(comment);
-      }
-    });
+      // 에러가 발생했을 때 실행되는 함수
+      socket.onerror = (error) => {
+        console.error("WebSocket 오류 발생:", error);
+      };
 
-    const traverse = (comment) => {
-      if (commentMap.has(comment.comment_id)) {
-        comment.children = commentMap.get(comment.comment_id);
-        comment.children.forEach(child => traverse(child));
-      }
-    };
+      // 버튼 클릭 시 메시지 전송
+      const sendMessageButton = document.createElement("button");
+      sendMessageButton.textContent = "메시지 전송";
+      sendMessageButton.addEventListener("click", () => {
+        const message = {
+          type: "invitedUser",
+          title: "Your Plan Name",
+          data: ["friend1", "friend2", "friend3"], // 친구 목록
+        };
+        socket.send(JSON.stringify(message));
+      });
 
-    roots.forEach(root => traverse(root));
+      // HTML body에 버튼 추가
+      document.body.appendChild(sendMessageButton);
 
-    return roots;
-  }
-
-  // 트리 구조로 정렬된 댓글 가져오기
-  const sortedComments = sortComments(comments);
-
-  // 댓글을 HTML로 표현하는 함수
-  function renderComments(container, comments) {
-    comments.forEach(comment => {
-      const commentDiv = document.createElement('div');
-      commentDiv.classList.add('comment');
-      commentDiv.textContent = comment.text;
-      container.appendChild(commentDiv);
-
-      if (comment.children) {
-        renderComments(commentDiv, comment.children);
-      }
-    });
-  }
-
-  // 댓글을 표시할 컨테이너
-  const commentsContainer = document.getElementById('comments-container');
-
-  // 댓글 렌더링
-  renderComments(commentsContainer, sortedComments);
-</script>
-
-</body>
+      // 연결을 종료하려면 socket.close()를 호출합니다.
+      // socket.close();
+    </script>
+  </body>
 </html>
