@@ -158,4 +158,7 @@
 		WHERE content_id = #{content_id}
 	</select>
 
+	<delete id="deletePlan" parameterType="planDetailDto">
+		delete FROM plan_detail where content_id = #{content_id} and plan_id = #{plan_id};
+	</delete>
 </mapper>

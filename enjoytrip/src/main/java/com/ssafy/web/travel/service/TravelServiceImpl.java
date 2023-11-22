@@ -115,4 +115,9 @@ public class TravelServiceImpl implements TravelService {
 		return travelMapper.getPlanOne(content_id);
 	}
 
+	@Override
+	public int deletePlan(PlanDetailDto dto) {
+		return travelMapper.deletePlan(dto);
+	}
+
 }

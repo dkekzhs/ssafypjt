@@ -33,4 +33,5 @@ public interface TravelService {
 
 	SocketPlanDto getPlanOne(int content_id);
 
+	int deletePlan(PlanDetailDto dto);
 }

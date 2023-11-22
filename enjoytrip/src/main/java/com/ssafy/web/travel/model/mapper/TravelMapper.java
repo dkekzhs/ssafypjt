@@ -37,4 +37,6 @@ public interface TravelMapper {
 
 	SocketPlanDto getPlanOne(int content_id);
 
+	int deletePlan(PlanDetailDto dto);
+
 }

@@ -177,7 +177,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 		// JSON 출력
 		System.out.println("JSON: " + jsonNode);
-
+		if (roomId == null) {
+			System.out.println("메시지를 보낼 수 있는 채팅방이 존재하지 않습니다.");
+			return;
+		}
 		switch (jsonNode.get("type").asText()) {
 			case "invitedUser":
 				invitedUser(jsonNode, session, roomId);
@@ -190,10 +193,35 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				break;
 			case "addPlan":
 				addPlan(jsonNode,session, roomId);
-
+			case "deletePlan":
+				deletePlan(jsonNode, session,roomId);
 		}
 
 	}
+
+	private void deletePlan(JsonNode jsonNode,WebSocketSession session, String roomId) {
+		String id = getIdFromSession(session);
+
+		int plan_id = chatService.getPlanId(ChatRoomDto.builder().user_id(id).room_id(roomId).build());
+		int content_id = Integer.parseInt(jsonNode.get("content_id").asText());
+		int i = travelService.deletePlan(PlanDetailDto.builder().plan_id(plan_id).content_id(content_id).build());
+		if(i == 1){
+			if (session.isOpen()) {
+				var clients = ChatRoomManager.getInstance().getChatRoom(roomId).getClients();
+				Message message = Message.builder().type("deletePlan").sender(id).data(content_id).build();
+				String json = new Gson().toJson(message);
+				clients.values().forEach(s -> {
+					try {
+						s.sendMessage(new TextMessage(json));
+						System.out.println(s.getId() + "에게 메시지 : " +json + "을 전송하였습니다. deletePlan 입니다");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+			}
+		}
+	}
+
 	private void addPlan(JsonNode jsonNode, WebSocketSession session, String roomId){
 		String id = getIdFromSession(session);
 
@@ -240,10 +268,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	}
 
 	public void ChatMessage(JsonNode jsonNode, WebSocketSession session, String roomId) {
-		if (roomId == null) {
-			System.out.println("메시지를 보낼 수 있는 채팅방이 존재하지 않습니다.");
-			return;
-		}
+
 		// session에 해당하는 room을 찾아야 한다.
 		if (session.isOpen()) {
 			var clients = ChatRoomManager.getInstance().getChatRoom(roomId).getClients();
