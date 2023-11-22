@@ -1,14 +1,17 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
-
 var map;
 const positions = ref([]);
 const markers = ref([]);
 const overPositions = ref([]);
 const overlays = ref([]);
-const travelList = ref([]);
-
-const props = defineProps({ stations: Array, selectStation: Object });
+// const props = defineProps(["stations", "selectStation", "destinations"]);
+const props = defineProps({
+  stations: Array,
+  selectStation: Object,
+  destinations: Array,
+});
+const destinations = ref([]);
 
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
@@ -59,6 +62,13 @@ function createWatch() {
       loadMarkers();
     },
     { deep: true }
+  );
+
+  watch(
+    () => {
+      destinations.value = props.destinations;
+    },
+    { immediate: true }
   );
 }
 
@@ -139,10 +149,10 @@ const loadMarkers = () => {
     customOverlay.a.getElementsByClassName("add")[0].addEventListener("click", function () {
       console.log(customOverlay);
 
-      travelList.value = travelList.value.filter((elem) => elem !== customOverlay.info);
-      travelList.value.push(customOverlay.info);
+      props.destinations = props.destinations.filter((elem) => elem !== customOverlay.info);
+      props.destinations.push(customOverlay.info);
 
-      console.log("추가된 여행지 리스트 >> " + travelList.value);
+      // console.log("추가된 여행지 리스트 >> " + destinations.value);
     });
 
     customOverlay.setMap(null);

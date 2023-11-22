@@ -1,15 +1,10 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import KakaoMap from "../components/layout/KakaoMap.vue";
 import TravelList from "@/components/travel/TravelList.vue";
 import Rating from "@/components/travel/Rating.vue";
 import VSelect from "@/components/common/VSelect.vue";
-import {
-  getSido,
-  getType,
-  getGugun,
-  getTravelSite,
-} from "@/util/travel/travelApi";
+import { getSido, getType, getGugun, getTravelSite } from "@/util/travel/travelApi";
 import VCheckbox from "../components/common/VCheckbox.vue";
 import { useMenuStore } from "@/stores/menu";
 import PlanModal from "@/components/modal/PlanModal.vue";
@@ -32,12 +27,48 @@ const selectOption = ref([]);
 const selectAll = ref(false);
 const isModalOpen = ref(false);
 
+const destinations = ref([
+  {
+    title: "파리",
+    order: 1,
+    image: "paris.jpg",
+    addr1: "빛의 도시",
+  },
+  {
+    title: "도쿄",
+    order: 2,
+    image: "tokyo.jpg",
+    addr1: "모던하고 활기찬 도시",
+  },
+  // 필요한 만큼 여행지를 추가할 수 있습니다.
+]);
+
+const addDestination = (destination) => {
+  destinations.value.push(destination);
+};
+
 const param = ref({
   serviceKey: VITE_OPEN_API_SERVICE_KEY,
   pageNo: 1,
   numOfRows: 20,
   zscode: 0,
 });
+
+watch(destinations.forEach, (newDestinations, oldDestinations) => {
+  console.log("Destinations changed!");
+  console.log("New Destinations:", newDestinations);
+  console.log("Old Destinations:", oldDestinations);
+  // 원하는 로직을 추가하세요.
+});
+
+watch(
+  () => destinations.value,
+  () => {
+    console.log("Destinations changed!");
+    destinations.value.forEach((destination) => console.log("New Destination:", destination));
+  },
+  { deep: true }
+);
 
 onMounted(() => {
   // getChargingStations();
@@ -138,24 +169,15 @@ function openModal() {
   <Rating />
   <v-row class="v-row">
     <v-col class="v-col-4">
-      <VSelect
-        class="v-text-field"
-        :selectOption="sidoList"
-        @onKeySelect="onChangeSido"
-      />
+      <VSelect class="v-text-field" :selectOption="sidoList" @onKeySelect="onChangeSido" />
       <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
       <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
-      <TravelList />
+      <TravelList :destinations="destinations" />
 
       <!-- 모달 버튼-->
       <template v-if="menuStore.login" class="asdf">
         <v-col cols="auto">
-          <v-btn
-            class="asdfbtn"
-            icon="mdi-plus"
-            size="small"
-            @click="openModal"
-          ></v-btn>
+          <v-btn class="asdfbtn" icon="mdi-plus" size="small" @click="openModal"></v-btn>
         </v-col>
         <div id="modal" class="modal" @click.self="closeModal">
           <div class="modal-content">
@@ -166,7 +188,11 @@ function openModal() {
     </v-col>
 
     <v-col class="v-col-8">
-      <KakaoMap :stations="chargingStations" :selectStation="selectStation" />
+      <KakaoMap
+        :stations="chargingStations"
+        :selectStation="selectStation"
+        :destinations="destinations"
+      />
     </v-col>
   </v-row>
 
