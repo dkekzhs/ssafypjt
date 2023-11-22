@@ -30,7 +30,7 @@ const selectGugun = ref(0);
 const selectOption = ref([]);
 const selectAll = ref(false);
 const isModalOpen = ref(false);
-const isConnected = ref(false);
+
 const destinations = ref([
   {
     title: "파리",
@@ -170,6 +170,8 @@ function openChatModal() {
 function openModal() {
   document.getElementById("modal").style.display = "flex";
 }
+
+
 async function connectSocketChat() {
   await socketStore.connect("/chat");
 }
@@ -177,13 +179,16 @@ function check() {
   vaild(
     (res) => {
       console.log(res);
-      if ("유저 채팅방 입장 성공" == res.data.message) {
-        isConnected.value = false;
+      if ("유저 채팅방 입장 성공" == res.data.message && !socketStore.isConnected) {
         openChatModal();
         connectSocketChat();
-      } else {
-        isConnected.value = true;
+      } else if (socketStore.isConnected) {
+        openChatModal();
+        //소켓연결되어있다. 채팅방에 입장
+      }
+      else {
         openModal();
+        //없으면 계획등록
       }
     },
     (err) => {

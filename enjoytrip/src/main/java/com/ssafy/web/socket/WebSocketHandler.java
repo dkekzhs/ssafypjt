@@ -200,6 +200,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				chatRoomDto.setPlan_id(plan_id);
 				chatRoomDto.setUser_id(friend);
     			chatService.addUser(chatRoomDto);
+				System.out.println(chatRoomDto);
 			}
 			break;
 		}

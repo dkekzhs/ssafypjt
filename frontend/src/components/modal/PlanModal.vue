@@ -39,7 +39,8 @@ function myFriendList() {
   };
   console.log(data);
   socketStore.sendMessage(data);
-
+   closeModal();
+   openChatModal();
 }
 
 const toggleShare = function (index) {
