@@ -150,8 +150,10 @@ const loadMarkers = () => {
       console.log(customOverlay);
 
       props.destinations = props.destinations.filter((elem) => elem !== customOverlay.info);
-      props.destinations.push(customOverlay.info);
-
+      if (!props.destinations.includes(customOverlay.info)) {
+        props.destinations.push(customOverlay.info);
+        props.destinations[props.destinations.length - 1].order = props.destinations.length;
+      }
       // console.log("추가된 여행지 리스트 >> " + destinations.value);
     });
 
