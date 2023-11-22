@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.gson.Gson;
 import com.ssafy.web.common.exception.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
@@ -175,36 +176,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		System.out.println("JSON: " + jsonNode);
 
 		switch (jsonNode.get("type").asText()) {
-		case "invitedUser":
+			case "invitedUser":
+				invitedUser(jsonNode,session,roomId);
+				break;
+			case "message":
+				ChatMessage(jsonNode,session,roomId);
+				break;
+			case "getPlan":
 
-			String plan_name = jsonNode.get("title").asText();
-			JsonNode dataArray = jsonNode.get("data");
-			String id = getIdFromSession(session);
-			List<String> friends = new ArrayList<String>();
-            for (JsonNode node : dataArray) {
-				friends.add(node.asText());
-			}
-			if(friends.size() > 10 ) throw new AuthException("인원초과");
-
-			int plan_id = travelService.create(PlanSocketDto.builder()
-							.share_user_id_list(friends)
-							.flag(2)
-							.user_id(id)
-							.plan_name(plan_name).build());
-			System.out.println("plan_id >> " + plan_id);
-
-
-            for (String friend : friends) {
-				ChatRoomDto chatRoomDto = new ChatRoomDto();
-				chatRoomDto.setRoom_id(roomId);
-				chatRoomDto.setPlan_id(plan_id);
-				chatRoomDto.setUser_id(friend);
-    			chatService.addUser(chatRoomDto);
-				System.out.println(chatRoomDto);
-			}
-			break;
 		}
 
+
+	}
+	public void ChatMessage(JsonNode jsonNode, WebSocketSession session, String roomId) {
 		if (roomId == null) {
 			System.out.println("메시지를 보낼 수 있는 채팅방이 존재하지 않습니다.");
 			return;
@@ -212,19 +196,48 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		// session에 해당하는 room을 찾아야 한다.
 		if (session.isOpen()) {
 			var clients = ChatRoomManager.getInstance().getChatRoom(roomId).getClients();
-
+			String sender = getIdFromSession(session);
+			String type = jsonNode.get("type").asText();
+			String data = jsonNode.get("data").asText();
+			Message message = Message.builder().sender(sender).data(data).type(type).build();
+			String json = new Gson().toJson(message);
 			clients.values().forEach(s -> {
 				try {
-					s.sendMessage(new TextMessage(jsonNode.toString()));
-					System.out.println(s.getId() + "에게 메시지 : " + jsonNode.toString() + "을 전송하였습니다.");
-
+					s.sendMessage(new TextMessage(json));
+					System.out.println(s.getId() + "에게 메시지 : " +json + "을 전송하였습니다.");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			});
 		}
 	}
+	public void invitedUser(JsonNode jsonNode, WebSocketSession session, String roomId) throws AuthException{
+		String plan_name = jsonNode.get("title").asText();
+		JsonNode dataArray = jsonNode.get("data");
+		String id = getIdFromSession(session);
+		List<String> friends = new ArrayList<String>();
+		for (JsonNode node : dataArray) {
+			friends.add(node.asText());
+		}
+		if(friends.size() > 10 ) throw new AuthException("인원초과");
 
+		int plan_id = travelService.create(PlanSocketDto.builder()
+				.share_user_id_list(friends)
+				.flag(2)
+				.user_id(id)
+				.plan_name(plan_name).build());
+		System.out.println("plan_id >> " + plan_id);
+
+
+		for (String friend : friends) {
+			ChatRoomDto chatRoomDto = new ChatRoomDto();
+			chatRoomDto.setRoom_id(roomId);
+			chatRoomDto.setPlan_id(plan_id);
+			chatRoomDto.setUser_id(friend);
+			chatService.addUser(chatRoomDto);
+			System.out.println(chatRoomDto);
+		}
+	}
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		if (session.isOpen()) {

@@ -1,14 +1,12 @@
 package com.ssafy.web.socket;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class Message {
 
 	private String type;
@@ -28,11 +26,11 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return "data : {" +
-				"type :'" + type +
-				", sender :'" + sender  +
-				", receiver :'" + receiver +
-				", data :" + data +
+		return "{" +
+				"'type' :'" + type +"'"+
+				", 'sender' :'" + sender+"'"  +
+				", 'receiver' :'" + receiver+"'" +
+				", 'data' :" + data+"'" +
 				'}';
 	}
 }
