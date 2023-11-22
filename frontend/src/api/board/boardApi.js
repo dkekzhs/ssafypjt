@@ -26,6 +26,10 @@ function modifyArticle(article, success, fail) {
 function deleteArticle(articleno, success, fail) {
     apiClient.delete(`/board/${articleno}`).then(success).catch(fail);
 }
+function likeBoard(param, success, fail) {
+    apiClient.post(`/board/like`, param ).then(success).catch(fail);
+}
+
 
 export {
   listArticle,
@@ -33,5 +37,6 @@ export {
   registArticle,
   getModifyArticle,
   modifyArticle,
-  deleteArticle,
+    deleteArticle,
+    likeBoard,
 };

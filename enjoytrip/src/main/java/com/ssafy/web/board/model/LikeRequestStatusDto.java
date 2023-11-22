@@ -36,4 +36,11 @@ public class LikeRequestStatusDto {
     public void setLike_status(int like_status) {
         this.like_status = like_status;
     }
+
+	@Override
+	public String toString() {
+		return "LikeRequestStatusDto [user_id=" + user_id + ", article_no=" + article_no + ", like_status="
+				+ like_status + "]";
+	}
+    
 }

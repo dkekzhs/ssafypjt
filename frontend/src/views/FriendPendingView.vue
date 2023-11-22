@@ -1,16 +1,17 @@
 <script setup>
-import { friendPendingList, friendAccept, addFriend, refuseFriend } from "@/api/member/friendApi";
+import {friendList , friendPending, friendAccept, addFriend, refuseFriend } from "@/api/member/friendApi";
 import { getUsers } from "@/api/member/memberApi";
 import { onMounted, ref } from "vue";
 import { logout } from "@/stores/menu";
-const friendList = ref([]);
+const friendPendingList= ref([]);
 const searchId = ref("");
 const friendRequestList = ref([]);
+const myFriend = ref([]);
 function getData() {
-  friendPendingList(
+  friendPending(
     (res) => {
       console.log(res.data);
-      friendList.value = res.data.data;
+      friendPendingList.value = res.data.data;
     },
     (err) => {
       console.log(err);
@@ -61,15 +62,29 @@ function add(friend) {
     }
   );
 }
-
+function myFriendList() {
+  friendList(res => {
+    console.log(res);
+    myFriend.value = [];
+    for (let elem of res.data.data) {
+      console.log(elem);
+      myFriend.value.push({
+        name: elem.to,
+      });
+    }
+  },
+    err => {
+      console.log(err);
+  })
+}
 function deleteFriend(friend) {
   console.log(friend);
   refuseFriend({ from: friend.from }, res => {
     console.log(res);
     if ("친구 거절" == res.data.message) {
-        let index = friendList.value.indexOf(friend);
+        let index = friendPendingList.value.indexOf(friend);
         if (index !== -1) {
-          friendList.value.splice(index, 1);
+          friendPendingList.value.splice(index, 1);
         }
       }
       else {
@@ -83,6 +98,7 @@ function deleteFriend(friend) {
 }
 onMounted(() => {
   getData();
+  myFriendList();
 });
 </script>
 
@@ -106,8 +122,8 @@ onMounted(() => {
       <!-- 친구 대기 화면 -->
       <v-col cols="6">
         <v-list>
-          <v-list-item-group v-if="friendList.length > 0">
-            <v-list-item v-for="(friend, index) in friendList" :key="index">
+          <v-list-item-group v-if="friendPendingList.length > 0">
+            <v-list-item v-for="(friend, index) in friendPendingList" :key="index">
               <v-list-item-content>
                 <v-list-item-title>{{ friend.from }}</v-list-item-title>
               </v-list-item-content>
@@ -126,23 +142,16 @@ onMounted(() => {
       <v-col cols="6">
         <v-list>
           <!-- 친구 요청 리스트를 불러오고, 이를 반복문으로 표시하도록 변경하세요. -->
-          <v-list-item-group>
-            <v-list-item>
+          <v-list-item-group v-if="myFriend.length >0">
+            <v-list-item v-for="(friend, index) in myFriend" :key="index">
               <v-list-item-content>
-                <v-list-item-title
-                  >친구 요청 리스트를 불러와서 표시할 예정입니다.</v-list-item-title
-                >
+                <v-list-item-title>내친구 : {{ friend.name }}</v-list-item-title>
               </v-list-item-content>
-              <!-- 수락 및 거절 버튼을 추가하세요. -->
-              <v-list-item-action>
-                <v-btn color="success">친구목록 표시</v-btn>
-                <v-btn color="error">거절</v-btn>
-              </v-list-item-action>
             </v-list-item>
           </v-list-item-group>
           <!-- 친구 요청이 없는 경우의 처리를 추가하세요. -->
-          <v-list-item>
-            <v-list-item-content>친구 요청이 없습니다.</v-list-item-content>
+          <v-list-item v-else>
+            <v-list-item-content>친구가 없습니다.</v-list-item-content>
           </v-list-item>
         </v-list>
       </v-col>

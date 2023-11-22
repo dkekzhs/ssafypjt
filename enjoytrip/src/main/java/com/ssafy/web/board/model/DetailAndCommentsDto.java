@@ -9,12 +9,38 @@ public class DetailAndCommentsDto {
     private int status;
     private BoardDto board;
     private List<CommentDto> comments;
-
+    
     private LikeCountDto likes;
     private boolean edit;
+    private String user_id;
+
+    
+    
+    
+    @Builder
+    public DetailAndCommentsDto(int status, BoardDto board, List<CommentDto> comments, LikeCountDto likes, boolean edit,
+			String user_id) {
+		super();
+		this.status = status;
+		this.board = board;
+		this.comments = comments;
+		this.likes = likes;
+		this.edit = edit;
+		this.user_id = user_id;
+	}
 
 
-    public boolean isEdit() {
+	public String getUser_id() {
+		return user_id;
+	}
+
+
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
+
+
+	public boolean isEdit() {
 		return edit;
 	}
 

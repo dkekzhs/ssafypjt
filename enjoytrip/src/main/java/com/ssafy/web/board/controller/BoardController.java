@@ -63,6 +63,7 @@ public class BoardController {
 			HttpServletRequest request) throws Exception {
 		DetailAndCommentsDto response = null;
 		HttpSession session = request.getSession(false);
+		String user_id = null;
 		boolean editFalg = false;
 		// 사용자 정보 가져온다.
 		if (session != null) {
@@ -73,6 +74,7 @@ public class BoardController {
 			boardService.updateHit(article_no);
 			if(Author != null  && Author.equals(info.getUser_id())) {
 				editFalg = true;
+				user_id = info.getUser_id();
 			}
 			
 		} else {
@@ -80,7 +82,8 @@ public class BoardController {
 			boardService.updateHit(article_no);
 		}
 		return ResponseEntity.ok(DetailAndCommentsDto.builder().status(200).board(response.getBoard())
-				.comments(response.getComments()).likes(response.getLikes()).edit(editFalg).build());
+				.comments(response.getComments()).likes(response.getLikes()).edit(editFalg)
+				.user_id(user_id).build());
 	}
 
 	@PostMapping("/modify/{article_no}")
@@ -114,9 +117,16 @@ public class BoardController {
 
 	@ApiOperation(value = "좋아요", notes = "좋아요 누르면 토글로 작동 mapper")
 	@PostMapping("/like")
-	public ResponseEntity<MessageResponseDto> like(LikeRequestStatusDto dto) throws Exception {
+	public ResponseEntity<MessageResponseDto> like(@RequestBody LikeRequestStatusDto dto, HttpServletRequest request) throws Exception {
 		System.out.println("좋아요");
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			MemberDto info = (MemberDto) session.getAttribute("user_info");
+			dto.setUser_id(info.getUser_id());
+		}
+		
 		int i = boardService.boardLike(dto);
+		System.out.println(dto);
 		if (i == 1) {
 			System.out.println("뭐라도 함");
 		} else {

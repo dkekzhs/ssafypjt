@@ -4,11 +4,17 @@ import com.ssafy.web.comment.model.CommentDto;
 import com.ssafy.web.comment.service.CommentService;
 import com.ssafy.web.common.dto.MessageResponseDto;
 import com.ssafy.web.common.dto.ResponseListDto;
+import com.ssafy.web.member.model.MemberDto;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import javax.security.auth.message.AuthException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 
 @RestController
@@ -23,7 +29,15 @@ public class CommentController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<MessageResponseDto> add(@RequestBody CommentDto dto){
+	public ResponseEntity<MessageResponseDto> add(@RequestBody CommentDto dto, HttpServletRequest request) throws AuthException{
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			MemberDto info = (MemberDto) session.getAttribute("user_info");
+			dto.setUser_id(info.getUser_id());
+		}
+		else { 
+			throw new AuthException("로그인 해주세요");
+		}
 		int comment = cs.add(dto);
 		
 		if(comment == 1) {

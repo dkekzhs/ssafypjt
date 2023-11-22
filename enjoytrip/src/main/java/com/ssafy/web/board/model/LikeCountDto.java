@@ -5,7 +5,7 @@ import lombok.Builder;
 public class LikeCountDto {
     private int dislike_count,like_count,like_status;
 
-    public int getDislike_count() {
+	public int getDislike_count() {
         return dislike_count;
     }
 
