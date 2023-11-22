@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import com.ssafy.web.common.exception.AuthException;
+import com.ssafy.web.travel.model.SocketPlanDto;
 import com.ssafy.web.travel.model.TravelDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
@@ -196,7 +197,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		dto.setUser_id(id);
 		dto.setRoom_id(roomId);
 		int plan_id = chatService.getPlanId(dto);
-		List<TravelDto> list = travelService.getAttractionInfoByPlanId(plan_id);
+		List<SocketPlanDto> list = travelService.getAttractionInfoByPlanId(plan_id);
 		Message message = Message.builder().type("getPlanList").sender(id).data(list).build();
 		String json = new Gson().toJson(message);
 		try {

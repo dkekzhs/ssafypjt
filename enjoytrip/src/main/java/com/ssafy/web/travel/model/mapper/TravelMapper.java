@@ -3,12 +3,8 @@ package com.ssafy.web.travel.model.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.web.travel.model.*;
 import org.apache.ibatis.annotations.Mapper;
-
-import com.ssafy.web.travel.model.PlanDto;
-import com.ssafy.web.travel.model.PlanSocketDto;
-import com.ssafy.web.travel.model.ReviewDto;
-import com.ssafy.web.travel.model.TravelDto;
 
 @Mapper
 public interface TravelMapper {
@@ -35,7 +31,7 @@ public interface TravelMapper {
 
 	List<ReviewDto> getReviewList(ReviewDto dto);
 
-	List<TravelDto> getAttractionInfoByPlanId(int plan_id);
+	List<SocketPlanDto> getAttractionInfoByPlanId(int plan_id);
 	
 
 
