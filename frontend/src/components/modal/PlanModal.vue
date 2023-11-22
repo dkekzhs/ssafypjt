@@ -23,31 +23,25 @@ function myFriendList() {
     }
   );
 }
-function createPlan() {
-  socketStore.connect("ws://70.12.107.143:80/enjoytrip/createChatRoom");
-  socketStore.onopen = () => {
-    console.log("chat Room created");
-    let invited = [];
-    for (let elem of friends.value) {
-      if (elem.isShared) {
-        invited.push(elem.name);
-      }
+ async function createPlan() {
+  await socketStore.connect("/createChatRoom");
+  console.log("chat Room created");
+  let invited = [];
+  for (let elem of friends.value) {
+    if (elem.isShared) {
+      invited.push(elem.name);
     }
-    socketStore.socket.send();
-  };
-
-  /*
-  socketStore.sendMessage({
+  }
+  const data = {
     type: "invitedUser",
-    data: invited,
     title: travelTitle.value,
-  });
-  */
-  socketStore.onmessage = (e) => {
-    console.log(e.data);
+    data: invited
   };
-  closeModal();
+  console.log(data);
+  socketStore.sendMessage(data);
+
 }
+
 const toggleShare = function (index) {
   friends.value[index].isShared = !friends.value[index].isShared;
 };

@@ -6,7 +6,7 @@
     </div>
     <div class="input-area">
       <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type a message..." />
-      <button @click="test">Send</button>
+      <button @click="sendMessage">Send</button>
     </div>
   </div>
 </template>
@@ -26,9 +26,10 @@ const newMessage = ref("");
 const socketStore = useSocketStore();
 const sendMessage = () => {
   if (newMessage.value.trim() !== "") {
+    socketStore.sendMessage({type : "message" , data : newMessage.value, sender : "setting"})
     messages.value.push({
       id: messages.value.length + 1,
-      type: "sent",
+      type: "setting",
       content: newMessage.value.trim(),
     });
     newMessage.value = "";
@@ -41,13 +42,7 @@ const scrollToBottom = () => {
     chatContainer.scrollTop = chatContainer.scrollHeight + 30;
   }
 };
-function test() {
-  socketStore.socket.send({
-    type: "invitedUser",
-    data: "asdasd",
-    title: "asdasd",
-  });
-}
+
 
 onMounted(() => {
   scrollToBottom();

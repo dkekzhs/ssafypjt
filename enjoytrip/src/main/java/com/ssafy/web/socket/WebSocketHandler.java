@@ -262,12 +262,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			});
 			room = null;
 			ChatRoomManager.getInstance().deleteChatRoom(id);
+			ChatRoomDto dto = new ChatRoomDto();
+			dto.setRoom_id(id);
+			chatService.deleteRoom(dto);
 		} else { // 채팅원이 나간 경우
 			String roomId = sessionToRoomId.get(id);
 			if (roomId == null)
 				return;
 			ChatRoom room = ChatRoomManager.getInstance().getChatRoom(roomId);
 			room.removeClient(id);
+
 		}
 	}
 

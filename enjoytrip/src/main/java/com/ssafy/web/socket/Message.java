@@ -25,4 +25,14 @@ public class Message {
 	public void closeConnect() {
 		this.type = "close";
 	}
+
+	@Override
+	public String toString() {
+		return "data : {" +
+				"type :'" + type +
+				", sender :'" + sender  +
+				", receiver :'" + receiver +
+				", data :" + data +
+				'}';
+	}
 }

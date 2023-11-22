@@ -170,11 +170,8 @@ function openChatModal() {
 function openModal() {
   document.getElementById("modal").style.display = "flex";
 }
-function connectSocketChat() {
-  socketStore.connect("ws://70.12.107.143:80/enjoytrip/chat");
-  socket.value.onopen = () => {
-    console.log("Connected to server");
-  };
+async function connectSocketChat() {
+  await socketStore.connect("/chat");
 }
 function check() {
   vaild(
@@ -194,14 +191,11 @@ function check() {
     }
   );
 }
-function test() {
-  socketStore.connect("ws://70.12.107.143:80/enjoytrip/chat");
-  socketStore.socket.send();
-}
+
 </script>
 
 <template>
-  <button @click="test">assssssssssssssssssssssssssss</button>
+
   <h1>홈 화면입니다.</h1>
   <Rating />
   <v-row class="v-row">
