@@ -22,7 +22,8 @@ function fetchDetails(id){
     detailArticle(id , res => {
         console.log(res);
         board.value = res.data.board;
-      comments.value = res.data.comments;
+      comments.value = sortComments(res.data.comments);
+      console.log(comments.value);
       editFlag.value = res.data.edit;
       like.value = res.data.likes;
       user_id.value = res.data.user_id;
@@ -90,6 +91,35 @@ function rootComment() {
   )
   
 }
+  // 댓글 트리 구조로 정렬하는 함수
+  function sortComments(comments) {
+    const commentMap = new Map();
+    const roots = [];
+
+    comments.forEach(comment => {
+      const parentId = comment.parent_comment_id;
+      if (!parentId) {
+        roots.push(comment);
+      } else {
+        if (!commentMap.has(parentId)) {
+          commentMap.set(parentId, []);
+        }s
+        commentMap.get(parentId).push(comment);
+      }
+    });
+
+    const traverse = (comment) => {
+      if (commentMap.has(comment.comment_id)) {
+        comment.children = commentMap.get(comment.comment_id);
+        comment.children.forEach(child => traverse(child));
+      }
+    };
+
+    roots.forEach(root => traverse(root));
+    console.log(roots);
+    return roots;
+  }
+
 
 </script>
 
@@ -112,13 +142,26 @@ function rootComment() {
 
     <div class="comments-section">
       <h3 class="comments-title">댓글</h3>
-      <div v-for="comment in comments" :key="comment.comment_id" class="comment" :style="{ marginLeft: `${(comment.level - 1) * 20}px` }">
-        <p>{{ comment.content }}</p>
-        <div class="comment-actions">
-          <input type="text" v-model="commentInput[comment.comment_id]"/>
-          <v-btn @click="setComment(comment.comment_id,comment.root_id,board.article_no)">댓글달기</v-btn>
+      <div>
+    <div v-for="comment in comments" :key="comment.comment_id" class="comment" :style="{ marginLeft: `${(comment.level - 1) * 20}px` }">
+      <p>{{ comment.content }}</p>
+      <div class="comment-actions">
+        <input type="text" v-model="commentInput[comment.comment_id]"/>
+        <v-btn @click="setComment(comment.comment_id, comment.root_id, board.article_no)">댓글달기</v-btn>
+      </div>
+
+      <!-- Nested Comments -->
+      <div v-if="comment.children && comment.children.length > 0">
+        <div v-for="childComment in comment.children" :key="childComment.comment_id" class="nested-comment" :style="{ marginLeft: `${childComment.level * 20}px` }">
+          <p>{{ childComment.content }}</p>
+          <div class="comment-actions">
+            <input type="text" v-model="commentInput[childComment.comment_id]"/>
+            <v-btn @click="setComment(childComment.comment_id, childComment.root_id, board.article_no)">댓글달기</v-btn>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
     </div>
     <div class="comment-actions">
           <input type="text" v-model="comments_content"/>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>댓글 트리 구조 예제</title>
+  <style>
+    .comment {
+      margin-left: 20px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="comments-container"></div>
+
+<script>
+  // 예제 데이터
+  const comments = [
+    { comment_id: 1, parent_comment_id: null, text: "부모 댓글 1" },
+    { comment_id: 2, parent_comment_id: 1, text: "자식 댓글 1-1" },
+    { comment_id: 3, parent_comment_id: 1, text: "자식 댓글 1-2" },
+    { comment_id: 4, parent_comment_id: 2, text: "손자 댓글 1-1-1" },
+    { comment_id: 5, parent_comment_id: null, text: "부모 댓글 2" },
+    { comment_id: 6, parent_comment_id: 5, text: "자식 댓글 2-1" },
+    { comment_id: 7, parent_comment_id: 5, text: "자식 댓글 2-2" },
+  ];
+
+  // 댓글 트리 구조로 정렬하는 함수
+  function sortComments(comments) {
+    const commentMap = new Map();
+    const roots = [];
+
+    comments.forEach(comment => {
+      const parentId = comment.parent_comment_id;
+      if (!parentId) {
+        roots.push(comment);
+      } else {
+        if (!commentMap.has(parentId)) {
+          commentMap.set(parentId, []);
+        }
+        commentMap.get(parentId).push(comment);
+      }
+    });
+
+    const traverse = (comment) => {
+      if (commentMap.has(comment.comment_id)) {
+        comment.children = commentMap.get(comment.comment_id);
+        comment.children.forEach(child => traverse(child));
+      }
+    };
+
+    roots.forEach(root => traverse(root));
+
+    return roots;
+  }
+
+  // 트리 구조로 정렬된 댓글 가져오기
+  const sortedComments = sortComments(comments);
+
+  // 댓글을 HTML로 표현하는 함수
+  function renderComments(container, comments) {
+    comments.forEach(comment => {
+      const commentDiv = document.createElement('div');
+      commentDiv.classList.add('comment');
+      commentDiv.textContent = comment.text;
+      container.appendChild(commentDiv);
+
+      if (comment.children) {
+        renderComments(commentDiv, comment.children);
+      }
+    });
+  }
+
+  // 댓글을 표시할 컨테이너
+  const commentsContainer = document.getElementById('comments-container');
+
+  // 댓글 렌더링
+  renderComments(commentsContainer, sortedComments);
+</script>
+
+</body>
+</html>
