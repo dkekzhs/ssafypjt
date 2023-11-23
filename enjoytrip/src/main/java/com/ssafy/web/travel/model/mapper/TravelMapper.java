@@ -39,4 +39,6 @@ public interface TravelMapper {
 
 	int deletePlan(PlanDetailDto dto);
 
+	int updatePlan(List<PlanDetailDto> dto);
+
 }

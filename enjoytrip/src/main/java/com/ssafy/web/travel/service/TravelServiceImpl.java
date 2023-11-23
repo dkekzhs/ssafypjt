@@ -120,4 +120,10 @@ public class TravelServiceImpl implements TravelService {
 		return travelMapper.deletePlan(dto);
 	}
 
+	@Override
+	public int updatePlan(List<PlanDetailDto> dto) {
+		// TODO Auto-generated method stub
+		return travelMapper.updatePlan(dto);
+	}
+
 }

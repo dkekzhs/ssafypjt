@@ -161,4 +161,12 @@
 	<delete id="deletePlan" parameterType="planDetailDto">
 		delete FROM plan_detail where content_id = #{content_id} and plan_id = #{plan_id};
 	</delete>
+	
+	<update id="PlanDetailDto" parameterType="java.util.List">
+	    <foreach collection="list" item="item" index="index" separator=";">
+      UPDATE plan_detail
+      SET `order` = #{item.order}
+      WHERE content_id = #{item.content_id} AND plan_id = #{item.plan_id}
+    </foreach>
+	</update>
 </mapper>
