@@ -145,7 +145,7 @@
 	</select>
 
 	<select id="getAttractionInfoByPlanId" parameterType="int" resultType="socketPlanDto">
-		SELECT ai.title as title ,pd.order as `order`, ai.first_image as image,ai.addr1 as addr1 ,ai.content_id as content_id
+		SELECT ai.title as title ,pd.order as `order`, ai.first_image as firstImage,ai.addr1 as addr1 ,ai.content_id as content_id
 		FROM attraction_info ai
 				 INNER JOIN plan_detail pd ON ai.content_id = pd.content_id
 		WHERE pd.plan_id = #{planId}

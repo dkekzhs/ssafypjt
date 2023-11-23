@@ -175,6 +175,28 @@ function openModal() {
 
 function handlePacket(packet) {
   console.log("핸들링할 패킷 >> " + packet);
+  switch (packet.type) {
+    case "getPlanList": {
+      console.log("이전까지의 여행지를 가져옵니다.");
+      console.log(packet.data);
+      for (let i = 0; i < packet.data.length; i++) {
+        destinations.value.push(packet.data[i]);
+      }
+    }
+      break;
+    case "message": {
+      console.log("채팅방 메세지를 얻습니다.");
+    }
+      break;
+    case "addPlan": {
+      console.log("여행지를 추가합니다.");
+    }
+      break;
+    case "deletePlan": {
+      console.log("여행지를 삭제합니다.");
+    }
+      break;
+  }
 }
 async function connectSocketChat() {
   await socketStore.connect("/chat", handlePacket);
@@ -186,6 +208,7 @@ function check() {
       if ("유저 채팅방 입장 성공" == res.data.message && !socketStore.isConnected) {
         openChatModal();
         connectSocketChat();
+        
       } else if (socketStore.isConnected) {
         openChatModal();
         //소켓연결되어있다. 채팅방에 입장

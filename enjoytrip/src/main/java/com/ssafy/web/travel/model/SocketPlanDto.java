@@ -10,7 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class SocketPlanDto {
-    private String title, image,addr1;
+    private String title, firstImage,addr1;
     private int order, content_id;
 
     public String getTitle() {
@@ -21,13 +21,6 @@ public class SocketPlanDto {
         this.title = title;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     public String getAddr1() {
         return addr1;
@@ -52,4 +45,12 @@ public class SocketPlanDto {
     public void setContent_id(int content_id) {
         this.content_id = content_id;
     }
+
+	public String getFirstImage() {
+		return firstImage;
+	}
+
+	public void setFirstImage(String firstImage) {
+		this.firstImage = firstImage;
+	}
 }
