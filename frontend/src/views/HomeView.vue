@@ -32,6 +32,7 @@ const selectAll = ref(false);
 const isModalOpen = ref(false);
 
 const destinations = ref([
+  /*
   {
     title: "파리",
     order: 1,
@@ -44,6 +45,7 @@ const destinations = ref([
     image: "tokyo.jpg",
     addr1: "모던하고 활기찬 도시",
   },
+  */
   // 필요한 만큼 여행지를 추가할 수 있습니다.
 ]);
 const socketStore = useSocketStore();
@@ -187,8 +189,7 @@ function check() {
       } else if (socketStore.isConnected) {
         openChatModal();
         //소켓연결되어있다. 채팅방에 입장
-      }
-      else {
+      } else {
         openModal();
         //없으면 계획등록
       }
@@ -199,9 +200,8 @@ function check() {
   );
 }
 
-function getPlanListSocket(){
-  socketStore.sendMessage({ "type": "getPlanList" });
-  
+function getPlanListSocket() {
+  socketStore.sendMessage({ type: "getPlanList" });
 }
 </script>
 

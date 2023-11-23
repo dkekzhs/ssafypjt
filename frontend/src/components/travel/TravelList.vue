@@ -16,7 +16,7 @@
           <DestinationItem
             :name="element.title"
             :order="element.order"
-            :image="element.image"
+            :image="element.firstImage"
             :description="element.addr1"
             @destinationSelected="handleDestinationSelected"
           />

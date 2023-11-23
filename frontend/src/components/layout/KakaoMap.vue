@@ -82,14 +82,17 @@ function createContent(elem) {
     "        </div>" +
     '        <div class="body">' +
     '            <div class="img">' +
-    '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
+    '                <img src="' +
+    elem.firstImage +
+    '"alt="이미지 정보 없음" width="73" height="70">' +
     "           </div>" +
     '            <div class="desc">' +
     '                <div class="ellipsis">' +
     elem.addr1 +
     "</div>" +
-    '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' +
-    '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' +
+    '                <div class="jibun ellipsis">' +
+    elem.addr2 +
+    "</div>" +
     '                <div class="add" title="추가"></div>' +
     "            </div>" +
     "        </div>" +
