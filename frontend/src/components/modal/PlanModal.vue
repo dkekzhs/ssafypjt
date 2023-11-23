@@ -54,29 +54,34 @@ const closeModal = function () {
 
 <template>
   <div>
-    <div class="modal-content" @click.stop>
+    <div class="modal-content2" @click.stop>
       <!-- 모달 내용 -->
       <h2>{{ travelTitle }}</h2>
-      <input v-model="travelTitle" placeholder="여행지 제목 입력" />
+      <v-text-field v-model="travelTitle" placeholder="여행지 제목 입력" />
 
       <!-- 친구 목록 -->
       <div>
         <h3>친구 목록</h3>
         <ul>
-          <li v-for="(friend, index) in friends" :key="index">
+          <v-list v-for="(friend, index) in friends" :key="index">
             {{ friend.name }}
-            <button @click="toggleShare(index)">
+            <v-btn  @click="toggleShare(index)">
               {{ friend.isShared ? "해제" : "공유" }}
-            </button>
-          </li>
+            </v-btn>
+          </v-list>
         </ul>
       </div>
-      <button @click="myFriendList">친구새로고침</button>
+      <v-btn color="blue" @click="myFriendList">친구새로고침</v-btn>
       <!-- 완료 버튼 -->
-      <button @click="createPlan">완료</button>
-      <button @click="closeModal">모달 닫기</button>
+      <br>
+      <v-btn color="green" @click="createPlan">완료</v-btn>
+      <v-btn color="red" @click="closeModal">모달 닫기</v-btn>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.modal-content2{
+  background-color: rgb(255, 255, 255);
+}
+</style>

@@ -4,18 +4,20 @@ import KakaoMap from "../components/layout/KakaoMap.vue";
 import TravelList from "@/components/travel/TravelList.vue";
 import Rating from "@/components/travel/Rating.vue";
 import VSelect from "@/components/common/VSelect.vue";
-import { getSido, getType, getGugun, getTravelSite } from "@/util/travel/travelApi";
+import { getSido, getType, getGugun, getTravelSite, getMyPlan , getPlanDetail } from "@/util/travel/travelApi";
 import VCheckbox from "../components/common/VCheckbox.vue";
 import { useMenuStore, logout } from "@/stores/menu";
 import PlanModal from "@/components/modal/PlanModal.vue";
 import ChatModal from "@/components/modal/ChatModal.vue";
 import { vaild } from "@/api/chat/chatApi";
 import { useSocketStore } from "@/api/chat/socket";
+import PlanSelect from "@/components/common/PlanSelect.vue";
 
 const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
 const menuStore = useMenuStore();
 
 const sidoList = ref([]);
+const planList = ref([]);
 const gugunList = ref([{ text: "구군선택", value: "" }]);
 const optionList = ref([
   { text: "전체", value: 0, checked: false },
@@ -38,8 +40,17 @@ const socketStore = useSocketStore();
 onMounted(() => {
   // getChargingStations();
   getSidoList();
+  getMyPlans();
 });
-
+const getMyPlans = () => {
+  getMyPlan(res => {
+    planList.value = res.data.data;
+  },
+    err => {
+      console.log(err);
+  }
+  )
+}
 const getSidoList = () => {
   getSido(
     ({ data }) => {
@@ -70,7 +81,13 @@ const getChargingStations = () => {
     }
   );
 };
-
+const onChangePlan = (val) => {
+  getPlanDetail({ plan_id: val }, res => {
+    socketStore.destinations = res.data.data;
+  }, err => {
+    console.log(err);
+  })
+}
 const onChangeSido = (val) => {
   getGugun(
     { sidoCode: val },
@@ -115,6 +132,7 @@ function openModal() {
 }
 
 
+
 async function connectSocketChat() {
   await socketStore.connect("/chat", socketStore.handlePacket);
   socketStore.sendMessage({ type: "getPlanList" });
@@ -152,7 +170,8 @@ const destinations = computed(() => socketStore.getDestinations);
   <Rating />
   <v-row class="v-row">
     <v-col class="v-col-4">
-      <VSelect class="v-text-field" :selectOption="sidoList" @onKeySelect="onChangeSido" />
+      <PlanSelect v-if="!socketStore.isConnected" :selectOption="planList" @onKeySelect="onChangePlan" />
+      <VSelect  class="v-text-field" :selectOption="sidoList" @onKeySelect="onChangeSido" />
       <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
       <VCheckbox :selectOption="optionList" @onKeySelect="onChangeOption" />
       <TravelList :destinations="destinations" />
@@ -220,20 +239,19 @@ const destinations = computed(() => socketStore.getDestinations);
 
 <style scoped>
 .modal {
-  border: 10px solid #f00;
+  width: 40%;
+  height: 40%;
   left: calc(50%);
   z-index: 100;
   display: none;
   position: fixed;
   top: 20%;
-  width: auto;
-  height: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+
   align-items: baseline;
   justify-content: flex-start;
 }
 .modal-content {
-  background-color: #fff;
+  background-color: #ffffff;
   padding: 20px;
   width: 80%;
   margin: 20px auto;

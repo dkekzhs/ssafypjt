@@ -1,18 +1,19 @@
 package com.ssafy.web.travel.controller;
 
-import com.ssafy.web.travel.model.PlanSocketDto;
-import com.ssafy.web.travel.model.ReviewDto;
-import com.ssafy.web.travel.model.TravelDto;
-import com.ssafy.web.travel.model.TravelListResponseDto;
+import com.ssafy.web.common.dto.ResponseListDto;
+import com.ssafy.web.common.exception.AuthException;
+import com.ssafy.web.member.model.MemberDto;
+import com.ssafy.web.socket.model.getMyPlanDto;
+import com.ssafy.web.travel.model.*;
 import com.ssafy.web.travel.model.mapper.TravelMapper;
 import com.ssafy.web.travel.service.TravelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.xml.ws.Response;
 import java.util.List;
 import java.util.Map;
 
@@ -105,7 +106,26 @@ public class TravelController {
 		return ResponseEntity.ok(create);
 		
 	}
+
+	@GetMapping("/getMyPlan")
+	public ResponseEntity<?> getMyPlan(HttpServletRequest request) throws AuthException {
+		HttpSession session = request.getSession(false);
+		if(session != null){
+			MemberDto user_info = (MemberDto) session.getAttribute("user_info");
+			List<getMyPlanDto> dto = travelService.getMyPlan(user_info.getUser_id());
+			return ResponseEntity.ok(ResponseListDto.builder().list(dto).build());
+		}
+		throw new AuthException("여행계획 리스트가져오기 오류");
+	}
 	
-	
+	@PostMapping("/getPlanDetail")
+	public ResponseEntity<?> gePlanDetail(HttpServletRequest request ,@RequestBody getMyPlanDto dto) throws  AuthException {
+		HttpSession session = request.getSession(false);
+		if(session == null) throw new AuthException("인증 오류");
+
+		List<SocketPlanDto> data = travelService.getAttractionInfoByPlanId(dto.getPlan_id());
+		return ResponseEntity.ok(ResponseListDto.builder().list(data).build());
+
+	}
 	
 }

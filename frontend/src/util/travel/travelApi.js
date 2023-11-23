@@ -16,4 +16,10 @@ function getTravelSite(body, success, fail) {
   apiClient.post("/travel/search/travel", body).then(success).catch(fail);
 }
 
-export { getSido, getType, getGugun, getTravelSite };
+function getMyPlan(success, fail) {
+  apiClient.get("/travel/getMyPlan").then(success).catch(fail);
+}
+function getPlanDetail(body, success, fail) {
+  apiClient.post("/travel/getPlanDetail", body).then(success).catch(fail);
+}
+export { getSido, getType, getGugun, getTravelSite ,getMyPlan, getPlanDetail};

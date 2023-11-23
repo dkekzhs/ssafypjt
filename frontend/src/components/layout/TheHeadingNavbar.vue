@@ -16,7 +16,7 @@ const { user } = storeToRefs(userStore);
 const { changeMenuState } = menuStore;
 console.log(menuList.value);
 
-const appTitle = ref("enjoyTrip");
+const appTitle = ref("여행가요");
 const sidebar = ref(false);
 const toolbar = ref(false);
 
@@ -88,8 +88,8 @@ function countFriend() {
       </v-toolbar>
     </span>
     <v-toolbar-title>
-      <router-link to="/" tag="span" style="cursor: pointer">
-        {{ appTitle }}
+      <router-link class="router-link" to="/" tag="span" style="cursor: pointer">
+        <h3 >{{ appTitle }}</h3>
       </router-link>
     </v-toolbar-title>
     <v-spacer></v-spacer>
@@ -122,6 +122,11 @@ function countFriend() {
   background-color: #ff6f61; /* 약간의 빨간색 배경 */
   color: white; /* 텍스트 색상 */
   border-radius: 12px; /* 동그란 형태로 만들기 위한 border-radius 설정 */
+
+}
+.router-link{
+  text-decoration: none;
+  color: rgb(221, 142, 142);
 
 }
 </style>

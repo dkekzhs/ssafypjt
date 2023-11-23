@@ -3,6 +3,7 @@ package com.ssafy.web.travel.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.web.socket.model.getMyPlanDto;
 import com.ssafy.web.travel.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -124,6 +125,11 @@ public class TravelServiceImpl implements TravelService {
 	public int updatePlan(PlanDetailDto dto) {
 		// TODO Auto-generated method stub
 		return travelMapper.updatePlan(dto);
+	}
+
+	@Override
+	public List<getMyPlanDto> getMyPlan(String user_id) {
+		return travelMapper.getMyPlan(user_id);
 	}
 
 }

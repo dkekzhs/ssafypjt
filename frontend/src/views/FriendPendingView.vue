@@ -2,7 +2,7 @@
 import {friendList , friendPending, friendAccept, addFriend, refuseFriend } from "@/api/member/friendApi";
 import { getUsers } from "@/api/member/memberApi";
 import { onMounted, ref } from "vue";
-import { logout } from "@/stores/menu";
+
 const friendPendingList= ref([]);
 const searchId = ref("");
 const friendRequestList = ref([]);
@@ -105,8 +105,11 @@ onMounted(() => {
 <template>
   <v-container>
     <!-- 유저 검색-->
-    <input v-model="searchId" type="text" />
+    <v-container>
+      <v-text-field  v-model="searchId" type="text" />
     <v-btn @click="getUserId">유저 아이디검색</v-btn>
+    </v-container>
+
 
     <v-list-item v-for="(friend, index) in friendRequestList" :key="index">
       <v-list-item-content>
@@ -144,8 +147,9 @@ onMounted(() => {
           <!-- 친구 요청 리스트를 불러오고, 이를 반복문으로 표시하도록 변경하세요. -->
           <v-list-item-group v-if="myFriend.length >0">
             <v-list-item v-for="(friend, index) in myFriend" :key="index">
+              <v-list-item-title>내친구 </v-list-item-title>
               <v-list-item-content>
-                <v-list-item-title>내친구 : {{ friend.name }}</v-list-item-title>
+                {{ friend.name }}
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
@@ -159,4 +163,7 @@ onMounted(() => {
   </v-container>
 </template>
 
-<style scoped></style>
+<style scoped>
+.v-text-field{
+      width: 300px;
+}</style>

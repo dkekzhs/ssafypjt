@@ -3,6 +3,7 @@ package com.ssafy.web.travel.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.web.socket.model.getMyPlanDto;
 import com.ssafy.web.travel.model.*;
 
 public interface TravelService {
@@ -36,4 +37,6 @@ public interface TravelService {
 	int deletePlan(PlanDetailDto dto);
 	
 	int updatePlan(PlanDetailDto dto);
+
+	List<getMyPlanDto> getMyPlan(String user_id);
 }

@@ -20,6 +20,7 @@ export const useSocketStore = defineStore("socketStore", {
         this.callback = callback;
         this.socket.onopen = () => {
           console.log("WebSocket connected");
+          this.destinations = [];
           this.isConnected = true;
           resolve(); // 연결이 완료되면 resolve를 호출합니다.
         };

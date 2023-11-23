@@ -3,6 +3,7 @@ package com.ssafy.web.travel.model.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.web.socket.model.getMyPlanDto;
 import com.ssafy.web.travel.model.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -41,4 +42,5 @@ public interface TravelMapper {
 
 	int updatePlan(PlanDetailDto dto);
 
+	List<getMyPlanDto> getMyPlan(String user_id);
 }

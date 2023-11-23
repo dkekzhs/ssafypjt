@@ -4,8 +4,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import bootstrap from 'bootstrap/dist/js/bootstrap.bundle'
-
+import "bootStrap";
 // Vuetify
 import "vuetify/dist/vuetify.min.css";
 import '@mdi/font/css/materialdesignicons.css'

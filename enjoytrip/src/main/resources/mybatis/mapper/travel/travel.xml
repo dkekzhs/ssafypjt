@@ -184,4 +184,12 @@
 			SET `order` = #{order}
 			WHERE content_id = #{contentId} AND plan_id = #{plan_id}
 	</update>
+
+	<select id="getMyPlan" parameterType="String"  resultType="getMyPlanDto">
+		SELECT s.plan_id as plan_id, p.plan_name as plan_name
+		FROM share s
+				 JOIN plan_board p ON s.plan_id = p.plan_id
+		WHERE s.share_user_id = #{userId}
+		  AND p.share_flag = 2
+	</select>
 </mapper>
