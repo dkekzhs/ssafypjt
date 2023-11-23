@@ -1,7 +1,7 @@
 <template>
   <div class="chat-container" ref="chatContainer" id="chatContainer">
-    <div v-for="message in messages" :key="message.id" class="message">
-      <span v-if="message.type === 'received'" class="sender">{{ message.sender }}:</span>
+    <div v-for="message in socketStore.messages" :key="message.id" class="message">
+      <span class="sender">{{ message.sender }}:</span>
       <span class="content">{{ message.content }}</span>
     </div>
     <div class="input-area">
@@ -12,26 +12,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, defineProps } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 import { useSocketStore } from "@/api/chat/socket";
 
-const messages = ref([
-  { id: 1, type: "received", sender: "John", content: "Hello!" },
-  { id: 2, type: "sent", content: "Hi John! How are you?" },
-  { id: 3, type: "received", sender: "John", content: "I'm good, thank you!" },
-]);
 
 const newMessage = ref("");
 const socketStore = useSocketStore();
+
 const sendMessage = () => {
+  console.log("샌드 메시지 호출 : "+ socketStore.messages);
   if (newMessage.value.trim() !== "") {
-    socketStore.sendMessage({type : "message" , data : newMessage.value, sender : "setting"})
-    messages.value.push({
-      id: messages.value.length + 1,
-      type: "setting",
-      content: newMessage.value.trim(),
-    });
+    socketStore.sendMessage({ type: "message", data: newMessage.value });
     newMessage.value = "";
     scrollToBottom();
   }
@@ -47,10 +39,19 @@ const scrollToBottom = () => {
 onMounted(() => {
   scrollToBottom();
 });
-
+/*
 watch(messages, () => {
   scrollToBottom();
 });
+*/
+watch(
+  () => socketStore.messages.length,
+  () => {
+    console.log("Message Changed");
+    scrollToBottom();
+  },
+  { deep: true }
+)
 </script>
 
 <style scoped>

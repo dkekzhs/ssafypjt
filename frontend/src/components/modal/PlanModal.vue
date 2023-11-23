@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { friendList } from "@/api/member/friendApi";
 import { useSocketStore } from "../../api/chat/socket";
+
 const travelTitle = ref("여행 계획");
 const friends = ref([]);
 const socketStore = useSocketStore();
@@ -24,7 +25,7 @@ function myFriendList() {
   );
 }
  async function createPlan() {
-  await socketStore.connect("/createChatRoom");
+  await socketStore.connect("/createChatRoom",socketStore.handlePacket);
   console.log("chat Room created");
   let invited = [];
   for (let elem of friends.value) {

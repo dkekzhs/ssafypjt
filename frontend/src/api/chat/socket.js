@@ -5,8 +5,14 @@ export const useSocketStore = defineStore("socketStore", {
     socket: null,
     isConnected: false,
     callback: null,
-    message: null,
+    messages: [],
+    destinations: [],
+    packet: null,
   }),
+  getters: {
+    getDestinations: (state) => state.destinations,
+  }
+  ,
 
   actions: {
     // 소켓 연결
@@ -32,12 +38,12 @@ export const useSocketStore = defineStore("socketStore", {
         };
 
         this.socket.onmessage = (event) => {
-          this.message = JSON.parse(event.data);
-          console.log("Received message:", this.message);
+          this.packet = JSON.parse(event.data);
+          console.log("Received message:", this.packet);
           console.log("Received message:", event);
 
           // 메시지 처리 또는 다른 작업 수행
-          this.callback(this.message);
+          this.callback(this.packet);
         };
       })
     },
@@ -58,5 +64,36 @@ export const useSocketStore = defineStore("socketStore", {
         console.warn("WebSocket is not connected");
       }
     },
+
+
+    handlePacket() {
+      console.log("핸들링할 패킷 >> " + this.packet);
+      switch (this.packet.type) {
+        case "getPlanList": {
+          console.log("이전까지의 여행지를 가져옵니다.");
+          console.log(this.packet.data);
+          for (let i = 0; i < this.packet.data.length; i++) {
+            this.destinations.push(this.packet.data[i]);
+          }
+        }
+          break;
+        case "message": {
+          console.log("채팅방 메세지를 얻습니다.");
+          this.messages.push({
+            id: this.messages.length + 1
+            , sender: this.packet.sender, content: this.packet.data
+          });
+        }
+          break;
+        case "addPlan": {
+          console.log("여행지를 추가합니다.");
+        }
+          break;
+        case "deletePlan": {
+          console.log("여행지를 삭제합니다.");
+        }
+          break;
+      }
+    }
   },
 });

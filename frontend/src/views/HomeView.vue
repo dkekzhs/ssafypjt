@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch , computed } from "vue";
 import KakaoMap from "../components/layout/KakaoMap.vue";
 import TravelList from "@/components/travel/TravelList.vue";
 import Rating from "@/components/travel/Rating.vue";
@@ -30,29 +30,28 @@ const selectGugun = ref(0);
 const selectOption = ref([]);
 const selectAll = ref(false);
 const isModalOpen = ref(false);
+const messages = ref([]);
 
-const destinations = ref([
-  /*
-  {
-    title: "파리",
-    order: 1,
-    image: "paris.jpg",
-    addr1: "빛의 도시",
-  },
-  {
-    title: "도쿄",
-    order: 2,
-    image: "tokyo.jpg",
-    addr1: "모던하고 활기찬 도시",
-  },
-  */
-  // 필요한 만큼 여행지를 추가할 수 있습니다.
-]);
+// const destinations = ref([
+//   /*
+//   {
+//     title: "파리",
+//     order: 1,
+//     image: "paris.jpg",
+//     addr1: "빛의 도시",
+//   },
+//   {
+//     title: "도쿄",
+//     order: 2,
+//     image: "tokyo.jpg",
+//     addr1: "모던하고 활기찬 도시",
+//   },
+//   */
+//   // 필요한 만큼 여행지를 추가할 수 있습니다.
+// ]);
 const socketStore = useSocketStore();
 
-const addDestination = (destination) => {
-  destinations.value.push(destination);
-};
+
 
 const param = ref({
   serviceKey: VITE_OPEN_API_SERVICE_KEY,
@@ -61,21 +60,21 @@ const param = ref({
   zscode: 0,
 });
 
-watch(destinations.forEach, (newDestinations, oldDestinations) => {
-  console.log("Destinations changed!");
-  console.log("New Destinations:", newDestinations);
-  console.log("Old Destinations:", oldDestinations);
-  // 원하는 로직을 추가하세요.
-});
+// watch(destinations.forEach, (newDestinations, oldDestinations) => {
+//   console.log("Destinations changed!");
+//   console.log("New Destinations:", newDestinations);
+//   console.log("Old Destinations:", oldDestinations);
+//   // 원하는 로직을 추가하세요.
+// });
 
-watch(
-  () => destinations.value,
-  () => {
-    console.log("Destinations changed!");
-    destinations.value.forEach((destination) => console.log("New Destination:", destination));
-  },
-  { deep: true }
-);
+// watch(
+//   () => destinations.value,
+//   () => {
+//     console.log("Destinations changed!");
+//     destinations.value.forEach((destination) => console.log("New Destination:", destination));
+//   },
+//   { deep: true }
+// );
 
 onMounted(() => {
   // getChargingStations();
@@ -172,34 +171,35 @@ function openChatModal() {
 function openModal() {
   document.getElementById("modal").style.display = "flex";
 }
+// function handlePacket(packet) {
+//   console.log("핸들링할 패킷 >> " + packet);
+//   switch (packet.type) {
+//     case "getPlanList": {
+//       console.log("이전까지의 여행지를 가져옵니다.");
+//       console.log(packet.data);
+//       for (let i = 0; i < packet.data.length; i++) {
+//         destinations.value.push(packet.data[i]);
+//       }
+//     }
+//       break;
+//     case "message": {
+//       console.log("채팅방 메세지를 얻습니다.");
+//     }
+//       break;
+//     case "addPlan": {
+//       console.log("여행지를 추가합니다.");
+//     }
+//       break;
+//     case "deletePlan": {
+//       console.log("여행지를 삭제합니다.");
+//     }
+//       break;
+//   }
+// }
 
-function handlePacket(packet) {
-  console.log("핸들링할 패킷 >> " + packet);
-  switch (packet.type) {
-    case "getPlanList": {
-      console.log("이전까지의 여행지를 가져옵니다.");
-      console.log(packet.data);
-      for (let i = 0; i < packet.data.length; i++) {
-        destinations.value.push(packet.data[i]);
-      }
-    }
-      break;
-    case "message": {
-      console.log("채팅방 메세지를 얻습니다.");
-    }
-      break;
-    case "addPlan": {
-      console.log("여행지를 추가합니다.");
-    }
-      break;
-    case "deletePlan": {
-      console.log("여행지를 삭제합니다.");
-    }
-      break;
-  }
-}
+
 async function connectSocketChat() {
-  await socketStore.connect("/chat", handlePacket);
+  await socketStore.connect("/chat", socketStore.handlePacket);
 }
 function check() {
   vaild(
@@ -208,9 +208,10 @@ function check() {
       if ("유저 채팅방 입장 성공" == res.data.message && !socketStore.isConnected) {
         openChatModal();
         connectSocketChat();
-        
+        socketStore.sendMessage({ type: "getPlanList" });
       } else if (socketStore.isConnected) {
         openChatModal();
+        socketStore.sendMessage({ type: "getPlanList" });
         //소켓연결되어있다. 채팅방에 입장
       } else {
         openModal();
@@ -222,14 +223,11 @@ function check() {
     }
   );
 }
-
-function getPlanListSocket() {
-  socketStore.sendMessage({ type: "getPlanList" });
-}
+const destinations = computed(() => socketStore.getDestinations);
 </script>
 
 <template>
-  <button @click="getPlanListSocket">getPlanListTest</button>
+
   <h1>홈 화면입니다.</h1>
   <Rating />
   <v-row class="v-row">
@@ -249,7 +247,7 @@ function getPlanListSocket() {
           </div>
         </div>
         <div id="chat_modal" class="modal" @click.self="closeModal">
-          <div class="modal-content"><ChatModal /></div>
+          <div class="modal-content"><ChatModal :messages="messages" /></div>
         </div>
       </template>
     </v-col>
