@@ -6,7 +6,7 @@ import Rating from "@/components/travel/Rating.vue";
 import VSelect from "@/components/common/VSelect.vue";
 import { getSido, getType, getGugun, getTravelSite } from "@/util/travel/travelApi";
 import VCheckbox from "../components/common/VCheckbox.vue";
-import { useMenuStore } from "@/stores/menu";
+import { useMenuStore, logout } from "@/stores/menu";
 import PlanModal from "@/components/modal/PlanModal.vue";
 import ChatModal from "@/components/modal/ChatModal.vue";
 import { vaild } from "@/api/chat/chatApi";
@@ -19,60 +19,21 @@ const sidoList = ref([]);
 const gugunList = ref([{ text: "구군선택", value: "" }]);
 const optionList = ref([
   { text: "전체", value: 0, checked: false },
-  { text: "ㅁㄴㅇㄹ", value: 12, checked: false },
-  { text: "ㅂㅈㄷㄱ", value: 14, checked: false },
-  { text: "ㅋㅌㅊㅍ", value: 15, checked: false },
+  { text: "여행지", value: 12, checked: false },
+  { text: "밥", value: 14, checked: false },
+  { text: "놀거리", value: 15, checked: false },
 ]);
 const chargingStations = ref([]);
 const selectStation = ref({});
 const selectSido = ref(0);
 const selectGugun = ref(0);
 const selectOption = ref([]);
-const selectAll = ref(false);
-const isModalOpen = ref(false);
+
 const messages = ref([]);
 
-// const destinations = ref([
-//   /*
-//   {
-//     title: "파리",
-//     order: 1,
-//     image: "paris.jpg",
-//     addr1: "빛의 도시",
-//   },
-//   {
-//     title: "도쿄",
-//     order: 2,
-//     image: "tokyo.jpg",
-//     addr1: "모던하고 활기찬 도시",
-//   },
-//   */
-//   // 필요한 만큼 여행지를 추가할 수 있습니다.
-// ]);
 const socketStore = useSocketStore();
 
-const param = ref({
-  serviceKey: VITE_OPEN_API_SERVICE_KEY,
-  pageNo: 1,
-  numOfRows: 20,
-  zscode: 0,
-});
 
-// watch(destinations.forEach, (newDestinations, oldDestinations) => {
-//   console.log("Destinations changed!");
-//   console.log("New Destinations:", newDestinations);
-//   console.log("Old Destinations:", oldDestinations);
-//   // 원하는 로직을 추가하세요.
-// });
-
-// watch(
-//   () => destinations.value,
-//   () => {
-//     console.log("Destinations changed!");
-//     destinations.value.forEach((destination) => console.log("New Destination:", destination));
-//   },
-//   { deep: true }
-// );
 
 onMounted(() => {
   // getChargingStations();
@@ -130,28 +91,11 @@ const onChangeSido = (val) => {
 };
 
 const onChangeGugun = (val) => {
-  // param.value.zscode = val;
   selectGugun.value = val;
   getChargingStations();
 };
 
 const onChangeOption = (val) => {
-  /*
-  if (val == 0 && selectAll.value == false) {
-    // select all
-    selectAll.value = true;
-    selectOption.value = [];
-    for (let option of optionList.value) {
-      selectOption.value.push(option.value);
-    }
-  } else if (selectAll.value == true && selectOption._rawValue.includes(0) == false) {
-    // 전체 선택 토글
-    selectAll.value = false;
-    selectOption.value = [];
-  } else {
-    selectOption.value = val;
-  }
-  */
   selectOption.value = val;
   for (let option of optionList.value) {
     option.checked = !option.checked;
@@ -169,31 +113,7 @@ function openChatModal() {
 function openModal() {
   document.getElementById("modal").style.display = "flex";
 }
-// function handlePacket(packet) {
-//   console.log("핸들링할 패킷 >> " + packet);
-//   switch (packet.type) {
-//     case "getPlanList": {
-//       console.log("이전까지의 여행지를 가져옵니다.");
-//       console.log(packet.data);
-//       for (let i = 0; i < packet.data.length; i++) {
-//         destinations.value.push(packet.data[i]);
-//       }
-//     }
-//       break;
-//     case "message": {
-//       console.log("채팅방 메세지를 얻습니다.");
-//     }
-//       break;
-//     case "addPlan": {
-//       console.log("여행지를 추가합니다.");
-//     }
-//       break;
-//     case "deletePlan": {
-//       console.log("여행지를 삭제합니다.");
-//     }
-//       break;
-//   }
-// }
+
 
 async function connectSocketChat() {
   await socketStore.connect("/chat", socketStore.handlePacket);
@@ -203,7 +123,12 @@ function check() {
   vaild(
     (res) => {
       console.log(res);
-      if ("유저 채팅방 입장 성공" == res.data.message && !socketStore.isConnected) {
+      if (res.data.message === "로그인해주세요") {
+        alert("로그인해주세요")
+        logout();
+        return;
+      }
+      if (res.data.message === "유저 채팅방 입장 성공"  && !socketStore.isConnected) {
         openChatModal();
         connectSocketChat();
       } else if (socketStore.isConnected) {
@@ -266,10 +191,10 @@ const destinations = computed(() => socketStore.getDestinations);
     >
       <thead>
         <tr class="text-center">
-          <th scope="col">충전소명</th>
-          <th scope="col">충전소ID</th>
-          <th scope="col">충전기상태</th>
-          <th scope="col">위치</th>
+          <th scope="col">이름</th>
+          <th scope="col">주소</th>
+          <th scope="col">상세주소</th>
+          <th scope="col">전화번호</th>
           <th scope="col">위도</th>
           <th scope="col">경도</th>
         </tr>

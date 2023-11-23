@@ -94,8 +94,25 @@ export const useSocketStore = defineStore("socketStore", {
         case "deletePlan": {
           console.log("여행지를 삭제합니다.");
           console.log(this.destinations + " destinataion 과 packetData  : ", this.packet.data);
-          this.socket.send(JSON.stringify({ type: "updatePlan", data: this.destinations }));
-          this.socket.send(JSON.stringify({ type: "getPlanList" }));
+          // this.destinations = this.destinations.filter((destination) => destination.contentId != this.packet.data);
+          // if (this.destinations.length <= 0) {
+          //   this.destinations = [];
+          // } else {
+          //   this.destinations.forEach((destination, index) => {
+          //     destination.order = index + 1;
+          //   });
+            this.socket.send(JSON.stringify({ type: "updatePlan", data: this.destinations }));    
+          // }
+          break;
+        }
+        case "updatePlan": {
+          console.log("여행지 갱신")
+          console.log(this.packet.data);
+          this.destinations = [];
+          for (let i = 0; i < this.packet.data.length; i++) {
+            this.destinations.push(this.packet.data[i]);
+          }
+
           break;
         }
       }

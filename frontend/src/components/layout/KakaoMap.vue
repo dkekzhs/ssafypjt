@@ -153,6 +153,12 @@ const loadMarkers = () => {
 
     customOverlay.a.getElementsByClassName("add")[0].addEventListener("click", function () {
       console.log(customOverlay);
+      console.log(socketStore.destinations.length)
+      const flag = socketStore.destinations.length >0 && socketStore.destinations.some(destination => destination.contentId === customOverlay.info.contentId);
+      if (flag) {
+        alert("이미 존재합니다");
+        return;
+      }
       if (socketStore.isConnected) {
         socketStore.sendMessage({
           type: "addPlan", content_id: customOverlay.info.contentId
@@ -160,11 +166,9 @@ const loadMarkers = () => {
         })
       }
       else {
-        props.destinations = props.destinations.filter((elem) => elem !== customOverlay.info);
-      if (!props.destinations.includes(customOverlay.info)) {
-        props.destinations.push(customOverlay.info);
-        props.destinations[props.destinations.length - 1].order = props.destinations.length;
-      }
+        socketStore.destinations.push(customOverlay.info);
+        socketStore.destinations[socketStore.destinations.length - 1].order = socketStore.destinations.length;
+      
       }
 
       // console.log("추가된 여행지 리스트 >> " + destinations.value);

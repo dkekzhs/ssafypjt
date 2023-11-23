@@ -31,8 +31,14 @@ const updateHtmlContent = () => {
       <h3>${order}. ${name}</h3>
       <img src="${image}" alt="여행지 이미지" style="max-width: 200px" />
       <p>${description}</p>
-      <button @click="selectDestination">선택</button>
+      <button id="delete-btn">삭제</button>
     `;
+    nextTick(() => {
+      const deleteBtn = document.getElementById("delete-btn");
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", deleteDestination);
+      }
+    });
   }
 };
 </script>

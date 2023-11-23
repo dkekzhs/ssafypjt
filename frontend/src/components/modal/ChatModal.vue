@@ -1,15 +1,18 @@
+
 <template>
   <div class="chat-container" ref="chatContainer" id="chatContainer">
-    <div v-for="message in socketStore.messages" :key="message.id" class="message">
-      <span class="sender">{{ message.sender }}:</span>
-      <span class="content">{{ message.content }}</span>
-    </div>
-    <div class="input-area">
-      <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type a message..." />
-      <button @click="sendMessage">Send</button>
-    </div>
+    <v-card class="message" v-for="message in socketStore.messages" :key="message.id">
+      <v-card-title>
+        <span>{{ message.sender }}</span>
+      </v-card-title>
+      <v-card-text>{{ message.content }}</v-card-text>
+    </v-card>
+    <v-text-field v-model="newMessage" label="Type a message..." filled @keyup.enter="sendMessage" />
+    <v-btn color="primary" @click="sendMessage">Send</v-btn>
   </div>
 </template>
+
+
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
@@ -56,7 +59,7 @@ watch(
 
 <style scoped>
 .chat-container {
-  max-height: 300px;
+  max-height: 600px;
   overflow-x: hidden;
   overflow-y: scroll;
 }
@@ -70,16 +73,5 @@ watch(
   margin-right: 8px;
 }
 
-.input-area {
-  margin-top: 16px;
-}
 
-input {
-  padding: 8px;
-  margin-right: 8px;
-}
-
-button {
-  padding: 8px;
-}
 </style>

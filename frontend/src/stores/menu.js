@@ -53,8 +53,10 @@ export function logout() {
     deleteCookie("user_name");
     deleteCookie("exponent");
     deleteCookie("modulus");
-    router.push({ name: 'home' });
+    router.go(0);
+    login.value = false;
   } else {
+    router.go(0);
     console.log("로그인 유저 없음");
   }
 }
@@ -93,6 +95,7 @@ export async function login(id, pw) {
     },
     (err) => {
       console.log("login 중 에러 발생 >> " + err);
+      alert("로그인 실패! : 패스워드 아이디를 확인해주세요")
       useUserStore().user.name = null;
       deleteCookie("user_name");
     }
@@ -112,6 +115,11 @@ export async function regist(body) {
   memberRegist(
     body,
     (res) => {
+      if (res.status == 200) {
+        alert("회원가입 성공");
+        router.push({ name: 'home' });
+      }
+      //rsa 키 오류 시 데이터를 받아서 처리했어야함
       console.log(res)
     },
     (err) => {

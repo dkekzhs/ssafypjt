@@ -35,5 +35,5 @@ public interface TravelService {
 
 	int deletePlan(PlanDetailDto dto);
 	
-	int updatePlan(List<PlanDetailDto> dto);
+	int updatePlan(PlanDetailDto dto);
 }

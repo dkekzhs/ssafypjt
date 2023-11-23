@@ -121,7 +121,7 @@ public class TravelServiceImpl implements TravelService {
 	}
 
 	@Override
-	public int updatePlan(List<PlanDetailDto> dto) {
+	public int updatePlan(PlanDetailDto dto) {
 		// TODO Auto-generated method stub
 		return travelMapper.updatePlan(dto);
 	}

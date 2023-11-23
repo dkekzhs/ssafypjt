@@ -156,7 +156,7 @@
 		resultType="socketPlanDto">
 		SELECT ai.title as title ,pd.order as `order`,
 		ai.first_image as firstImage,ai.addr1 as addr1 ,ai.content_id as
-		content_id
+		contentId
 		FROM attraction_info ai
 		INNER JOIN plan_detail pd ON ai.content_id = pd.content_id
 		WHERE pd.plan_id
@@ -169,7 +169,7 @@
 	</insert>
 	<select id="getPlanOne" parameterType="int"
 		resultType="socketPlanDto">
-		SELECT title,first_image as image , addr1, content_id as
+		SELECT title,first_image as firstImage , addr1, content_id as
 		contentId FROM attraction_info
 		WHERE content_id = #{contentId}
 	</select>
@@ -179,11 +179,9 @@
 		where content_id = #{contentId} and plan_id = #{plan_id}
 	</delete>
 
-	<update id="updatePlan" parameterType="java.util.List">
-		<foreach collection="list" item="item" separator=",">
+	<update id="updatePlan" parameterType="planDetailDto">
 			UPDATE plan_detail
-			SET `order` = #{item.order}
-			WHERE content_id = #{item.contentId} AND plan_id = #{item.plan_id}
-		</foreach>
+			SET `order` = #{order}
+			WHERE content_id = #{contentId} AND plan_id = #{plan_id}
 	</update>
 </mapper>

@@ -13,7 +13,9 @@ import com.ssafy.web.common.exception.AuthException;
 import com.ssafy.web.travel.model.PlanDetailDto;
 import com.ssafy.web.travel.model.SocketPlanDto;
 import com.ssafy.web.travel.model.TravelDto;
+import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -167,7 +169,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	}
 
 	@Override
-	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+	protected synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 
 		// ObjectMapper 생성
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -208,24 +210,21 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	// private String title, firstImage,addr1;
 	// private int order, content_id;
-	private void updatePlan(JsonNode jsonNode, WebSocketSession session, String roomId) {
+
+	protected void updatePlan(JsonNode jsonNode, WebSocketSession session, String roomId) {
 		// TODO 갱신 모든 여행 계획 순서를 바꿔준다.
 		String id = getIdFromSession(session);
 		int plan_id = chatService.getPlanId(ChatRoomDto.builder().user_id(id).room_id(roomId).build());
 		JsonNode dataArray = jsonNode.get("data");
-		List<PlanDetailDto> list = new ArrayList<PlanDetailDto>();
 		System.out.println(jsonNode);
 		System.out.println("updatePlane 실행중");
 		for (JsonNode data : dataArray) {
 			int content_id = Integer.parseInt(data.get("contentId").asText());
 			int order = Integer.parseInt(data.get("order").asText());
 			System.out.println(content_id + "  content_id  " + order + "    order ");
-			list.add(PlanDetailDto.builder().order(order).plan_id(plan_id).contentId(content_id).build());
+			travelService.updatePlan(PlanDetailDto.builder().order(order).plan_id(plan_id).contentId(content_id).build());
 
 		}
-		System.out.println(list);
-		int i = travelService.updatePlan(list);
-
 		List<SocketPlanDto> plans = travelService.getAttractionInfoByPlanId(plan_id);
 		// session에 해당하는 room을 찾아야 한다.
 		if (session.isOpen()) {
@@ -235,7 +234,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			clients.values().forEach(s -> {
 				try {
 					s.sendMessage(new TextMessage(json));
-					System.out.println(s.getId() + "에게 메시지 : " + json + "을 전송하였습니다. addPlan 입니다");
+					System.out.println(s.getId() + "에게 메시지 : " + json + "을 전송하였습니다. update 입니다");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -252,19 +251,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		int i = travelService.deletePlan(PlanDetailDto.builder().plan_id(plan_id).contentId(content_id).build());
 
 		if (i >= 1) {
-			if (session.isOpen()) {
-				var clients = ChatRoomManager.getInstance().getChatRoom(roomId).getClients();
 				Message message = Message.builder().type("deletePlan").sender(id).data(content_id).build();
 				String json = new Gson().toJson(message);
-				clients.values().forEach(s -> {
-					try {
-						s.sendMessage(new TextMessage(json));
-						System.out.println(s.getId() + "에게 메시지 : " + json + "을 전송하였습니다. deletePlan 입니다");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
-			}
+				try {
+					session.sendMessage(new TextMessage(json));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
 	}
 
