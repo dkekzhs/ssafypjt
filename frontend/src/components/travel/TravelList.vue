@@ -18,7 +18,7 @@
             :order="element.order"
             :image="element.firstImage"
             :description="element.addr1"
-            @destinationSelected="handleDestinationSelected"
+            @destinationDeleted="handleDestinationDeleted"
           />
         </div>
       </template>
@@ -27,10 +27,12 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, ref, defineEmits } from "vue";
 import draggable from "vuedraggable";
 import DestinationItem from "@/components/common/VDestinationItem.vue";
 let idGlobal = 0;
+
+const emit = defineEmits();
 const cloneDestination = ({ name }) => {
   return { name, id: idGlobal++ };
 };
@@ -52,9 +54,16 @@ const endDrag = () => {
   console.log(props.destinations[1]);
 };
 
-const handleDestinationSelected = (selectedDestination) => {
-  console.log("선택된 여행지:", selectedDestination);
+const handleDestinationDeleted = (selectedDestination) => {
+  console.log("삭제된 여행지:", selectedDestination);
+
   // 선택된 여행지 데이터를 필요에 따라 처리합니다.
+  props.destinations = props.destinations.filter(
+    (destination) => destination.name !== selectedDestination.name
+  );
+
+  // 삭제 이후에 부모 컴포넌트에 이벤트를 발생시킬 수 있습니다.
+  emit("destinationDeleted", selectedDestination);
 };
 
 const props = defineProps(["destinations"]);
