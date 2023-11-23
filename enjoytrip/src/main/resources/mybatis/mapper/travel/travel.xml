@@ -48,7 +48,7 @@
 
 	<!-- 시도, 구군, 카테고리 정보에 따른 여행지 리스트를 가져온다 -->
 	<select id="searchByCode" parameterType="int"
-		resultType="com.ssafy.web.travel.model.TravelDto">
+		resultMap="site">
 		SELECT * FROM attraction_info
 		<where>
 			<if test="sidoCode != 0">
