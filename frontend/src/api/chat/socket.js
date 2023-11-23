@@ -87,12 +87,18 @@ export const useSocketStore = defineStore("socketStore", {
           break;
         case "addPlan": {
           console.log("여행지를 추가합니다.");
-        }
+          this.destinations.push(this.packet.data);
           break;
+        }
+
         case "deletePlan": {
           console.log("여행지를 삭제합니다.");
-        }
+          this.destinations.filter((element) => {
+            return element.content_id !== this.packet.data.content_id;
+          })
           break;
+        }
+
       }
     }
   },

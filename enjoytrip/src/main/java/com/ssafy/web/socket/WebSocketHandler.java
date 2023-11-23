@@ -193,8 +193,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				break;
 			case "addPlan":
 				addPlan(jsonNode,session, roomId);
+				break;
 			case "deletePlan":
 				deletePlan(jsonNode, session,roomId);
+				break;
 		}
 
 	}

@@ -1,10 +1,12 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
+import { useSocketStore } from "../../api/chat/socket";
 var map;
 const positions = ref([]);
 const markers = ref([]);
 const overPositions = ref([]);
 const overlays = ref([]);
+const socketStore = useSocketStore();
 // const props = defineProps(["stations", "selectStation", "destinations"]);
 const props = defineProps({
   stations: Array,
@@ -151,12 +153,20 @@ const loadMarkers = () => {
 
     customOverlay.a.getElementsByClassName("add")[0].addEventListener("click", function () {
       console.log(customOverlay);
-
-      props.destinations = props.destinations.filter((elem) => elem !== customOverlay.info);
+      if (socketStore.isConnected) {
+        socketStore.sendMessage({
+          type: "addPlan", content_id: customOverlay.info.contentId
+          , order : socketStore.destinations.length+1
+        })
+      }
+      else {
+        props.destinations = props.destinations.filter((elem) => elem !== customOverlay.info);
       if (!props.destinations.includes(customOverlay.info)) {
         props.destinations.push(customOverlay.info);
         props.destinations[props.destinations.length - 1].order = props.destinations.length;
       }
+      }
+
       // console.log("추가된 여행지 리스트 >> " + destinations.value);
     });
 
