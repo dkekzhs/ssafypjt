@@ -11,9 +11,7 @@ export const useSocketStore = defineStore("socketStore", {
   }),
   getters: {
     getDestinations: (state) => state.destinations,
-  }
-  ,
-
+  },
   actions: {
     // 소켓 연결
     connect(url, callback) {
@@ -23,7 +21,7 @@ export const useSocketStore = defineStore("socketStore", {
         this.socket.onopen = () => {
           console.log("WebSocket connected");
           this.isConnected = true;
-          resolve();  // 연결이 완료되면 resolve를 호출합니다.
+          resolve(); // 연결이 완료되면 resolve를 호출합니다.
         };
 
         this.socket.onclose = () => {
@@ -34,7 +32,7 @@ export const useSocketStore = defineStore("socketStore", {
         this.socket.onerror = (error) => {
           console.error("WebSocket error:", error);
           this.isConnected = false;
-          reject(error);  // 에러 발생 시 reject를 호출합니다.
+          reject(error); // 에러 발생 시 reject를 호출합니다.
         };
 
         this.socket.onmessage = (event) => {
@@ -45,7 +43,7 @@ export const useSocketStore = defineStore("socketStore", {
           // 메시지 처리 또는 다른 작업 수행
           this.callback(this.packet);
         };
-      })
+      });
     },
 
     // 소켓 연결 종료
@@ -65,25 +63,27 @@ export const useSocketStore = defineStore("socketStore", {
       }
     },
 
-
     handlePacket() {
       console.log("핸들링할 패킷 >> " + this.packet);
       switch (this.packet.type) {
-        case "getPlanList": {
-          console.log("이전까지의 여행지를 가져옵니다.");
-          console.log(this.packet.data);
-          for (let i = 0; i < this.packet.data.length; i++) {
-            this.destinations.push(this.packet.data[i]);
+        case "getPlanList":
+          {
+            console.log("이전까지의 여행지를 가져옵니다.");
+            console.log(this.packet.data);
+            for (let i = 0; i < this.packet.data.length; i++) {
+              this.destinations.push(this.packet.data[i]);
+            }
           }
-        }
           break;
-        case "message": {
-          console.log("채팅방 메세지를 얻습니다.");
-          this.messages.push({
-            id: this.messages.length + 1
-            , sender: this.packet.sender, content: this.packet.data
-          });
-        }
+        case "message":
+          {
+            console.log("채팅방 메세지를 얻습니다.");
+            this.messages.push({
+              id: this.messages.length + 1,
+              sender: this.packet.sender,
+              content: this.packet.data,
+            });
+          }
           break;
         case "addPlan": {
           console.log("여행지를 추가합니다.");
@@ -93,13 +93,12 @@ export const useSocketStore = defineStore("socketStore", {
 
         case "deletePlan": {
           console.log("여행지를 삭제합니다.");
-          this.destinations.filter((element) => {
-            return element.content_id !== this.packet.data.content_id;
-          })
+          console.log(this.destinations + " destinataion 과 packetData  : ", this.packet.data);
+          this.socket.send(JSON.stringify({ type: "updatePlan", data: this.destinations }));
+          this.socket.send(JSON.stringify({ type: "getPlanList" }));
           break;
         }
-
       }
-    }
+    },
   },
 });

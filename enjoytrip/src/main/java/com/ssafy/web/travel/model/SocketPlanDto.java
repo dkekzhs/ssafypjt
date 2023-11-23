@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class SocketPlanDto {
     private String title, firstImage,addr1;
-    private int order, content_id;
+    private int order, contentId;
 
     public String getTitle() {
         return title;
@@ -38,13 +38,6 @@ public class SocketPlanDto {
         this.order = order;
     }
 
-    public int getContent_id() {
-        return content_id;
-    }
-
-    public void setContent_id(int content_id) {
-        this.content_id = content_id;
-    }
 
 	public String getFirstImage() {
 		return firstImage;
@@ -52,5 +45,13 @@ public class SocketPlanDto {
 
 	public void setFirstImage(String firstImage) {
 		this.firstImage = firstImage;
+	}
+
+	public int getContentId() {
+		return contentId;
+	}
+
+	public void setContentId(int contentId) {
+		this.contentId = contentId;
 	}
 }

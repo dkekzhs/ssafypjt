@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch , computed } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import KakaoMap from "../components/layout/KakaoMap.vue";
 import TravelList from "@/components/travel/TravelList.vue";
 import Rating from "@/components/travel/Rating.vue";
@@ -50,8 +50,6 @@ const messages = ref([]);
 //   // 필요한 만큼 여행지를 추가할 수 있습니다.
 // ]);
 const socketStore = useSocketStore();
-
-
 
 const param = ref({
   serviceKey: VITE_OPEN_API_SERVICE_KEY,
@@ -197,9 +195,9 @@ function openModal() {
 //   }
 // }
 
-
 async function connectSocketChat() {
   await socketStore.connect("/chat", socketStore.handlePacket);
+  socketStore.sendMessage({ type: "getPlanList" });
 }
 function check() {
   vaild(
@@ -208,10 +206,8 @@ function check() {
       if ("유저 채팅방 입장 성공" == res.data.message && !socketStore.isConnected) {
         openChatModal();
         connectSocketChat();
-        socketStore.sendMessage({ type: "getPlanList" });
       } else if (socketStore.isConnected) {
         openChatModal();
-        socketStore.sendMessage({ type: "getPlanList" });
         //소켓연결되어있다. 채팅방에 입장
       } else {
         openModal();
@@ -227,7 +223,6 @@ const destinations = computed(() => socketStore.getDestinations);
 </script>
 
 <template>
-
   <h1>홈 화면입니다.</h1>
   <Rating />
   <v-row class="v-row">

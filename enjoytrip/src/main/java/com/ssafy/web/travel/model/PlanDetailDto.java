@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class PlanDetailDto {
 
 	private int plan_id;
-	private int content_id;
+	private int contentId;
 	private int order;
 
 	public int getPlan_id() {
@@ -20,19 +20,26 @@ public class PlanDetailDto {
 	public void setPlan_id(int plan_id) {
 		this.plan_id = plan_id;
 	}
-	public int getContent_id() {
-		return content_id;
-	}
-	public void setContent_id(int content_id) {
-		this.content_id = content_id;
-	}
+
 
 	@Override
 	public String toString() {
 		return "PlanDetailDto{" +
 				"plan_id=" + plan_id +
-				", content_id=" + content_id +
+				", contentId=" + contentId +
 				", order=" + order +
 				'}';
+	}
+	public int getContentId() {
+		return contentId;
+	}
+	public void setContentId(int contentId) {
+		this.contentId = contentId;
+	}
+	public int getOrder() {
+		return order;
+	}
+	public void setOrder(int order) {
+		this.order = order;
 	}
 }

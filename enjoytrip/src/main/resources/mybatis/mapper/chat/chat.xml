@@ -39,9 +39,17 @@
 	</select>
 
 	<select id="getPlanId" parameterType="chatRoomDto"
-			resultType="int">
+		resultType="int">
 		SELECT plan_id
 		FROM chat_room
-		WHERE user_id = #{user_id} and room_id = #{room_id}
+		WHERE user_id = #{user_id} and
+		room_id = #{room_id}
 	</select>
+
+	<update id="updateUser" parameterType="chatRoomDto">
+		UPDATE chat_room
+		SET plan_id = #{plan_id}
+		WHERE user_id = #{user_id} and
+		room_id = #{room_id}
+	</update>
 </mapper>

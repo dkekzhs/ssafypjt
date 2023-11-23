@@ -42,10 +42,15 @@ public class ChatRoomDto {
 		this.user_id = user_id;
 	}
 
+
+
+
 	@Override
 	public String toString() {
-		return "ChatRoomDto [room_id=" + room_id + ", user_id=" + user_id + "]";
+		return "ChatRoomDto [room_id=" + room_id + ", user_id=" + user_id + ", plan_id=" + plan_id + "]";
 	}
+
+
 
 
 }

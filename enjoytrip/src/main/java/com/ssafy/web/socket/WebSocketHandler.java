@@ -34,7 +34,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	@Autowired
 	private ChatService chatService;
-	
+
 	@Autowired
 	private TravelService travelService;
 	// 모든 세션 객체를 저장하는 해시맵
@@ -114,7 +114,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					System.out.println("id 쿠키가 존재하지 않습니다. 방을 추가할 수 없습니다.");
 					return;
 				}
-				chatService.addUser(ChatRoomDto.builder().user_id(id).room_id(roomId).build()); // DB에 (room id, 방장 id) 추가. 초대 멤버들의 정보도 추가해야한다.
+				chatService.addUser(ChatRoomDto.builder().user_id(id).room_id(roomId).build()); // DB에 (room id, 방장 id)
+																								// 추가. 초대 멤버들의 정보도
+																								// 추가해야한다.
 				sessionToRoomId.put(roomId, roomId);
 				System.out.println("방이 생성되었습니다 >> " + room);
 			} else {
@@ -182,74 +184,74 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			return;
 		}
 		switch (jsonNode.get("type").asText()) {
-			case "invitedUser":
-				invitedUser(jsonNode, session, roomId);
-				break;
-			case "message":
-				ChatMessage(jsonNode, session, roomId);
-				break;
-			case "getPlanList":
-				getPlan(session, roomId);
-				break;
-			case "addPlan":
-				addPlan(jsonNode,session, roomId);
-				break;
-			case "deletePlan":
-				deletePlan(jsonNode, session,roomId);
-				break;
-			case "updatePlan":
-				updatePlan(jsonNode, session, roomId);
+		case "invitedUser":
+			invitedUser(jsonNode, session, roomId);
+			break;
+		case "message":
+			ChatMessage(jsonNode, session, roomId);
+			break;
+		case "getPlanList":
+			getPlan(session, roomId);
+			break;
+		case "addPlan":
+			addPlan(jsonNode, session, roomId);
+			break;
+		case "deletePlan":
+			deletePlan(jsonNode, session, roomId);
+			break;
+		case "updatePlan":
+			updatePlan(jsonNode, session, roomId);
+			break;
 		}
 
 	}
 
-	//    private String title, firstImage,addr1;
-    // private int order, content_id;
+	// private String title, firstImage,addr1;
+	// private int order, content_id;
 	private void updatePlan(JsonNode jsonNode, WebSocketSession session, String roomId) {
 		// TODO 갱신 모든 여행 계획 순서를 바꿔준다.
 		String id = getIdFromSession(session);
 		int plan_id = chatService.getPlanId(ChatRoomDto.builder().user_id(id).room_id(roomId).build());
 		JsonNode dataArray = jsonNode.get("data");
 		List<PlanDetailDto> list = new ArrayList<PlanDetailDto>();
-		
+		System.out.println(jsonNode);
+		System.out.println("updatePlane 실행중");
 		for (JsonNode data : dataArray) {
-			int content_id = Integer.parseInt(data.get("content_id").asText());
+			int content_id = Integer.parseInt(data.get("contentId").asText());
 			int order = Integer.parseInt(data.get("order").asText());
-		
-			list.add(PlanDetailDto.builder().order(order).plan_id(plan_id).content_id(content_id).build());
-			
-			}
-		int i = travelService.updatePlan(list);
-		if(i >= 1 ) {
-			List<SocketPlanDto> plans = travelService.getAttractionInfoByPlanId(plan_id);
-			// session에 해당하는 room을 찾아야 한다.
-			if (session.isOpen()) {
-				var clients = ChatRoomManager.getInstance().getChatRoom(roomId).getClients();
-				Message message = Message.builder().type("updatePlan").sender(id).data(plans).build();
-				String json = new Gson().toJson(message);
-				clients.values().forEach(s -> {
-					try {
-						s.sendMessage(new TextMessage(json));
-						System.out.println(s.getId() + "에게 메시지 : " +json + "을 전송하였습니다. addPlan 입니다");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
-			}
+			System.out.println(content_id + "  content_id  " + order + "    order ");
+			list.add(PlanDetailDto.builder().order(order).plan_id(plan_id).contentId(content_id).build());
+
 		}
-		
-		
-		
-		
+		System.out.println(list);
+		int i = travelService.updatePlan(list);
+
+		List<SocketPlanDto> plans = travelService.getAttractionInfoByPlanId(plan_id);
+		// session에 해당하는 room을 찾아야 한다.
+		if (session.isOpen()) {
+			var clients = ChatRoomManager.getInstance().getChatRoom(roomId).getClients();
+			Message message = Message.builder().type("updatePlan").sender(id).data(plans).build();
+			String json = new Gson().toJson(message);
+			clients.values().forEach(s -> {
+				try {
+					s.sendMessage(new TextMessage(json));
+					System.out.println(s.getId() + "에게 메시지 : " + json + "을 전송하였습니다. addPlan 입니다");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
+
 	}
 
-	private void deletePlan(JsonNode jsonNode,WebSocketSession session, String roomId) {
+	private void deletePlan(JsonNode jsonNode, WebSocketSession session, String roomId) {
 		String id = getIdFromSession(session);
 
 		int plan_id = chatService.getPlanId(ChatRoomDto.builder().user_id(id).room_id(roomId).build());
 		int content_id = Integer.parseInt(jsonNode.get("content_id").asText());
-		int i = travelService.deletePlan(PlanDetailDto.builder().plan_id(plan_id).content_id(content_id).build());
-		if(i == 1){
+		int i = travelService.deletePlan(PlanDetailDto.builder().plan_id(plan_id).contentId(content_id).build());
+
+		if (i >= 1) {
 			if (session.isOpen()) {
 				var clients = ChatRoomManager.getInstance().getChatRoom(roomId).getClients();
 				Message message = Message.builder().type("deletePlan").sender(id).data(content_id).build();
@@ -257,7 +259,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				clients.values().forEach(s -> {
 					try {
 						s.sendMessage(new TextMessage(json));
-						System.out.println(s.getId() + "에게 메시지 : " +json + "을 전송하였습니다. deletePlan 입니다");
+						System.out.println(s.getId() + "에게 메시지 : " + json + "을 전송하였습니다. deletePlan 입니다");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -266,15 +268,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		}
 	}
 
-	private void addPlan(JsonNode jsonNode, WebSocketSession session, String roomId){
+	private void addPlan(JsonNode jsonNode, WebSocketSession session, String roomId) {
 		String id = getIdFromSession(session);
 
 		int plan_id = chatService.getPlanId(ChatRoomDto.builder().user_id(id).room_id(roomId).build());
 		int content_id = Integer.parseInt(jsonNode.get("content_id").asText());
 		int order = Integer.parseInt(jsonNode.get("order").asText());
-		int i = travelService.addPlan(PlanDetailDto.builder()
-				.order(order).plan_id(plan_id).content_id(content_id).build());
-		if(i ==1){
+		int i = travelService
+				.addPlan(PlanDetailDto.builder().order(order).plan_id(plan_id).contentId(content_id).build());
+		if (i == 1) {
 			SocketPlanDto planOne = travelService.getPlanOne(content_id);
 			planOne.setOrder(order);
 			// session에 해당하는 room을 찾아야 한다.
@@ -285,7 +287,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				clients.values().forEach(s -> {
 					try {
 						s.sendMessage(new TextMessage(json));
-						System.out.println(s.getId() + "에게 메시지 : " +json + "을 전송하였습니다. addPlan 입니다");
+						System.out.println(s.getId() + "에게 메시지 : " + json + "을 전송하였습니다. addPlan 입니다");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -294,7 +296,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		}
 
 	}
-	public void getPlan(WebSocketSession session, String roomId){
+
+	public void getPlan(WebSocketSession session, String roomId) {
 		String id = getIdFromSession(session);
 		ChatRoomDto dto = new ChatRoomDto();
 		dto.setUser_id(id);
@@ -324,14 +327,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			clients.values().forEach(s -> {
 				try {
 					s.sendMessage(new TextMessage(json));
-					System.out.println(s.getId() + "에게 메시지 : " +json + "을 전송하였습니다.");
+					System.out.println(s.getId() + "에게 메시지 : " + json + "을 전송하였습니다.");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			});
 		}
 	}
-	public void invitedUser(JsonNode jsonNode, WebSocketSession session, String roomId) throws AuthException{
+
+	public void invitedUser(JsonNode jsonNode, WebSocketSession session, String roomId) throws AuthException {
 		String plan_name = jsonNode.get("title").asText();
 		JsonNode dataArray = jsonNode.get("data");
 		String id = getIdFromSession(session);
@@ -339,15 +343,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		for (JsonNode node : dataArray) {
 			friends.add(node.asText());
 		}
-		if(friends.size() > 10 ) throw new AuthException("인원초과");
-
-		int plan_id = travelService.create(PlanSocketDto.builder()
-				.share_user_id_list(friends)
-				.flag(2)
-				.user_id(id)
-				.plan_name(plan_name).build());
+		System.out.println(friends);
+		System.out.println(id);
+		int plan_id = travelService.create(
+				PlanSocketDto.builder().share_user_id_list(friends).flag(2).user_id(id).plan_name(plan_name).build());
 		System.out.println("plan_id >> " + plan_id);
-
 
 		for (String friend : friends) {
 			ChatRoomDto chatRoomDto = new ChatRoomDto();
@@ -357,7 +357,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			chatService.addUser(chatRoomDto);
 			System.out.println(chatRoomDto);
 		}
+
+		ChatRoomDto dto = new ChatRoomDto();
+		dto.setRoom_id(roomId);
+		dto.setPlan_id(plan_id);
+		dto.setUser_id(id);
+		chatService.updateUser(dto);
 	}
+
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		if (session.isOpen()) {

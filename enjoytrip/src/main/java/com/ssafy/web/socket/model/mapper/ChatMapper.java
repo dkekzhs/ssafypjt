@@ -20,4 +20,6 @@ public interface ChatMapper {
 	public String getUserRoomId(ChatRoomDto dto);
 
 	int getPlanId(ChatRoomDto dto);
+
+	public void updateUser(ChatRoomDto dto);
 }

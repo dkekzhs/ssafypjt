@@ -47,8 +47,7 @@
 	</select>
 
 	<!-- 시도, 구군, 카테고리 정보에 따른 여행지 리스트를 가져온다 -->
-	<select id="searchByCode" parameterType="int"
-		resultMap="site">
+	<select id="searchByCode" parameterType="int" resultMap="site">
 		SELECT * FROM attraction_info
 		<where>
 			<if test="sidoCode != 0">
@@ -126,47 +125,65 @@
 	</insert>
 
 	<!-- 여행지 상세 정보를 여행 계획에 추가 -->
-	<insert id="insertPlanDetail" parameterType="com.ssafy.web.travel.model.PlanDetailDto">
+	<insert id="insertPlanDetail"
+		parameterType="com.ssafy.web.travel.model.PlanDetailDto">
 		INSERT INTO
 		plan_detail (plan_id, content_id)
-		VALUES (#{planId}, #{contentId})
+		VALUES
+		(#{planId}, #{contentId})
 	</insert>
 	<!-- 여행 계획으로부터 여행지 상세 정보 삭제 -->
-	<delete id="deletePlanDetail" parameterType="com.ssafy.web.travel.model.PlanDetailDto">
+	<delete id="deletePlanDetail"
+		parameterType="com.ssafy.web.travel.model.PlanDetailDto">
 		DELETE FROM
 		plan_detail
-		WHERE plan_id = #{planId} AND content_id = #{contentId}
+		WHERE plan_id = #{planId} AND
+		content_id = #{contentId}
 	</delete>
 	<delete id="deletePlanAndDetails" parameterType="planDto">
-		CALL deletePlanAndDetails(#{user_id},#{plan_id})
+		CALL
+		deletePlanAndDetails(#{user_id},#{plan_id})
 	</delete>
-	<select id="CreatePlanBoardWithShare" parameterType="planSocketDto" statementType="CALLABLE" resultType="int">
-		CALL CreatePlanBoardWithShare(#{user_id},#{flag},CAST(#{data} AS JSON),#{plan_name});
+	<select id="CreatePlanBoardWithShare"
+		parameterType="planSocketDto" 
+		resultType="int">
+		CALL
+		CreatePlanBoardWithShare(#{user_id},#{flag},CAST(#{data} AS
+		JSON),#{plan_name});
 	</select>
 
-	<select id="getAttractionInfoByPlanId" parameterType="int" resultType="socketPlanDto">
-		SELECT ai.title as title ,pd.order as `order`, ai.first_image as firstImage,ai.addr1 as addr1 ,ai.content_id as content_id
+	<select id="getAttractionInfoByPlanId" parameterType="int"
+		resultType="socketPlanDto">
+		SELECT ai.title as title ,pd.order as `order`,
+		ai.first_image as firstImage,ai.addr1 as addr1 ,ai.content_id as
+		content_id
 		FROM attraction_info ai
-				 INNER JOIN plan_detail pd ON ai.content_id = pd.content_id
-		WHERE pd.plan_id = #{planId}
+		INNER JOIN plan_detail pd ON ai.content_id = pd.content_id
+		WHERE pd.plan_id
+		= #{planId}
 	</select>
 	<insert id="addPlan" parameterType="planDetailDto">
-		INSERT INTO plan_detail(plan_id,content_id,`order`) values (#{plan_id},#{content_id},#{order})
+		INSERT INTO
+		plan_detail(plan_id,content_id,`order`) values
+		(#{plan_id},#{contentId},#{order})
 	</insert>
-	<select id="getPlanOne" parameterType="int" resultType="socketPlanDto">
-		SELECT title,first_image as image , addr1, content_id FROM attraction_info
-		WHERE content_id = #{content_id}
+	<select id="getPlanOne" parameterType="int"
+		resultType="socketPlanDto">
+		SELECT title,first_image as image , addr1, content_id as
+		contentId FROM attraction_info
+		WHERE content_id = #{contentId}
 	</select>
 
 	<delete id="deletePlan" parameterType="planDetailDto">
-		delete FROM plan_detail where content_id = #{content_id} and plan_id = #{plan_id};
+		delete FROM plan_detail
+		where content_id = #{contentId} and plan_id = #{plan_id}
 	</delete>
-	
-	<update id="PlanDetailDto" parameterType="java.util.List">
-	    <foreach collection="list" item="item" index="index" separator=";">
-      UPDATE plan_detail
-      SET `order` = #{item.order}
-      WHERE content_id = #{item.content_id} AND plan_id = #{item.plan_id}
-    </foreach>
+
+	<update id="updatePlan" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=",">
+			UPDATE plan_detail
+			SET `order` = #{item.order}
+			WHERE content_id = #{item.contentId} AND plan_id = #{item.plan_id}
+		</foreach>
 	</update>
 </mapper>

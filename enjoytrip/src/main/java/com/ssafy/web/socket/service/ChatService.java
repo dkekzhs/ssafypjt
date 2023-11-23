@@ -21,4 +21,7 @@ public interface ChatService {
 
 	// plan_id  가져오기
 	public int getPlanId(ChatRoomDto dto);
+
+	// 방장의 임시 공유 plan_id 갱신
+	public void updateUser(ChatRoomDto dto);
 }

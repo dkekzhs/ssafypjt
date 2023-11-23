@@ -10,7 +10,7 @@ import com.ssafy.web.socket.model.mapper.ChatMapper;
 public class ChatServiceImpl implements ChatService {
 
 	private final ChatMapper chatMapper;
-	
+
 	@Autowired
 	public ChatServiceImpl(ChatMapper chatMapper) {
 		this.chatMapper = chatMapper;
@@ -46,5 +46,9 @@ public class ChatServiceImpl implements ChatService {
 		return chatMapper.getPlanId(dto);
 	}
 
+	@Override
+	public void updateUser(ChatRoomDto dto) {
+		chatMapper.updateUser(dto);
+	}
 
 }

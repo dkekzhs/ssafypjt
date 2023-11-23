@@ -1,19 +1,25 @@
 <script setup>
 import { defineProps, defineEmits, ref, watch } from "vue";
 
-const { name, order, image, description } = defineProps(["name", "order", "image", "description"]);
+const { name, order, image, description, contentId } = defineProps([
+  "name",
+  "order",
+  "image",
+  "description",
+  "contentId",
+]);
 const emit = defineEmits();
 
 const deleteDestination = () => {
   // 삭제된 여행지를 알리기 위해 이벤트를 발생시킵니다.
-  emit("destinationDeleted", { name, order, image, description });
+  emit("destinationDeleted", { name, order, image, description, contentId });
 };
 
 const elementRef = ref(null);
 
 // Watch for changes in the props and update the HTML content
 watch(
-  () => [name, order, image, description],
+  () => [name, order, image, description, contentId],
   () => {
     updateHtmlContent();
   }
