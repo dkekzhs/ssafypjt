@@ -4,14 +4,16 @@ export const useSocketStore = defineStore("socketStore", {
   state: () => ({
     socket: null,
     isConnected: false,
+    callback: null,
+    message: null,
   }),
 
   actions: {
     // 소켓 연결
-    connect(url) {
+    connect(url, callback) {
       return new Promise((resolve, reject) => {
         this.socket = new WebSocket("ws://localhost:80/enjoytrip" + url);
-
+        this.callback = callback;
         this.socket.onopen = () => {
           console.log("WebSocket connected");
           this.isConnected = true;
@@ -30,11 +32,12 @@ export const useSocketStore = defineStore("socketStore", {
         };
 
         this.socket.onmessage = (event) => {
-          const message = JSON.parse(event.data);
-          console.log("Received message:", message);
+          this.message = JSON.parse(event.data);
+          console.log("Received message:", this.message);
           console.log("Received message:", event);
 
           // 메시지 처리 또는 다른 작업 수행
+          this.callback(this.message);
         };
       })
     },

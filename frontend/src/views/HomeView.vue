@@ -171,9 +171,11 @@ function openModal() {
   document.getElementById("modal").style.display = "flex";
 }
 
-
+function handlePacket(packet) {
+  console.log("핸들링할 패킷 >> " + packet);
+}
 async function connectSocketChat() {
-  await socketStore.connect("/chat");
+  await socketStore.connect("/chat", handlePacket);
 }
 function check() {
   vaild(
@@ -198,7 +200,8 @@ function check() {
 }
 
 function getPlanListSocket(){
-  socketStore.sendMessage({"type" : "getPlanList"});
+  socketStore.sendMessage({ "type": "getPlanList" });
+  
 }
 </script>
 
