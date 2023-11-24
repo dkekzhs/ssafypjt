@@ -132,4 +132,9 @@ public class TravelServiceImpl implements TravelService {
 		return travelMapper.getMyPlan(user_id);
 	}
 
+	@Override
+	public void addShare(ShareUserDto dto) {
+		 travelMapper.addShare(dto);
+	}
+
 }

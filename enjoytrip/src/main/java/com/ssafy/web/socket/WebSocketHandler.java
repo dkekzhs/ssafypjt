@@ -10,9 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import com.ssafy.web.common.exception.AuthException;
-import com.ssafy.web.travel.model.PlanDetailDto;
-import com.ssafy.web.travel.model.SocketPlanDto;
-import com.ssafy.web.travel.model.TravelDto;
+import com.ssafy.web.travel.model.*;
 import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.web.socket.model.ChatRoomDto;
 import com.ssafy.web.socket.service.ChatService;
-import com.ssafy.web.travel.model.PlanSocketDto;
 import com.ssafy.web.travel.service.TravelService;
 
 import lombok.var;
@@ -336,11 +333,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		for (JsonNode node : dataArray) {
 			friends.add(node.asText());
 		}
+
 		System.out.println(friends);
-		System.out.println(id);
+
 		int plan_id = travelService.create(
 				PlanSocketDto.builder().share_user_id_list(friends).flag(2).user_id(id).plan_name(plan_name).build());
+		travelService.addShare(ShareUserDto.builder().user_id(id).plan_id(plan_id).build());
+
 		System.out.println("plan_id >> " + plan_id);
+
 
 		for (String friend : friends) {
 			ChatRoomDto chatRoomDto = new ChatRoomDto();

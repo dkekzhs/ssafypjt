@@ -39,4 +39,6 @@ public interface TravelService {
 	int updatePlan(PlanDetailDto dto);
 
 	List<getMyPlanDto> getMyPlan(String user_id);
+
+	void addShare(ShareUserDto dto);
 }

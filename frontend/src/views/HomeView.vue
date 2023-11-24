@@ -167,6 +167,7 @@ const destinations = computed(() => socketStore.getDestinations);
 
 <template>
   <h1>홈 화면입니다.</h1>
+  <v-btn v-if="socketStore.isConnected" @click="socketStore.disconnect">소켓끊기  </v-btn>
   <Rating />
   <v-row class="v-row">
     <v-col class="v-col-4">

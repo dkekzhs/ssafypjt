@@ -192,4 +192,8 @@
 		WHERE s.share_user_id = #{userId}
 		  AND p.share_flag = 2
 	</select>
+	<insert id="addShare" parameterType="ShareUserDto">
+		insert into share(plan_id,share_user_id) values(#{plan_id}, #{user_id})
+
+	</insert>
 </mapper>

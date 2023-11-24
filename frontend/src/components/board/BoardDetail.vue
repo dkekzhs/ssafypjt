@@ -20,13 +20,15 @@ onMounted(() => {
 
 function fetchDetails(id){
     detailArticle(id , res => {
-        console.log(res);
-        board.value = res.data.board;
+
+      board.value = res.data.board;
       comments.value = sortComments(res.data.comments);
-      console.log(comments.value);
       editFlag.value = res.data.edit;
       like.value = res.data.likes;
       user_id.value = res.data.user_id;
+
+      console.log(comments.value + " comments Value")
+      printCommentTree(comments.value, 0); 
     },
         err => {
             console.log(err);      
@@ -91,6 +93,15 @@ function rootComment() {
   )
   
 }
+function printCommentTree(comment, depth = 0) {
+  let indentation = '  '.repeat(depth);
+  console.log(`${indentation}comment_id: ${comment.comment_id}, content: '${comment.content}'`);
+
+  if (comment.children) {
+    comment.children.forEach(child => printCommentTree(child, depth + 1));
+  }
+}
+
   // 댓글 트리 구조로 정렬하는 함수
   function sortComments(comments) {
     const commentMap = new Map();
@@ -98,12 +109,12 @@ function rootComment() {
 
     comments.forEach(comment => {
       const parentId = comment.parent_comment_id;
-      if (!parentId) {
+      if (parentId == comment.comment_id) {
         roots.push(comment);
       } else {
         if (!commentMap.has(parentId)) {
           commentMap.set(parentId, []);
-        }s
+        }
         commentMap.get(parentId).push(comment);
       }
     });
@@ -116,7 +127,7 @@ function rootComment() {
     };
 
     roots.forEach(root => traverse(root));
-    console.log(roots);
+    console.log("트리형태로 댓글 변환 " +commentMap);
     return roots;
   }
 
